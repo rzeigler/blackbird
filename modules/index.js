@@ -1,29 +1,24 @@
-var EXTENSIONS = [];
-
-/*!
- * mach - HTTP for JavaScript
- * https://github.com/mjackson/mach
- */
-var mach = module.exports = {
-
-  version: require('./version'),
-  Connection: require('./Connection'),
-  Header: require('./Header'),
-  Location: require('./Location'),
-  Message: require('./Message'),
-
-  extend: function () {
-    var extension;
-    for (var i = 0, len = arguments.length; i < len; ++i) {
-      extension = arguments[i];
-
-      if (EXTENSIONS.indexOf(extension) === -1) {
-        EXTENSIONS.push(extension);
-        extension(mach);
-      }
+/*jslint node:true, es6: true, this: true*/
+(function (_, R) {
+    "use strict";
+    function extensionManager(mach) {
+        const XS = new Map();
+        return _.assign(mach, {extend: function (...args) {
+            R.forEach(function (ex) {
+                XS[ex] = XS[ex] || R.once(ex);
+                XS[ex](mach);
+            }, args);
+        }});
     }
-  }
 
-};
+    function loadUp(slug) {
+        return R.objOf(slug, require(`./${slug}`));
+    }
 
-mach.extend(require('./extensions/default'));
+    var mach = R.mergeAll(R.map(loadUp, ["version", "Connection", "Header", "Location", "Message"]));
+    module.exports = extensionManager(mach);
+    mach.extend(require("./extensions/default"));
+}(
+    require("lodash"),
+    require("ramda")
+));
