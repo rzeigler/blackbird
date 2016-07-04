@@ -7,6 +7,7 @@ let stringifyQuery = require("./utils/stringifyQuery");
 let Promise = require("./utils/Promise");
 let Location = require("./Location");
 let Message = require("./Message");
+const R = require("ramda");
 
 function locationPropertyAlias(name) {
     return d.gs(function () {
@@ -29,7 +30,7 @@ function defaultCloseHandler() {}
 function defaultApp(conn) {
     conn.status = 404;
     conn.response.contentType = "text/plain";
-    conn.response.content = "Not found: " + conn.method + " " + conn.path;
+    conn.response.content = `Not found: ${conn.method} ${conn.path}`;
 }
 
 /**
@@ -81,8 +82,6 @@ function Connection(options) {
         location = options; // options may be a URL string.
     } else if (options.location || options.url) {
         location = options.location || options.url;
-    } else if (typeof window === "object") {
-        location = window.location.href;
     }
 
     this.location = location;
@@ -160,8 +159,9 @@ Object.defineProperties(Connection.prototype, {
             let parts = header.split(" ", 2);
             let scheme = parts[0];
 
-            if (scheme.toLowerCase() === "basic")
+            if (scheme.toLowerCase() === "basic") {
                 return decodeBase64(parts[1]);
+            }
 
             return header;
         }
@@ -171,7 +171,7 @@ Object.defineProperties(Connection.prototype, {
         let headers = this.request.headers;
 
         if (value && typeof value === "string") {
-            headers["Authorization"] = "Basic " + encodeBase64(value);
+            headers["Authorization"] = `Basic ${encodeBase64(value)}`;
         } else {
             delete headers["Authorization"];
         }
@@ -207,22 +207,26 @@ Object.defineProperties(Connection.prototype, {
 
         try {
             return Promise.resolve(app(conn)).then(function (value) {
-                if (value == null)
+                if (R.isNil(value)) {
                     return;
+                }
 
                 if (typeof value === "number") {
                     conn.status = value;
                 } else if (typeof value === "string" || isBinary(value) || typeof value.pipe === "function") {
                     conn.response.content = value;
                 } else {
-                    if (value.headers != null)
+                    if (!R.isNil(value.headers)) {
                         conn.response.headers = value.headers;
+                    }
 
-                    if (value.content != null)
+                    if (!R.isNil(value.content)) {
                         conn.response.content = value.content;
+                    }
 
-                    if (value.status != null)
+                    if (!R.isNil(value.status)) {
                         conn.status = value.status;
+                    }
                 }
             });
         } catch (error) {

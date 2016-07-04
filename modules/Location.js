@@ -3,6 +3,7 @@ let mergeQuery = require("./utils/mergeQuery");
 let stringifyQuery = require("./utils/stringifyQuery");
 let parseQuery = require("./utils/parseQuery");
 let parseURL = require("./utils/parseURL");
+const R = require("ramda");
 
 /**
  * Standard ports for HTTP protocols.
@@ -14,7 +15,7 @@ let STANDARD_PORTS = {
 
 function propertyAlias(propertyName, defaultValue) {
     return d.gs(function () {
-        return this.properties[propertyName] || (defaultValue == null ? null : defaultValue);
+        return this.properties[propertyName] || (R.isNil(defaultValue) ? null : defaultValue);
     }, function (value) {
         this.properties[propertyName] = value;
     });
@@ -28,8 +29,9 @@ function setProperties(location, properties) {
     for (let i = 0, len = PROPERTY_NAMES.length; i < len; ++i) {
         propertyName = PROPERTY_NAMES[i];
 
-        if (properties.hasOwnProperty(propertyName) && propertyName in location)
+        if (properties.hasOwnProperty(propertyName) && propertyName in location) {
             location[propertyName] = properties[propertyName];
+        }
     }
 }
 
@@ -68,14 +70,16 @@ Object.defineProperties(Location.prototype, {
    * the given location appended.
    */
     concat: d(function (location) {
-        if (!(location instanceof Location))
+        if (!R.is(Location, location)) {
             location = new Location(location);
+        }
 
         let pathname = this.pathname;
         let extraPathname = location.pathname;
 
-        if (extraPathname !== "/")
+        if (extraPathname !== "/") {
             pathname = pathname.replace(/\/*$/, "/") + extraPathname.replace(/^\/*/, "");
+        }
 
         let query = mergeQuery(this.query, location.query);
 
@@ -97,7 +101,7 @@ Object.defineProperties(Location.prototype, {
         let host = this.host;
         let path = this.path;
 
-        return host ? (this.protocol + "//" + (auth ? auth + "@" : "") + host + path) : path;
+        return host ? `${this.protocol}//${(auth ? `${auth}@` : "") + host + path}` : path;
     }, function (value) {
         let parsed = parseURL(value);
 
@@ -131,14 +135,16 @@ Object.defineProperties(Location.prototype, {
         let host = this.hostname;
         let port = this.port;
 
-        if (port != null && port !== STANDARD_PORTS[protocol])
-            host += ":" + port;
+        if (!R.isNil(port) && port !== STANDARD_PORTS[protocol]) {
+            host += `:${port}`;
+        }
 
         return host;
     }, function (value) {
         let index;
 
-        if (typeof value === "string" && (index = value.indexOf(":")) !== -1) {
+        if (R.is(String, value) && R.contains(":", value)) {
+            index = R.findIndex(R.equals(":"), value);
             this.hostname = value.substring(0, index);
             this.port = value.substring(index + 1);
         } else {
@@ -174,7 +180,8 @@ Object.defineProperties(Location.prototype, {
     }, function (value) {
         let index;
 
-        if (typeof value === "string" && (index = value.indexOf("?")) !== -1) {
+        if (typeof value === "string" && R.contains("?", value)) {
+            index = R.findIndex(R.equals("?"), value);
             this.pathname = value.substring(0, index);
             this.search = value.substring(index);
         } else {
@@ -194,7 +201,7 @@ Object.defineProperties(Location.prototype, {
     queryString: d.gs(function () {
         return this.search.substring(1);
     }, function (value) {
-        this.search = value && "?" + value;
+        this.search = value && `?${value}`;
     }),
 
   /**
