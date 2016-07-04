@@ -194,7 +194,7 @@ describe('Message#parseContent', function () {
 
       it('parses the content', function () {
         return message.parseContent().then(function (params) {
-          expect(params).toEqual({ a: 1, b: 'some value' });
+          expect(params).toEqual({ a: '1', b: 'some value' });
         });
       });
     });

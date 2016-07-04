@@ -1,17 +1,24 @@
-/**
- * The default extension for node.js environments.
- */
-module.exports = function (mach) {
-  mach.extend(
-    require('./accept'),
-    require('./acceptCharset'),
-    require('./acceptEncoding'),
-    require('./acceptLanguage'),
-    require('./client'),
-    require('./middleware'),
-    require('./multipart'),
-    require('./proxy'),
-    require('./server'),
-    require('./statusText')
-  );
-};
+/*jslint node: true, es6: true*/
+module.exports = (function (R, requireLocal) {
+    "use strict";
+    return function (mach) {
+        const
+            extensions = [
+                "accept",
+                "acceptCharset",
+                "acceptEncoding",
+                "acceptLanguage",
+                "middleware",
+                "multipart",
+                "proxy",
+                "server",
+                "statusText"
+            ],
+            modules = extensions.map(requireLocal);
+
+        mach.extend(...modules);
+    };
+}(
+    require("ramda"),
+    require("../core/loading").locally(require)
+));
