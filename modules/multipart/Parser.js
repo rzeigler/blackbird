@@ -2,6 +2,7 @@
 let bodec = require("bodec");
 let Stream = require("bufferedstream");
 let Message = require("../Message");
+const R = require("ramda");
 
 // This parser is modified from the one in the node-formidable
 // project, written by Felix Geisendörfer. MIT licensed.
@@ -35,20 +36,22 @@ let HYPHEN = 45;
 let COLON = 58;
 
 function Parser(boundary, partHandler) {
-    this.boundary = bodec.fromRaw("\r\n--" + boundary);
+    this.boundary = bodec.fromRaw(`\r\n--${boundary}`);
     this.lookBehind = bodec.create(this.boundary.length + 8);
     this.boundaryChars = {};
 
     let i = this.boundary.length;
-    while (i)
+    while (i) {
         this.boundaryChars[this.boundary[--i]] = true;
+    }
 
     this.state = S.START;
     this.index = null;
     this.flags = 0;
 
-    if (typeof partHandler !== "function")
+    if (!R.is(Function, partHandler)) {
         throw new Error("multipart.Parser needs a part handler");
+    }
 
     this.onPart = partHandler;
 }
@@ -76,14 +79,14 @@ Parser.prototype.execute = function (chunk) {
             state = S.START_BOUNDARY;
       /* falls through */
         case S.START_BOUNDARY:
-            if (index == boundaryLength - 2) {
-                if (c != CR) {
+            if (index === boundaryLength - 2) {
+                if (c !== CR) {
                     return i;
                 }
                 index++;
                 break;
-            } else if (index == boundaryLength - 1) {
-                if (c != LF) {
+            } else if (index === boundaryLength - 1) {
+                if (c !== LF) {
                     return i;
                 }
                 index = 0;
@@ -92,7 +95,7 @@ Parser.prototype.execute = function (chunk) {
                 break;
             }
 
-            if (c != boundary[index + 2]) {
+            if (c !== boundary[index + 2]) {
                 return i;
             }
             index++;
@@ -103,19 +106,19 @@ Parser.prototype.execute = function (chunk) {
             index = 0;
       /* falls through */
         case S.HEADER_FIELD:
-            if (c == CR) {
+            if (c === CR) {
                 this._clear("headerName");
                 state = S.HEADERS_ALMOST_DONE;
                 break;
             }
 
             index++;
-            if (c == HYPHEN) {
+            if (c === HYPHEN) {
                 break;
             }
 
-            if (c == COLON) {
-                if (index == 1) {
+            if (c === COLON) {
+                if (index === 1) {
           // empty header field
                     return i;
                 }
@@ -130,27 +133,27 @@ Parser.prototype.execute = function (chunk) {
             }
             break;
         case S.HEADER_VALUE_START:
-            if (c == SPACE) {
+            if (c === SPACE) {
                 break;
             }
             this._mark("headerValue", i);
             state = S.HEADER_VALUE;
       /* falls through */
         case S.HEADER_VALUE:
-            if (c == CR) {
+            if (c === CR) {
                 this._dataCallback("headerValue", chunk, true, i);
                 this._callback("headerEnd");
                 state = S.HEADER_VALUE_ALMOST_DONE;
             }
             break;
         case S.HEADER_VALUE_ALMOST_DONE:
-            if (c != LF) {
+            if (c !== LF) {
                 return i;
             }
             state = S.HEADER_FIELD_START;
             break;
         case S.HEADERS_ALMOST_DONE:
-            if (c != LF) {
+            if (c !== LF) {
                 return i;
             }
             this._callback("headersEnd");
@@ -174,7 +177,7 @@ Parser.prototype.execute = function (chunk) {
             }
 
             if (index < boundaryLength) {
-                if (boundary[index] == c) {
+                if (boundary[index] === c) {
                     if (index === 0) {
                         this._dataCallback("partData", chunk, true, i);
                     }
@@ -182,21 +185,21 @@ Parser.prototype.execute = function (chunk) {
                 } else {
                     index = 0;
                 }
-            } else if (index == boundaryLength) {
+            } else if (index === boundaryLength) {
                 index++;
-                if (c == CR) {
+                if (c === CR) {
           // CR = part boundary
                     flags |= F.PART_BOUNDARY;
-                } else if (c == HYPHEN) {
+                } else if (c === HYPHEN) {
           // HYPHEN = end boundary
                     flags |= F.LAST_BOUNDARY;
                 } else {
                     index = 0;
                 }
-            } else if (index - 1 == boundaryLength) {
+            } else if (index - 1 === boundaryLength) {
                 if (flags & F.PART_BOUNDARY) {
                     index = 0;
-                    if (c == LF) {
+                    if (c === LF) {
             // unset the PART_BOUNDARY flag
                         flags &= ~F.PART_BOUNDARY;
                         this._callback("partEnd");
@@ -205,7 +208,7 @@ Parser.prototype.execute = function (chunk) {
                         break;
                     }
                 } else if (flags & F.LAST_BOUNDARY) {
-                    if (c == HYPHEN) {
+                    if (c === HYPHEN) {
                         this._callback("partEnd");
             // this._callback('end');
                         state = S.END;
@@ -253,30 +256,33 @@ Parser.prototype.execute = function (chunk) {
 };
 
 Parser.prototype.finish = function () {
-    if (this.state !== S.END)
-        throw new Error("Stream ended unexpectedly (state: " + this.state + ")");
+    if (this.state !== S.END) {
+        throw new Error(`Stream ended unexpectedly (state: ${this.state})`);
+    }
 };
 
 Parser.prototype._mark = function (name, i) {
-    this[name + "Mark"] = i;
+    this[`${name}Mark`] = i;
 };
 
 Parser.prototype._clear = function (name) {
-    delete this[name + "Mark"];
+    delete this[`${name}Mark`];
 };
 
 Parser.prototype._callback = function (name, chunk, start, end) {
-    if (start !== undefined && start === end)
+    if (start !== undefined && start === end) {
         return;
+    }
 
-    let prop = "on" + name.substr(0, 1).toUpperCase() + name.substr(1);
+    let prop = `on${name.substr(0, 1).toUpperCase()}${name.substr(1)}`;
 
-    if (prop in this)
+    if (prop in this) {
         this[prop](chunk, start, end);
+    }
 };
 
 Parser.prototype._dataCallback = function (name, chunk, clear, i) {
-    let prop = name + "Mark";
+    let prop = `${name}Mark`;
 
     if (prop in this) {
         if (!clear) {
