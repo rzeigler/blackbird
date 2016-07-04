@@ -37,7 +37,7 @@ function methodOverride(app, options) {
     options = options || {};
 
     if (typeof options === "string")
-        options = { paramName: options };
+        options = {paramName: options};
 
     let paramName = options.paramName || "_method";
     let headerName = normalizeHeaderName(options.headerName || "X-Http-Method-Override");

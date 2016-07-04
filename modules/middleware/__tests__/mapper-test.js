@@ -8,8 +8,8 @@ describe("middleware/mapper", function () {
         return {
             status: 200,
             headers: {
-                "Basename": conn.basename,
-                "Pathname": conn.pathname
+                Basename: conn.basename,
+                Pathname: conn.pathname
             }
         };
     }

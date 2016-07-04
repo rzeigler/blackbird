@@ -2,7 +2,7 @@ let d = require("describe-property");
 
 let RoutingMethods = {
     delete: "DELETE",
-    get: [ "GET", "HEAD" ],
+    get: ["GET", "HEAD"],
     head: "HEAD",
     options: "OPTIONS",
     post: "POST",

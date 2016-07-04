@@ -73,7 +73,7 @@ function file(app, options) {
 
   // Allow mach.file(path) and app.use(mach.file, path)
     if (typeof options === "string")
-        options = { root: options };
+        options = {root: options};
 
     let root = options.root;
     if (typeof root !== "string" || !fs.existsSync(root) || !fs.statSync(root).isDirectory())
@@ -82,9 +82,9 @@ function file(app, options) {
     let index = options.index || [];
     if (index) {
         if (typeof index === "string") {
-            index = [ index ];
+            index = [index];
         } else if (!Array.isArray(index)) {
-            index = [ "index.html" ];
+            index = ["index.html"];
         }
     }
 

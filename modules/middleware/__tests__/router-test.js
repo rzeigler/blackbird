@@ -15,7 +15,7 @@ describe("middleware/router", function () {
     let app = router();
 
     app.route("/posts/:id", "GET", stringifyParams);
-    app.route("/posts/:id", [ "POST", "DELETE" ], stringifyParams);
+    app.route("/posts/:id", ["POST", "DELETE"], stringifyParams);
     app.route("/feeds/:id.?:format?", stringifyParams);
     app.route("/files/*.*", stringifyParams);
     app.route(/\/users\/(\d+)/i, stringifyParams);
@@ -32,23 +32,23 @@ describe("middleware/router", function () {
     describe("GET /posts/1", function () {
         it("has the correct params", function () {
             return callApp(app, "/posts/1").then(function (conn) {
-                expect(JSON.parse(conn.responseText)).toEqual({ id: "1" });
+                expect(JSON.parse(conn.responseText)).toEqual({id: "1"});
             });
         });
     });
 
     describe("POST /posts/2", function () {
         it("has the correct params", function () {
-            return callApp(app, { method: "POST", url: "/posts/2" }).then(function (conn) {
-                expect(JSON.parse(conn.responseText)).toEqual({ id: "2" });
+            return callApp(app, {method: "POST", url: "/posts/2"}).then(function (conn) {
+                expect(JSON.parse(conn.responseText)).toEqual({id: "2"});
             });
         });
     });
 
     describe("DELETE /posts/3", function () {
         it("has the correct params", function () {
-            return callApp(app, { method: "DELETE", url: "/posts/3" }).then(function (conn) {
-                expect(JSON.parse(conn.responseText)).toEqual({ id: "3" });
+            return callApp(app, {method: "DELETE", url: "/posts/3"}).then(function (conn) {
+                expect(JSON.parse(conn.responseText)).toEqual({id: "3"});
             });
         });
     });
@@ -56,7 +56,7 @@ describe("middleware/router", function () {
     describe("GET /feeds/5", function () {
         it("has the correct params", function () {
             return callApp(app, "/feeds/5").then(function (conn) {
-                expect(JSON.parse(conn.responseText)).toEqual({ id: "5", format: UNDEF });
+                expect(JSON.parse(conn.responseText)).toEqual({id: "5", format: UNDEF});
             });
         });
     });
@@ -64,7 +64,7 @@ describe("middleware/router", function () {
     describe("GET /feeds/5.html", function () {
         it("has the correct params", function () {
             return callApp(app, "/feeds/5.html").then(function (conn) {
-                expect(JSON.parse(conn.responseText)).toEqual({ id: "5", format: "html" });
+                expect(JSON.parse(conn.responseText)).toEqual({id: "5", format: "html"});
             });
         });
     });
@@ -72,7 +72,7 @@ describe("middleware/router", function () {
     describe("GET /files/feed.xml", function () {
         it("has the correct params", function () {
             return callApp(app, "/files/feed.xml").then(function (conn) {
-                expect(JSON.parse(conn.responseText)).toEqual({ splat: [ "feed", "xml" ] });
+                expect(JSON.parse(conn.responseText)).toEqual({splat: ["feed", "xml"]});
             });
         });
     });
@@ -80,7 +80,7 @@ describe("middleware/router", function () {
     describe("GET /files/feed.", function () {
         it("has the correct params", function () {
             return callApp(app, "/files/feed.").then(function (conn) {
-                expect(JSON.parse(conn.responseText)).toEqual({ splat: [ "feed", "" ] });
+                expect(JSON.parse(conn.responseText)).toEqual({splat: ["feed", ""]});
             });
         });
     });
@@ -88,14 +88,14 @@ describe("middleware/router", function () {
     describe("GET /files/.xml", function () {
         it("has the correct params", function () {
             return callApp(app, "/files/.xml").then(function (conn) {
-                expect(JSON.parse(conn.responseText)).toEqual({ splat: [ "", "xml" ] });
+                expect(JSON.parse(conn.responseText)).toEqual({splat: ["", "xml"]});
             });
         });
     });
 
     describe("PUT /posts/1", function () {
         it("has the correct params", function () {
-            return callApp(app, { method: "PUT", path: "/posts/1" }).then(function (conn) {
+            return callApp(app, {method: "PUT", path: "/posts/1"}).then(function (conn) {
                 expect(conn.status).toEqual(404);
             });
         });

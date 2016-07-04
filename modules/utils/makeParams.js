@@ -7,7 +7,7 @@ function makeParams(keys, values) {
                 params.splat.push(value);
             } else if ("splat" in params) {
         // Multiple "splat" keys make an array.
-                params.splat = [ params.splat, value ];
+                params.splat = [params.splat, value];
             } else {
                 params.splat = value;
             }

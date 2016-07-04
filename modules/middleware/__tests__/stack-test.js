@@ -2,6 +2,7 @@ let assert = require("assert");
 let expect = require("expect");
 let callApp = require("../../utils/callApp");
 let stack = require("../stack");
+const R = require("ramda");
 
 function addHeader(app, headerName) {
     return function (conn) {
@@ -27,7 +28,7 @@ describe("middleware/stack", function () {
     });
 
     app.get("/:username", function (conn) {
-        return "welcome " + conn.params.username;
+        return `welcome ${conn.params.username}`;
     });
 
     app.use(addHeader, "Three");
@@ -58,7 +59,7 @@ describe("middleware/stack", function () {
 
         it("does not call any middleware after that location", function () {
             return callApp(app, "/images").then(function (conn) {
-                assert(conn.response.headers["Three"] == null);
+                assert(R.isNil(conn.response.headers["Three"]));
             });
         });
     });
@@ -79,7 +80,7 @@ describe("middleware/stack", function () {
 
         it("does not call middleware after that route", function () {
             return callApp(app, "/home").then(function (conn) {
-                assert(conn.response.headers["Three"] == null);
+                assert(R.isNil(conn.response.headers["Three"]));
             });
         });
     });

@@ -8,7 +8,7 @@ describe("middleware/gzip", function () {
     let gzippedContents = getFixture("test.txt.gz");
     let app = gzip(function () {
         return {
-            headers: { "Content-Type": "text/plain" },
+            headers: {"Content-Type": "text/plain"},
             content: contents
         };
     });
@@ -16,7 +16,7 @@ describe("middleware/gzip", function () {
     describe("when the client accepts gzip encoding", function () {
         it("gzip-encodes the response", function () {
             return callApp(app, {
-                headers: { "Accept-Encoding": "gzip" },
+                headers: {"Accept-Encoding": "gzip"},
                 binary: true
             }).then(function (conn) {
                 expect(conn.response.headers["Content-Encoding"]).toEqual("gzip");
@@ -43,7 +43,7 @@ describe("middleware/gzip", function () {
     describe("when the response is a text/event-stream", function () {
         let app = gzip(function () {
             return {
-                headers: { "Content-Type": "text/event-stream" },
+                headers: {"Content-Type": "text/event-stream"},
                 content: contents
             };
         });

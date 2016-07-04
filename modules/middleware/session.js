@@ -88,7 +88,7 @@ function session(app, options) {
     options = options || {};
 
     if (typeof options === "string")
-        options = { secret: options };
+        options = {secret: options};
 
     let secret = options.secret;
     let name = options.name || "_session";

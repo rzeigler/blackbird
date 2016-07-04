@@ -11,14 +11,14 @@ describe("compileRoute", function () {
     describe("when a pattern contains named keys", function () {
         it("populates the keys array with the values", function () {
             compileRoute("/users/:userID/posts/:postID", keys);
-            expect(keys).toEqual([ "userID", "postID" ]);
+            expect(keys).toEqual(["userID", "postID"]);
         });
     });
 
     describe("when a pattern contains *s", function () {
         it("has splat keys", function () {
             compileRoute("/files/*.*", keys);
-            expect(keys).toEqual([ "splat", "splat" ]);
+            expect(keys).toEqual(["splat", "splat"]);
         });
 
         it("matches correctly", function () {
@@ -31,7 +31,7 @@ describe("compileRoute", function () {
     describe("a pattern with ()", function () {
         it("has the correct keys", function () {
             compileRoute("/users/(:userID)", keys);
-            expect(keys).toEqual([ "userID" ]);
+            expect(keys).toEqual(["userID"]);
         });
 
         it("matches correctly", function () {
@@ -44,7 +44,7 @@ describe("compileRoute", function () {
     describe("a pattern with ^ and $", function () {
         it("has the correct keys", function () {
             compileRoute("/user$/^:userID", keys);
-            expect(keys).toEqual([ "userID" ]);
+            expect(keys).toEqual(["userID"]);
         });
 
         it("matches correctly", function () {

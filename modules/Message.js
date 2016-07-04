@@ -99,7 +99,7 @@ Object.defineProperties(Message.prototype, {
             if (Array.isArray(headers[headerName])) {
                 headers[headerName].push(value);
             } else {
-                headers[headerName] = [ headers[headerName], value ];
+                headers[headerName] = [headers[headerName], value];
             }
         } else {
             headers[headerName] = value;

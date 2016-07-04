@@ -1,4 +1,4 @@
-let SUFFIXES = [ "B", "K", "M", "G", "T" ];
+let SUFFIXES = ["B", "K", "M", "G", "T"];
 
 function formatByteSize(size) {
     let tier = size > 0 ? Math.floor(Math.log(size) / Math.log(1024)) : 0;

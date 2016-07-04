@@ -180,7 +180,7 @@ module.exports = function (mach) {
             let response = this.response;
 
             if (R.is(String, options)) {
-                options = { path: options };
+                options = {path: options};
             }
 
             if (options.content) {

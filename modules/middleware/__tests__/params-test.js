@@ -12,7 +12,7 @@ describe("middleware/params", function () {
             return callApp(paramsMiddleware(stringifyParams), {
                 method: "POST",
                 url: "/?a=b&c=d",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
                 content: "a=c"
             }).then(function (conn) {
                 let params = JSON.parse(conn.responseText);
@@ -24,10 +24,10 @@ describe("middleware/params", function () {
 
     describe("when the request content length exceeds the maximum allowed length", function () {
         it("returns 413", function () {
-            return callApp(paramsMiddleware(stringifyParams, { maxLength: 100 }), {
+            return callApp(paramsMiddleware(stringifyParams, {maxLength: 100}), {
                 method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                content: "q=" + Array(100).join("a")
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                content: `q=${Array(100).join("a")}`
             }).then(function (conn) {
                 expect(conn.status).toEqual(413);
             });

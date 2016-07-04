@@ -109,7 +109,7 @@ function createStack(app) {
                 layers.push(routerCreator(routes.splice(0, routes.length)));
 
             layers.push(function (app) {
-                return middleware.apply(this, [ app ].concat(args));
+                return middleware.apply(this, [app].concat(args));
             });
 
             compiledApp = null;
@@ -119,7 +119,7 @@ function createStack(app) {
      * Uses a mapper to map a URL path to an app.
      */
         map: d(function (location, app) {
-            mappings.push([ location, app ]);
+            mappings.push([location, app]);
             compiledApp = null;
         }),
 
@@ -127,7 +127,7 @@ function createStack(app) {
      * Uses a router to route URLs that match a pattern/method to an app.
      */
         route: d(function (pattern, methods, app) {
-            routes.push([ pattern, methods, app ]);
+            routes.push([pattern, methods, app]);
             compiledApp = null;
         }),
 

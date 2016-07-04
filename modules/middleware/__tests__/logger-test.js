@@ -5,7 +5,7 @@ let logger = require("../logger");
 
 function zeroLength() {
     return {
-        headers: { "Content-Length": 0 }
+        headers: {"Content-Length": 0}
     };
 }
 
@@ -20,7 +20,7 @@ describe("middleware/logger", function () {
         });
 
         it("logs a content length of 0", function () {
-            return callApp(logger(zeroLength, messageHandler)).then(function (conn) {
+            return callApp(logger(zeroLength, messageHandler)).then(function () {
                 assert(messages[0]);
 
                 let match = messages[0].match(/\b(\d+) ([0-9\.]+)\b$/);

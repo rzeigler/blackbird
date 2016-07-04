@@ -36,14 +36,14 @@ function serveApp(app, options) {
     options = options || {};
 
     if (typeof options === "number") {
-        options = { port: options };
+        options = {port: options};
     } else if (typeof options === "string") {
-        options = { socket: options };
+        options = {socket: options};
     }
 
     let nodeServer;
     if (options.key && options.cert) {
-        nodeServer = https.createServer({ key: options.key, cert: options.cert });
+        nodeServer = https.createServer({key: options.key, cert: options.cert});
     } else {
         nodeServer = http.createServer();
     }
