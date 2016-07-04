@@ -8,7 +8,7 @@ module.exports = function (mach) {
      * The message that corresponds with the response status code.
      */
         statusText: d.gs(function () {
-            return this.status + " " + StatusCodes[this.status];
+            return `${this.status} ${StatusCodes[this.status]}`;
         })
 
     });

@@ -20,8 +20,9 @@ module.exports = function (mach) {
      * Returns true if the client accepts the given media type.
      */
         accepts: d(function (mediaType) {
-            if (!this._acceptHeader)
+            if (!this._acceptHeader) {
                 this._acceptHeader = new Accept(this.headers["Accept"]);
+            }
 
             return this._acceptHeader.accepts(mediaType);
         })

@@ -20,8 +20,9 @@ module.exports = function (mach) {
      * Returns true if the client accepts the given content language.
      */
         acceptsLanguage: d(function (language) {
-            if (!this._acceptLanguageHeader)
+            if (!this._acceptLanguageHeader) {
                 this._acceptLanguageHeader = new AcceptLanguage(this.headers["Accept-Language"]);
+            }
 
             return this._acceptLanguageHeader.accepts(language);
         })
