@@ -1,6 +1,6 @@
-var assert = require("assert");
-var expect = require("expect");
-var delay = require("when/delay");
+let assert = require("assert");
+let expect = require("expect");
+let delay = require("when/delay");
 
 function describeSessionStore(store, skip) {
     if (!skip) {
@@ -15,10 +15,10 @@ function describeSessionStore(store, skip) {
         });
     }
 
-    var desc = skip ? describe.skip : describe;
+    let desc = skip ? describe.skip : describe;
 
     desc("when there is no session with a given value", function () {
-        var session;
+        let session;
         beforeEach(function () {
             return store.load("fake-value").then(function (newSession) {
                 session = newSession;
@@ -31,9 +31,9 @@ function describeSessionStore(store, skip) {
     });
 
     desc("when a session is saved", function () {
-        var value;
+        let value;
         beforeEach(function () {
-            var session = { count: 1 };
+            let session = { count: 1 };
             return store.save(session).then(function (newValue) {
                 value = newValue;
             });
@@ -57,9 +57,9 @@ function describeSessionStore(store, skip) {
         });
 
         describe("and a session is not expired", function () {
-            var value;
+            let value;
             beforeEach(function () {
-                var session = { count: 1 };
+                let session = { count: 1 };
                 return store.save(session).then(function (newValue) {
                     value = newValue;
                 });
@@ -74,9 +74,9 @@ function describeSessionStore(store, skip) {
         });
 
         describe("and a session is expired", function () {
-            var value;
+            let value;
             beforeEach(function () {
-                var session = { count: 1 };
+                let session = { count: 1 };
                 return store.save(session).then(function (newValue) {
                     value = newValue;
                     return delay(store.ttl + 10);
@@ -92,9 +92,9 @@ function describeSessionStore(store, skip) {
         });
 
         describe("and a session is saved before it expires", function () {
-            var value;
+            let value;
             beforeEach(function () {
-                var session = { count: 1 };
+                let session = { count: 1 };
                 return store.save(session).then(function () {
                     return delay(store.ttl / 2).then(function () {
                         return store.save(session).then(function (newValue) {

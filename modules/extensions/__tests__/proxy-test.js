@@ -1,5 +1,5 @@
-var expect = require("expect");
-var mach = require("../../index");
+let expect = require("expect");
+let mach = require("../../index");
 
 describe("extensions/proxy", function () {
 

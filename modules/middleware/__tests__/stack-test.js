@@ -1,7 +1,7 @@
-var assert = require("assert");
-var expect = require("expect");
-var callApp = require("../../utils/callApp");
-var stack = require("../stack");
+let assert = require("assert");
+let expect = require("expect");
+let callApp = require("../../utils/callApp");
+let stack = require("../stack");
 
 function addHeader(app, headerName) {
     return function (conn) {
@@ -13,7 +13,7 @@ function addHeader(app, headerName) {
 
 describe("middleware/stack", function () {
 
-    var app = stack();
+    let app = stack();
 
     app.use(addHeader, "One");
     app.use(addHeader, "Two");

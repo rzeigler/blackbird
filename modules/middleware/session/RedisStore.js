@@ -1,8 +1,8 @@
-var d = require("describe-property");
-var redis = require("redis");
-var makeToken = require("../../utils/makeToken");
-var Promise = require("../../utils/Promise");
-var parseURL = require("../../utils/parseURL");
+let d = require("describe-property");
+let redis = require("redis");
+let makeToken = require("../../utils/makeToken");
+let Promise = require("../../utils/Promise");
+let parseURL = require("../../utils/parseURL");
 
 function sendCommand(client, command, args) {
     args = args || [];
@@ -19,7 +19,7 @@ function sendCommand(client, command, args) {
 }
 
 function makeUniqueKey(client, keyLength) {
-    var key = makeToken(keyLength);
+    let key = makeToken(keyLength);
 
   // Try to set an empty string to reserve the key.
     return sendCommand(client, "setnx", [ key, "" ]).then(function (result) {
@@ -45,7 +45,7 @@ function makeUniqueKey(client, keyLength) {
  *
  * Example:
  *
- *   var RedisStore = require('mach/middleware/session/RedisStore');
+ *   let RedisStore = require('mach/middleware/session/RedisStore');
  *
  *   app.use(mach.session, {
  *     store: new RedisStore({ url: 'redis://127.0.0.1:6379' })
@@ -71,11 +71,11 @@ Object.defineProperties(RedisStore.prototype, {
 
     getClient: d(function () {
         if (!this._client) {
-            var options = this.options;
+            let options = this.options;
 
-            var hostname, port;
+            let hostname, port;
             if (typeof options.url === "string") {
-                var parsedURL = parseURL(options.url);
+                let parsedURL = parseURL(options.url);
                 hostname = parsedURL.hostname;
                 port = parsedURL.port;
             }
@@ -93,16 +93,16 @@ Object.defineProperties(RedisStore.prototype, {
     }),
 
     save: d(function (session) {
-        var client = this.getClient();
-        var keyLength = this.keyLength;
-        var ttl = this.ttl;
+        let client = this.getClient();
+        let keyLength = this.keyLength;
+        let ttl = this.ttl;
 
         return Promise.resolve(session._id || makeUniqueKey(client, keyLength)).then(function (key) {
             session._id = key;
 
-            var json = JSON.stringify(session);
+            let json = JSON.stringify(session);
 
-            var promise;
+            let promise;
             if (ttl) {
                 promise = sendCommand(client, "psetex", [ key, ttl, json ]);
             } else {

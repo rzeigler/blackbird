@@ -11,7 +11,7 @@
         }});
     }
 
-    var mach = R.mergeAll(R.map((e) => R.objOf(e, requireLocal(e)),
+    let mach = R.mergeAll(R.map((e) => R.objOf(e, requireLocal(e)),
         ["version", "Connection", "Header", "Location", "Message"]));
     module.exports = extensionManager(mach);
     mach.extend(require("./extensions/default"));

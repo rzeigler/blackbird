@@ -7,7 +7,7 @@ function contentType(app, defaultType) {
 
     return function (conn) {
         return conn.call(app).then(function () {
-            var headers = conn.response.headers;
+            let headers = conn.response.headers;
 
             if (!headers["Content-Type"])
                 headers["Content-Type"] = defaultType;

@@ -1,13 +1,13 @@
 /* jshint -W058 */
-var bodec = require("bodec");
-var Stream = require("bufferedstream");
-var Message = require("../Message");
+let bodec = require("bodec");
+let Stream = require("bufferedstream");
+let Message = require("../Message");
 
 // This parser is modified from the one in the node-formidable
 // project, written by Felix Geisendörfer. MIT licensed.
 
-var s = 0;
-var S = {
+let s = 0;
+let S = {
     START: s++,
     START_BOUNDARY: s++,
     HEADER_FIELD_START: s++,
@@ -22,24 +22,24 @@ var S = {
     END: s++
 };
 
-var f = 1;
-var F = {
+let f = 1;
+let F = {
     PART_BOUNDARY: f,
     LAST_BOUNDARY: f *= 2
 };
 
-var LF = 10;
-var CR = 13;
-var SPACE = 32;
-var HYPHEN = 45;
-var COLON = 58;
+let LF = 10;
+let CR = 13;
+let SPACE = 32;
+let HYPHEN = 45;
+let COLON = 58;
 
 function Parser(boundary, partHandler) {
     this.boundary = bodec.fromRaw("\r\n--" + boundary);
     this.lookBehind = bodec.create(this.boundary.length + 8);
     this.boundaryChars = {};
 
-    var i = this.boundary.length;
+    let i = this.boundary.length;
     while (i)
         this.boundaryChars[this.boundary[--i]] = true;
 
@@ -54,7 +54,7 @@ function Parser(boundary, partHandler) {
 }
 
 Parser.prototype.execute = function (chunk) {
-    var chunkLength = chunk.length,
+    let chunkLength = chunk.length,
         prevIndex = this.index,
         index = this.index,
         state = this.state,
@@ -67,7 +67,7 @@ Parser.prototype.execute = function (chunk) {
         c,
         cl;
 
-    for (var i = 0; i < chunkLength; ++i) {
+    for (let i = 0; i < chunkLength; ++i) {
         c = chunk[i];
 
         switch (state) {
@@ -269,14 +269,14 @@ Parser.prototype._callback = function (name, chunk, start, end) {
     if (start !== undefined && start === end)
         return;
 
-    var prop = "on" + name.substr(0, 1).toUpperCase() + name.substr(1);
+    let prop = "on" + name.substr(0, 1).toUpperCase() + name.substr(1);
 
     if (prop in this)
         this[prop](chunk, start, end);
 };
 
 Parser.prototype._dataCallback = function (name, chunk, clear, i) {
-    var prop = name + "Mark";
+    let prop = name + "Mark";
 
     if (prop in this) {
         if (!clear) {

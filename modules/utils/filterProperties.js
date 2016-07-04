@@ -3,10 +3,10 @@
  * filtered by the functions in propertyTypes.
  */
 function filterProperties(object, propertyTypes) {
-    var properties = {};
+    let properties = {};
 
-    var type, value;
-    for (var property in object) {
+    let type, value;
+    for (let property in object) {
         type = propertyTypes[property];
 
         if (typeof type === "function" && object.hasOwnProperty(property)) {

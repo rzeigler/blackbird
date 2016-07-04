@@ -14,15 +14,15 @@
 function stringifyMediaValue(value, typeSeparator) {
     typeSeparator = typeSeparator || "/";
 
-    var string = value.type || "*";
+    let string = value.type || "*";
 
     if (value.subtype)
         string += typeSeparator + value.subtype;
 
     if (value.params) {
-        var params = value.params;
+        let params = value.params;
 
-        for (var paramName in params) {
+        for (let paramName in params) {
             if (params.hasOwnProperty(paramName)) {
                 string += ";" + paramName;
 

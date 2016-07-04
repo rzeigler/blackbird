@@ -1,10 +1,10 @@
-var Promise = require("./Promise");
+let Promise = require("./Promise");
 
 function makeAbortable(promise, abort) {
     promise.abort = abort;
 
   // Hijack promise.then so it returns an abortable promise.
-    var _then = promise.then;
+    let _then = promise.then;
     promise.then = function () {
         return makeAbortable(_then.apply(promise, arguments), abort);
     };
@@ -18,9 +18,9 @@ function makeAbortable(promise, abort) {
  *
  * Example:
  *
- *   var promise = new AbortablePromise(function (resolve, reject, onAbort) {
+ *   let promise = new AbortablePromise(function (resolve, reject, onAbort) {
  *     // Use resolve & reject as you normally would.
- *     var request = makeRequest( ... , function (error, response) {
+ *     let request = makeRequest( ... , function (error, response) {
  *       if (error) {
  *         reject(error);
  *       } else {
@@ -43,15 +43,15 @@ function AbortablePromise(resolver) {
     if (typeof resolver !== "function")
         throw new Error("AbortablePromise needs a resolver function");
 
-    var abort;
-    var promise = new Promise(function (resolve, reject) {
-        var aborter;
+    let abort;
+    let promise = new Promise(function (resolve, reject) {
+        let aborter;
 
         abort = function () {
             if (aborter == null)
                 return;
 
-            var fn = aborter;
+            let fn = aborter;
             aborter = null;
 
             try {

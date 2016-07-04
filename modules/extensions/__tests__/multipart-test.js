@@ -1,7 +1,7 @@
-var expect = require("expect");
-var mach = require("../../index");
+let expect = require("expect");
+let mach = require("../../index");
 
-var getFixture = require("../../multipart/__tests__/getFixture");
+let getFixture = require("../../multipart/__tests__/getFixture");
 
 describe("extensions/multipart", function () {
 
@@ -9,7 +9,7 @@ describe("extensions/multipart", function () {
         mach.extend(require("../multipart"));
     });
 
-    var message;
+    let message;
 
     describe("a multipart message", function () {
         beforeEach(function () {

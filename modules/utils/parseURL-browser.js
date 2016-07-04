@@ -1,9 +1,9 @@
-var ORIGIN_MATCHER = /^(https?:)\/\/(?:([^@]+)@)?([^/:]+)(?::(\d+))?/;
+let ORIGIN_MATCHER = /^(https?:)\/\/(?:([^@]+)@)?([^/:]+)(?::(\d+))?/;
 
 function parseURL(url) {
-    var origin = ORIGIN_MATCHER.exec(url) || {};
+    let origin = ORIGIN_MATCHER.exec(url) || {};
 
-    var anchor = document.createElement("a");
+    let anchor = document.createElement("a");
     anchor.href = url;
 
     return {

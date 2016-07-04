@@ -1,9 +1,9 @@
-var assert = require("assert");
-var expect = require("expect");
-var compileRoute = require("../compileRoute");
+let assert = require("assert");
+let expect = require("expect");
+let compileRoute = require("../compileRoute");
 
 describe("compileRoute", function () {
-    var keys;
+    let keys;
     beforeEach(function () {
         keys = [];
     });
@@ -22,7 +22,7 @@ describe("compileRoute", function () {
         });
 
         it("matches correctly", function () {
-            var re = compileRoute("/files/*.*", keys);
+            let re = compileRoute("/files/*.*", keys);
             assert(re.exec("/files/fun.jpg"));
             assert(!re.exec("/files/fun"));
         });
@@ -35,7 +35,7 @@ describe("compileRoute", function () {
         });
 
         it("matches correctly", function () {
-            var re = compileRoute("/users/(:userID)", keys);
+            let re = compileRoute("/users/(:userID)", keys);
             assert(!re.exec("/users/5"));
             assert(re.exec("/users/(5)"));
         });
@@ -48,7 +48,7 @@ describe("compileRoute", function () {
         });
 
         it("matches correctly", function () {
-            var re = compileRoute("/user$/^:userID", keys);
+            let re = compileRoute("/user$/^:userID", keys);
             assert(!re.exec("/user$/5"));
             assert(re.exec("/user$/^5"));
         });

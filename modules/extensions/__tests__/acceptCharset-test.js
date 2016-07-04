@@ -1,5 +1,5 @@
-var expect = require("expect");
-var mach = require("../../index");
+let expect = require("expect");
+let mach = require("../../index");
 
 describe("extensions/acceptCharset", function () {
 
@@ -8,7 +8,7 @@ describe("extensions/acceptCharset", function () {
     });
 
     describe("a message with an Accept-Charset header", function () {
-        var message;
+        let message;
         beforeEach(function () {
             message = new mach.Message(null, {
                 "Accept-Charset": "unicode-1-1"

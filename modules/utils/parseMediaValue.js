@@ -20,10 +20,10 @@
 function parseMediaValue(value, typeSeparator) {
     typeSeparator = typeSeparator || "/";
 
-    var parts = value.split(/\s*;\s*/);
-    var mediaTypes = parts.shift().split(typeSeparator, 2);
-    var params = parts.reduce(function (memo, part) {
-        var nameValue = part.split("=", 2);
+    let parts = value.split(/\s*;\s*/);
+    let mediaTypes = parts.shift().split(typeSeparator, 2);
+    let params = parts.reduce(function (memo, part) {
+        let nameValue = part.split("=", 2);
         memo[nameValue[0]] = nameValue[1];
         return memo;
     }, {});

@@ -1,10 +1,10 @@
-var Connection = require("../Connection");
-var Location = require("../Location");
+let Connection = require("../Connection");
+let Location = require("../Location");
 
 /**
  * Standard ports for HTTP protocols.
  */
-var STANDARD_PORTS = {
+let STANDARD_PORTS = {
     "http:": "80",
     "https:": "443"
 };
@@ -17,9 +17,9 @@ function ensureTrailingColon(string) {
  * Creates a new Location object that is reverse-proxy aware.
  */
 function createLocation(nodeRequest) {
-    var headers = nodeRequest.headers;
+    let headers = nodeRequest.headers;
 
-    var protocol;
+    let protocol;
     if (process.env.HTTPS === "on" || headers["x-forwarded-ssl"] === "on" || headers["font-end-https"] === "on") {
         protocol = "https:";
     } else if (headers["x-url-scheme"]) {
@@ -32,9 +32,9 @@ function createLocation(nodeRequest) {
         protocol = "http:";
     }
 
-    var host;
+    let host;
     if (headers["x-forwarded-host"]) {
-        var hosts = headers["x-forwarded-host"].split(/,\s?/);
+        let hosts = headers["x-forwarded-host"].split(/,\s?/);
         host = hosts[hosts.length - 1];
     } else if (headers["host"]) {
         host = headers["host"];
@@ -42,9 +42,9 @@ function createLocation(nodeRequest) {
         host = process.env.SERVER_NAME;
     }
 
-    var hostParts = host.split(":", 2);
-    var hostname = hostParts[0];
-    var port = hostParts[1] || headers["x-forwarded-port"];
+    let hostParts = host.split(":", 2);
+    let hostname = hostParts[0];
+    let port = hostParts[1] || headers["x-forwarded-port"];
 
     if (port == null) {
         if (headers["x-forwarded-host"]) {
@@ -54,7 +54,7 @@ function createLocation(nodeRequest) {
         }
     }
 
-    var path = nodeRequest.url;
+    let path = nodeRequest.url;
 
     return new Location({
         protocol: protocol,
@@ -70,7 +70,7 @@ function createLocation(nodeRequest) {
  * generally needed by application-level code.
  */
 function createConnection(nodeRequest) {
-    var conn = new Connection({
+    let conn = new Connection({
         version: nodeRequest.httpVersion,
         method: nodeRequest.method,
         location: createLocation(nodeRequest),

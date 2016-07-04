@@ -1,4 +1,4 @@
-var stripQuotes = require("../utils/stripQuotes");
+let stripQuotes = require("../utils/stripQuotes");
 
 /**
  * A middleware that automatically performs content-based HTTP caching in
@@ -19,10 +19,10 @@ var stripQuotes = require("../utils/stripQuotes");
 function modified(app) {
     return function (conn) {
         return conn.call(app).then(function () {
-            var request = conn.request, response = conn.response;
+            let request = conn.request, response = conn.response;
 
-            var ifNoneMatch = request.headers["If-None-Match"];
-            var etag = response.headers["ETag"];
+            let ifNoneMatch = request.headers["If-None-Match"];
+            let etag = response.headers["ETag"];
 
             if (ifNoneMatch && etag && etag === stripQuotes(ifNoneMatch)) {
                 conn.status = 304;
@@ -30,8 +30,8 @@ function modified(app) {
                 return;
             }
 
-            var ifModifiedSince = request.headers["If-Modified-Since"];
-            var lastModified = response.headers["Last-Modified"];
+            let ifModifiedSince = request.headers["If-Modified-Since"];
+            let lastModified = response.headers["Last-Modified"];
 
             if (ifModifiedSince && lastModified) {
                 if (typeof lastModified === "string")

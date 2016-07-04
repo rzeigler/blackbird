@@ -1,12 +1,12 @@
 /* jshint -W084 */
-var d = require("describe-property");
-var objectAssign = require("object-assign");
-var compileRoute = require("../utils/compileRoute");
-var isRegExp = require("../utils/isRegExp");
-var makeParams = require("../utils/makeParams");
-var RoutingProperties = require("../utils/RoutingProperties");
+let d = require("describe-property");
+let objectAssign = require("object-assign");
+let compileRoute = require("../utils/compileRoute");
+let isRegExp = require("../utils/isRegExp");
+let makeParams = require("../utils/makeParams");
+let RoutingProperties = require("../utils/RoutingProperties");
 
-var LEADING_HTTP_METHOD_MATCHER = /^(DELETE|GET|HEAD|OPTIONS|POST|PUT|TRACE)\s+(.+)$/;
+let LEADING_HTTP_METHOD_MATCHER = /^(DELETE|GET|HEAD|OPTIONS|POST|PUT|TRACE)\s+(.+)$/;
 
 /**
  * A middleware that provides pattern-based routing for URLs, with optional
@@ -36,7 +36,7 @@ var LEADING_HTTP_METHOD_MATCHER = /^(DELETE|GET|HEAD|OPTIONS|POST|PUT|TRACE)\s+(
  * This function may also be used outside the context of a middleware stack
  * to create a standalone app. Routes may be given one at a time:
  *
- *   var app = mach.router();
+ *   let app = mach.router();
  *
  *   app.get('/login', function (conn) {
  *     // ...
@@ -48,7 +48,7 @@ var LEADING_HTTP_METHOD_MATCHER = /^(DELETE|GET|HEAD|OPTIONS|POST|PUT|TRACE)\s+(
  *
  * Or all at once:
  *
- *   var app = mach.router({
+ *   let app = mach.router({
  *
  *     'GET /login': function (conn) {
  *       // ...
@@ -69,19 +69,19 @@ function createRouter(app, map) {
         app = null;
     }
 
-    var routes = {};
+    let routes = {};
 
     function router(conn) {
-        var method = conn.method;
-        var routesToTry = (routes[method] || []).concat(routes.ANY || []);
+        let method = conn.method;
+        let routesToTry = (routes[method] || []).concat(routes.ANY || []);
 
-        var route, match;
-        for (var i = 0, len = routesToTry.length; i < len; ++i) {
+        let route, match;
+        for (let i = 0, len = routesToTry.length; i < len; ++i) {
             route = routesToTry[i];
 
       // Try to match the route.
             if (match = route.pattern.exec(conn.pathname)) {
-                var params = makeParams(route.keys, Array.prototype.slice.call(match, 1));
+                let params = makeParams(route.keys, Array.prototype.slice.call(match, 1));
 
                 if (conn.params) {
           // Route params take precedence above all others.
@@ -124,10 +124,10 @@ function createRouter(app, map) {
                 methods = [];
             }
 
-            var keys = [];
+            let keys = [];
 
             if (typeof pattern === "string") {
-                var match;
+                let match;
 
                 if (match = pattern.match(LEADING_HTTP_METHOD_MATCHER)) {
                     methods.push(match[1]);
@@ -140,13 +140,13 @@ function createRouter(app, map) {
             if (!isRegExp(pattern))
                 throw new Error("Route pattern must be a RegExp");
 
-            var route = { pattern: pattern, keys: keys, app: app };
+            let route = { pattern: pattern, keys: keys, app: app };
 
             if (methods.length === 0)
                 methods.push("ANY");
 
             methods.forEach(function (method) {
-                var upperMethod = method.toUpperCase();
+                let upperMethod = method.toUpperCase();
 
                 if (routes[upperMethod]) {
                     routes[upperMethod].push(route);
@@ -167,7 +167,7 @@ function createRouter(app, map) {
 
   // Allow app.use(mach.router, map)
     if (typeof map === "object")
-        for (var route in map)
+        for (let route in map)
             if (map.hasOwnProperty(route))
                 router.route(route, map[route]);
 

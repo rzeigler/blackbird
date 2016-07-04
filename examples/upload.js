@@ -1,5 +1,5 @@
-var mach = require("../modules");
-var app = mach.stack();
+let mach = require("../modules");
+let app = mach.stack();
 
 app.use(mach.contentType, "text/html");
 app.use(mach.params);

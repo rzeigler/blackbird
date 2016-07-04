@@ -1,13 +1,13 @@
-var d = require("describe-property");
-var mergeQuery = require("./utils/mergeQuery");
-var stringifyQuery = require("./utils/stringifyQuery");
-var parseQuery = require("./utils/parseQuery");
-var parseURL = require("./utils/parseURL");
+let d = require("describe-property");
+let mergeQuery = require("./utils/mergeQuery");
+let stringifyQuery = require("./utils/stringifyQuery");
+let parseQuery = require("./utils/parseQuery");
+let parseURL = require("./utils/parseURL");
 
 /**
  * Standard ports for HTTP protocols.
  */
-var STANDARD_PORTS = {
+let STANDARD_PORTS = {
     "http:": "80",
     "https:": "443"
 };
@@ -21,11 +21,11 @@ function propertyAlias(propertyName, defaultValue) {
 }
 
 // Order is important here. Later properties take priority.
-var PROPERTY_NAMES = [ "protocol", "auth", "hostname", "port", "host", "pathname", "search", "queryString", "query", "path" ];
+let PROPERTY_NAMES = [ "protocol", "auth", "hostname", "port", "host", "pathname", "search", "queryString", "query", "path" ];
 
 function setProperties(location, properties) {
-    var propertyName;
-    for (var i = 0, len = PROPERTY_NAMES.length; i < len; ++i) {
+    let propertyName;
+    for (let i = 0, len = PROPERTY_NAMES.length; i < len; ++i) {
         propertyName = PROPERTY_NAMES[i];
 
         if (properties.hasOwnProperty(propertyName) && propertyName in location)
@@ -71,13 +71,13 @@ Object.defineProperties(Location.prototype, {
         if (!(location instanceof Location))
             location = new Location(location);
 
-        var pathname = this.pathname;
-        var extraPathname = location.pathname;
+        let pathname = this.pathname;
+        let extraPathname = location.pathname;
 
         if (extraPathname !== "/")
             pathname = pathname.replace(/\/*$/, "/") + extraPathname.replace(/^\/*/, "");
 
-        var query = mergeQuery(this.query, location.query);
+        let query = mergeQuery(this.query, location.query);
 
         return new Location({
             protocol: location.protocol || this.protocol,
@@ -93,13 +93,13 @@ Object.defineProperties(Location.prototype, {
    * The full URL.
    */
     href: d.gs(function () {
-        var auth = this.auth;
-        var host = this.host;
-        var path = this.path;
+        let auth = this.auth;
+        let host = this.host;
+        let path = this.path;
 
         return host ? (this.protocol + "//" + (auth ? auth + "@" : "") + host + path) : path;
     }, function (value) {
-        var parsed = parseURL(value);
+        let parsed = parseURL(value);
 
         setProperties(this, {
             protocol: parsed.protocol,
@@ -127,16 +127,16 @@ Object.defineProperties(Location.prototype, {
    * a non-standard port.
    */
     host: d.gs(function () {
-        var protocol = this.protocol;
-        var host = this.hostname;
-        var port = this.port;
+        let protocol = this.protocol;
+        let host = this.hostname;
+        let port = this.port;
 
         if (port != null && port !== STANDARD_PORTS[protocol])
             host += ":" + port;
 
         return host;
     }, function (value) {
-        var index;
+        let index;
 
         if (typeof value === "string" && (index = value.indexOf(":")) !== -1) {
             this.hostname = value.substring(0, index);
@@ -172,7 +172,7 @@ Object.defineProperties(Location.prototype, {
     path: d.gs(function () {
         return this.pathname + this.search;
     }, function (value) {
-        var index;
+        let index;
 
         if (typeof value === "string" && (index = value.indexOf("?")) !== -1) {
             this.pathname = value.substring(0, index);

@@ -1,12 +1,12 @@
-var parseMediaValue = require("../utils/parseMediaValue");
-var parseMediaValues = require("../utils/parseMediaValues");
-var qualityFactorForMediaValue = require("../utils/qualityFactorForMediaValue");
-var stringifyMediaValues = require("../utils/stringifyMediaValues");
-var stringifyMediaValueWithoutQualityFactor = require("../utils/stringifyMediaValueWithoutQualityFactor");
-var Header = require("../Header");
+let parseMediaValue = require("../utils/parseMediaValue");
+let parseMediaValues = require("../utils/parseMediaValues");
+let qualityFactorForMediaValue = require("../utils/qualityFactorForMediaValue");
+let stringifyMediaValues = require("../utils/stringifyMediaValues");
+let stringifyMediaValueWithoutQualityFactor = require("../utils/stringifyMediaValueWithoutQualityFactor");
+let Header = require("../Header");
 
 function paramsMatchIgnoringQualityFactor(params, givenParams) {
-    for (var paramName in params)
+    for (let paramName in params)
         if (params.hasOwnProperty(paramName) && paramName !== "q" && givenParams[paramName] !== params[paramName])
             return false;
 
@@ -59,13 +59,13 @@ class Accept extends Header {
    * Returns the quality factor for the given media type.
    */
     qualityFactorForMediaType(mediaType) {
-        var values = this._mediaValues;
+        let values = this._mediaValues;
 
         if (!values.length)
             return 1;
 
-        var givenValue = parseMediaValue(mediaType);
-        var matchingValues = values.filter(function (value) {
+        let givenValue = parseMediaValue(mediaType);
+        let matchingValues = values.filter(function (value) {
             return (value.type === "*" || value.type === givenValue.type) &&
              (value.subtype === "*" || value.subtype === givenValue.subtype) &&
              paramsMatchIgnoringQualityFactor(value.params, givenValue.params);

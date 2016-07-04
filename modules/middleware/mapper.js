@@ -1,5 +1,5 @@
-var d = require("describe-property");
-var escapeRegExp = require("../utils/escapeRegExp");
+let d = require("describe-property");
+let escapeRegExp = require("../utils/escapeRegExp");
 
 function byMostSpecific(a, b) {
     return (b.path.length - a.path.length) || ((b.host || "").length - (a.host || "").length);
@@ -28,7 +28,7 @@ function byMostSpecific(a, b) {
  * stack to create a standalone app. You can either provide mappings one
  * at a time:
  *
- *   var app = mach.mapper();
+ *   let app = mach.mapper();
  *
  *   app.map('/images', function (conn) {
  *     // ...
@@ -36,7 +36,7 @@ function byMostSpecific(a, b) {
  *
  * Or all at once:
  *
- *   var app = mach.mapper({
+ *   let app = mach.mapper({
  *
  *     '/images': function (conn) {
  *       // ...
@@ -54,14 +54,14 @@ function createMapper(app, map) {
         app = null;
     }
 
-    var mappings = [];
+    let mappings = [];
 
     function mapper(conn) {
-        var hostname = conn.hostname;
-        var pathname = conn.pathname;
+        let hostname = conn.hostname;
+        let pathname = conn.pathname;
 
-        var mapping, match, remainingPath;
-        for (var i = 0, len = mappings.length; i < len; ++i) {
+        let mapping, match, remainingPath;
+        for (let i = 0, len = mappings.length; i < len; ++i) {
             mapping = mappings[i];
 
       // Try to match the hostname.
@@ -92,10 +92,10 @@ function createMapper(app, map) {
      * request matches the given location.
      */
         map: d(function (location, app) {
-            var hostname, path;
+            let hostname, path;
 
       // If the location is a fully qualified URL use the host as well.
-            var match = location.match(/^https?:\/\/(.*?)(\/.*)/);
+            let match = location.match(/^https?:\/\/(.*?)(\/.*)/);
             if (match) {
                 hostname = match[1].replace(/:\d+$/, ""); // Strip the port.
                 path = match[2];
@@ -108,7 +108,7 @@ function createMapper(app, map) {
 
             path = path.replace(/\/$/, "");
 
-            var pattern = new RegExp("^" + escapeRegExp(path).replace(/\/+/g, "/+") + "(.*)");
+            let pattern = new RegExp("^" + escapeRegExp(path).replace(/\/+/g, "/+") + "(.*)");
 
             mappings.push({
                 hostname: hostname,
@@ -131,7 +131,7 @@ function createMapper(app, map) {
 
   // Allow app.use(mach.mapper, map)
     if (typeof map === "object")
-        for (var location in map)
+        for (let location in map)
             if (map.hasOwnProperty(location))
                 mapper.map(location, map[location]);
 

@@ -1,13 +1,13 @@
-var expect = require("expect");
-var callApp = require("../../utils/callApp");
-var rewrite = require("../rewrite");
+let expect = require("expect");
+let callApp = require("../../utils/callApp");
+let rewrite = require("../rewrite");
 
 function echoPathname(conn) {
     return conn.pathname;
 }
 
 describe("middleware/rewrite", function () {
-    var app = rewrite(echoPathname, "/abc", "/xyz");
+    let app = rewrite(echoPathname, "/abc", "/xyz");
     app = rewrite(app, /\/def/g, "/xyz");
     app = rewrite(app, "/abc.jpeg", "/def.jpeg");
 

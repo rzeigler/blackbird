@@ -1,7 +1,7 @@
 /* jshint -W058 */
-var XMLHttpRequest = window.XMLHttpRequest;
-var Stream = require("bufferedstream");
-var AbortablePromise = require("./AbortablePromise");
+let XMLHttpRequest = window.XMLHttpRequest;
+let Stream = require("bufferedstream");
+let AbortablePromise = require("./AbortablePromise");
 
 function copyStatusAndHeaders(xhr, conn) {
     conn.response.headers = xhr.getAllResponseHeaders();
@@ -10,7 +10,7 @@ function copyStatusAndHeaders(xhr, conn) {
 }
 
 function getContent(xhr) {
-    var type = String(xhr.responseType).toLowerCase();
+    let type = String(xhr.responseType).toLowerCase();
 
     if (type === "blob")
         return xhr.responseBlob || xhr.response;
@@ -25,7 +25,7 @@ function getContent(xhr) {
 }
 
 function pipeContent(xhr, stream, offset) {
-    var content = getContent(xhr);
+    let content = getContent(xhr);
 
     if (content != null) {
         if (content.toString().match(/ArrayBuffer/)) {
@@ -57,12 +57,12 @@ function enableCredentials(xhr) {
         xhr.withCredentials = true;
 }
 
-var READ_HEADERS_RECEIVED_STATE = true;
-var READ_LOADING_STATE = true;
+let READ_HEADERS_RECEIVED_STATE = true;
+let READ_LOADING_STATE = true;
 
 function sendRequest(conn, location) {
     return new AbortablePromise(function (resolve, reject, onAbort) {
-        var xhr = new XMLHttpRequest;
+        let xhr = new XMLHttpRequest;
         xhr.open(conn.method, location.href, true);
 
         enableBinaryContent(xhr);
@@ -70,16 +70,16 @@ function sendRequest(conn, location) {
         if (conn.withCredentials)
             enableCredentials(xhr);
 
-        var request = conn.request;
-        var headers = request.headers;
+        let request = conn.request;
+        let headers = request.headers;
 
         if (headers)
-            for (var headerName in headers)
+            for (let headerName in headers)
                 if (headers.hasOwnProperty(headerName))
                     xhr.setRequestHeader(headerName, headers[headerName]);
 
-        var content = conn.response.content = new Stream;
-        var offset = 0, status;
+        let content = conn.response.content = new Stream;
+        let offset = 0, status;
 
         function tryToResolve() {
             if (!status && (status = copyStatusAndHeaders(xhr, conn)) > 0)

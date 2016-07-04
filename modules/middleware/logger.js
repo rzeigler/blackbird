@@ -1,5 +1,5 @@
 /* jshint -W058 */
-var strftime = require("strftime").strftime;
+let strftime = require("strftime").strftime;
 
 function defaultMessageHandler(message) {
     if (typeof console !== "undefined" && console.log)
@@ -15,16 +15,16 @@ function logger(app, messageHandler) {
     messageHandler = messageHandler || defaultMessageHandler;
 
     return function (conn) {
-        var startTime = Date.now();
+        let startTime = Date.now();
 
         return conn.call(app).then(function () {
-            var elapsedTime = Date.now() - startTime;
-            var contentLength = conn.response.headers["Content-Length"];
+            let elapsedTime = Date.now() - startTime;
+            let contentLength = conn.response.headers["Content-Length"];
 
             if (contentLength == null)
                 contentLength = "-";
 
-            var protocol = conn.protocol || "http:";
+            let protocol = conn.protocol || "http:";
             protocol = protocol.substr(0, protocol.length - 1).toUpperCase();
 
       // 127.0.0.1 - frank [10/Oct/2000 13:55:36] "GET /apache_pb.gif HTTP/1.0" 200 2326 0.003

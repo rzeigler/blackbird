@@ -1,8 +1,8 @@
-var parseMediaValue = require("../utils/parseMediaValue");
-var parseMediaValues = require("../utils/parseMediaValues");
-var qualityFactorForMediaValue = require("../utils/qualityFactorForMediaValue");
-var stringifyMediaValues = require("../utils/stringifyMediaValues");
-var Header = require("../Header");
+let parseMediaValue = require("../utils/parseMediaValue");
+let parseMediaValues = require("../utils/parseMediaValues");
+let qualityFactorForMediaValue = require("../utils/qualityFactorForMediaValue");
+let stringifyMediaValues = require("../utils/stringifyMediaValues");
+let Header = require("../Header");
 
 function byHighestPrecedence(a, b) {
   // "*" gets least precedence, all others are equal
@@ -43,10 +43,10 @@ class AcceptCharset extends Header {
    * Returns the quality factor for the given charset.
    */
     qualityFactorForCharset(charset) {
-        var values = this._mediaValues;
+        let values = this._mediaValues;
 
-        var givenValue = parseMediaValue(charset);
-        var matchingValues = values.filter(function (value) {
+        let givenValue = parseMediaValue(charset);
+        let matchingValues = values.filter(function (value) {
             if (value.type === "*")
                 return true;
 

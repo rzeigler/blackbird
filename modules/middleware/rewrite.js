@@ -1,5 +1,5 @@
-var escapeRegExp = require("../utils/escapeRegExp");
-var isRegExp = require("../utils/isRegExp");
+let escapeRegExp = require("../utils/escapeRegExp");
+let isRegExp = require("../utils/isRegExp");
 
 /**
  * A middleware that provides URL rewriting behavior similar to Apache's
@@ -16,7 +16,7 @@ function rewrite(app, pattern, replacement) {
     replacement = replacement || "";
 
     return function (conn) {
-        var pathname = conn.pathname;
+        let pathname = conn.pathname;
 
     // Modify the pathname if the pattern matches.
         if (pattern.test(pathname))

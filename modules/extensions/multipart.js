@@ -1,8 +1,8 @@
-var d = require("describe-property");
-var parseContent = require("../multipart/parseContent");
+let d = require("describe-property");
+let parseContent = require("../multipart/parseContent");
 
-var BOUNDARY_MATCHER = /^multipart\/.*boundary=(?:"([^"]+)"|([^;]+))/im;
-var NAME_MATCHER = /\bname="([^"]+)"/i;
+let BOUNDARY_MATCHER = /^multipart\/.*boundary=(?:"([^"]+)"|([^;]+))/im;
+let NAME_MATCHER = /\bname="([^"]+)"/i;
 
 module.exports = function (mach) {
     mach.Message.PARSERS["multipart/form-data"] = function (message, maxLength) {
@@ -27,7 +27,7 @@ module.exports = function (mach) {
      * is present only in multipart messages.
      */
         multipartBoundary: d.gs(function () {
-            var contentType = this.contentType, match;
+            let contentType = this.contentType, match;
             return (contentType && (match = contentType.match(BOUNDARY_MATCHER))) ? (match[1] || match[2]) : null;
         }),
 
@@ -37,7 +37,7 @@ module.exports = function (mach) {
      * multipart message.
      */
         name: d.gs(function () {
-            var contentDisposition = this.headers["Content-Disposition"], match;
+            let contentDisposition = this.headers["Content-Disposition"], match;
             return (contentDisposition && (match = contentDisposition.match(NAME_MATCHER))) ? match[1] : this.headers["Content-ID"];
         }),
 
@@ -47,13 +47,13 @@ module.exports = function (mach) {
      * message and that originate from a file upload.
      */
         filename: d.gs(function () {
-            var contentDisposition = this.headers["Content-Disposition"];
+            let contentDisposition = this.headers["Content-Disposition"];
 
             if (contentDisposition) {
         // Match quoted filenames.
-                var match = contentDisposition.match(/filename="([^;]*)"/i);
+                let match = contentDisposition.match(/filename="([^;]*)"/i);
 
-                var filename;
+                let filename;
                 if (match) {
                     filename = decodeURIComponent(match[1].replace(/\\"/g, "\""));
                 } else {

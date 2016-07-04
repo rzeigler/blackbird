@@ -1,6 +1,6 @@
-var bodec = require("bodec");
-var Promise = require("./Promise");
-var MaxLengthExceededError = require("./MaxLengthExceededError");
+let bodec = require("bodec");
+let Promise = require("./Promise");
+let MaxLengthExceededError = require("./MaxLengthExceededError");
 
 /**
  * Returns a promise for a buffer of all content in the given stream up to
@@ -13,8 +13,8 @@ function bufferStream(stream, maxLength) {
         throw new Error("Cannot buffer stream that is not readable");
 
     return new Promise(function (resolve, reject) {
-        var chunks = [];
-        var length = 0;
+        let chunks = [];
+        let length = 0;
 
         stream.on("error", reject);
 

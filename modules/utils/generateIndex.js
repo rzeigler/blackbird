@@ -1,14 +1,14 @@
-var fs = require("fs");
-var Promise = require("./Promise");
-var getFileStats = require("./getFileStats");
-var getMimeType = require("./getMimeType");
-var formatByteSize = require("./formatByteSize");
-var formatString = require("util").format;
-var joinPaths = require("./joinPaths");
+let fs = require("fs");
+let Promise = require("./Promise");
+let getFileStats = require("./getFileStats");
+let getMimeType = require("./getMimeType");
+let formatByteSize = require("./formatByteSize");
+let formatString = require("util").format;
+let joinPaths = require("./joinPaths");
 
-var MACH_VERSION = require("../version");
+let MACH_VERSION = require("../version");
 
-var PAGE_TEMPLATE = [
+let PAGE_TEMPLATE = [
     "<html>",
     "<head>",
     "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />",
@@ -40,7 +40,7 @@ var PAGE_TEMPLATE = [
     "</html>"
 ].join("\n");
 
-var ROW_TEMPLATE = [
+let ROW_TEMPLATE = [
     "<tr class=\"%s\">",
     "  <td class=\"name\"><a href=\"%s\">%s</a></td>",
     "  <td class=\"size\">%s</td>",
@@ -51,29 +51,29 @@ var ROW_TEMPLATE = [
 
 function generateIndex(root, pathname, basename) {
     return new Promise(function (resolve, reject) {
-        var path = joinPaths(root, pathname);
+        let path = joinPaths(root, pathname);
 
         fs.readdir(path, function (error, files) {
             if (error)
                 return reject(error);
 
-            var promises = files.map(function (file) {
+            let promises = files.map(function (file) {
                 return getFileStats(joinPaths(path, file));
             });
 
             Promise.all(promises).then(function (statsArray) {
-                var rows = formatString(ROW_TEMPLATE, "", "../", "Parent Directory", "", "", "");
-                var className = "even";
+                let rows = formatString(ROW_TEMPLATE, "", "../", "Parent Directory", "", "", "");
+                let className = "even";
 
                 statsArray.forEach(function (stats, index) {
                     if (stats == null)
                         return; // Ignore broken symlinks!
 
-                    var file = files[index];
-                    var url = basename + pathname + file;
-                    var mtime = stats.mtime;
+                    let file = files[index];
+                    let url = basename + pathname + file;
+                    let mtime = stats.mtime;
 
-                    var size, type;
+                    let size, type;
                     if (stats.isDirectory()) {
                         size = "-";
                         type = "directory";
@@ -89,8 +89,8 @@ function generateIndex(root, pathname, basename) {
                     className = (className === "even") ? "odd" : "even";
                 });
 
-                var title = "Index of " + basename + pathname;
-                var content = formatString(PAGE_TEMPLATE, title, title, rows, "mach", MACH_VERSION);
+                let title = "Index of " + basename + pathname;
+                let content = formatString(PAGE_TEMPLATE, title, title, rows, "mach", MACH_VERSION);
 
                 resolve(content);
             }, reject);

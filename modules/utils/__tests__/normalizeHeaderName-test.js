@@ -1,6 +1,6 @@
-var expect = require("expect");
-var IrregularHeaderNames = require("../IrregularHeaderNames");
-var normalizeHeaderName = require("../normalizeHeaderName");
+let expect = require("expect");
+let IrregularHeaderNames = require("../IrregularHeaderNames");
+let normalizeHeaderName = require("../normalizeHeaderName");
 
 describe("normalizeHeaderName", function () {
 
@@ -9,7 +9,7 @@ describe("normalizeHeaderName", function () {
     });
 
     Object.keys(IrregularHeaderNames).forEach(function (key) {
-        var headerName = IrregularHeaderNames[key];
+        let headerName = IrregularHeaderNames[key];
 
         it("correctly normalizes " + headerName, function () {
             expect(normalizeHeaderName(key)).toEqual(headerName);

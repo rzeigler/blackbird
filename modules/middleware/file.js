@@ -1,10 +1,10 @@
-var fs = require("fs");
-var mach = require("../index");
-var Promise = require("../utils/Promise");
-var getFileStats = require("../utils/getFileStats");
-var generateETag = require("../utils/generateETag");
-var generateIndex = require("../utils/generateIndex");
-var joinPaths = require("../utils/joinPaths");
+let fs = require("fs");
+let mach = require("../index");
+let Promise = require("../utils/Promise");
+let getFileStats = require("../utils/getFileStats");
+let generateETag = require("../utils/generateETag");
+let generateIndex = require("../utils/generateIndex");
+let joinPaths = require("../utils/joinPaths");
 
 mach.extend(
   require("../extensions/server")
@@ -59,7 +59,7 @@ mach.extend(
  * This function may also be used outside of the context of a middleware
  * stack to create a standalone app.
  *
- *   var app = mach.file('/public');
+ *   let app = mach.file('/public');
  *   mach.serve(app);
  */
 function file(app, options) {
@@ -75,11 +75,11 @@ function file(app, options) {
     if (typeof options === "string")
         options = { root: options };
 
-    var root = options.root;
+    let root = options.root;
     if (typeof root !== "string" || !fs.existsSync(root) || !fs.statSync(root).isDirectory())
         throw new Error("Invalid root directory: " + root);
 
-    var index = options.index || [];
+    let index = options.index || [];
     if (index) {
         if (typeof index === "string") {
             index = [ index ];
@@ -88,8 +88,8 @@ function file(app, options) {
         }
     }
 
-    var useLastModified = ("useLastModified" in options) ? !!options.useLastModified : true;
-    var useETag = !!options.useETag;
+    let useLastModified = ("useLastModified" in options) ? !!options.useLastModified : true;
+    let useETag = !!options.useETag;
 
     function sendFile(conn, path, stats) {
         conn.file({
@@ -111,13 +111,13 @@ function file(app, options) {
         if (conn.method !== "GET" && conn.method !== "HEAD")
             return conn.call(app);
 
-        var pathname = conn.pathname;
+        let pathname = conn.pathname;
 
     // Reject paths that contain "..".
         if (pathname.indexOf("..") !== -1)
             return conn.text(403, "Forbidden");
 
-        var path = joinPaths(root, pathname);
+        let path = joinPaths(root, pathname);
 
         return getFileStats(path).then(function (stats) {
             if (stats && stats.isFile())
@@ -127,12 +127,12 @@ function file(app, options) {
                 return conn.call(app);
 
       // Try to serve one of the index files.
-            var indexPaths = index.map(function (indexPath) {
+            let indexPaths = index.map(function (indexPath) {
                 return joinPaths(path, indexPath);
             });
 
             return Promise.all(indexPaths.map(getFileStats)).then(function (stats) {
-                for (var i = 0, len = stats.length; i < len; ++i)
+                for (let i = 0, len = stats.length; i < len; ++i)
                     if (stats[i])
                         return sendFile(conn, indexPaths[i], stats[i]);
 

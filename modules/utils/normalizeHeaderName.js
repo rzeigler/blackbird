@@ -1,4 +1,4 @@
-var IrregularHeaderNames = require("./IrregularHeaderNames");
+let IrregularHeaderNames = require("./IrregularHeaderNames");
 
 /**
  * Normalizes HTTP header names according to RFC 2616.

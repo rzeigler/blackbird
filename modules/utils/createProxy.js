@@ -1,5 +1,5 @@
-var Location = require("../Location");
-var sendRequest = require("./sendRequest");
+let Location = require("../Location");
+let sendRequest = require("./sendRequest");
 
 /**
  * A proxy is a function that is used to forward a request to

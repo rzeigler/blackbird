@@ -1,14 +1,14 @@
-var fs = require("fs");
-var File = require("./File");
-var Promise = require("./Promise");
-var makeTemporaryPath = require("./makeTemporaryPath");
+let fs = require("fs");
+let File = require("./File");
+let Promise = require("./Promise");
+let makeTemporaryPath = require("./makeTemporaryPath");
 
 function saveToDisk(message, filePrefix) {
     return new Promise(function (resolve, reject) {
-        var content = message.content;
-        var path = makeTemporaryPath(filePrefix);
-        var stream = fs.createWriteStream(path);
-        var size = 0;
+        let content = message.content;
+        let path = makeTemporaryPath(filePrefix);
+        let stream = fs.createWriteStream(path);
+        let size = 0;
 
         content.on("error", reject);
 

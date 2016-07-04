@@ -1,10 +1,10 @@
-var expect = require("expect");
-var callApp = require("../../utils/callApp");
-var modified = require("../modified");
+let expect = require("expect");
+let callApp = require("../../utils/callApp");
+let modified = require("../modified");
 
 describe("middleware/modified", function () {
 
-    var etag, lastModified, app;
+    let etag, lastModified, app;
     beforeEach(function () {
         etag = "abc";
         lastModified = "Tue, 26 Mar 2013 00:58:16 GMT";

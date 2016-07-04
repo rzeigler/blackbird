@@ -1,6 +1,6 @@
 /* jshint -W058 */
-var expect = require("expect");
-var mach = require("../../index");
+let expect = require("expect");
+let mach = require("../../index");
 
 describe("extensions/server", function () {
 
@@ -10,7 +10,7 @@ describe("extensions/server", function () {
 
     describe("Message#setCookie", function () {
 
-        var message;
+        let message;
         beforeEach(function () {
             message = new mach.Message;
         });

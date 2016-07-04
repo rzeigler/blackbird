@@ -1,6 +1,6 @@
-var objectAssign = require("object-assign");
-var mach = require("../index");
-var MaxLengthExceededError = require("../utils/MaxLengthExceededError");
+let objectAssign = require("object-assign");
+let mach = require("../index");
+let MaxLengthExceededError = require("../utils/MaxLengthExceededError");
 
 mach.extend(
   require("../extensions/server")
@@ -28,7 +28,7 @@ function parseParams(app, options) {
     if (typeof options === "number")
         options = { maxLength: options };
 
-    var maxLength = options.maxLength;
+    let maxLength = options.maxLength;
 
     return function (conn) {
         return conn.getParams(maxLength).then(function (params) {

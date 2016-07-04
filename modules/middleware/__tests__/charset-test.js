@@ -1,6 +1,6 @@
-var expect = require("expect");
-var callApp = require("../../utils/callApp");
-var charset = require("../charset");
+let expect = require("expect");
+let callApp = require("../../utils/callApp");
+let charset = require("../charset");
 
 function ok() {
     return 200;

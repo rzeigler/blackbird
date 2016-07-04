@@ -1,7 +1,7 @@
 /* jshint -W058 */
-var expect = require("expect");
-var mach = require("../../index");
-var StatusCodes = require("../../StatusCodes");
+let expect = require("expect");
+let mach = require("../../index");
+let StatusCodes = require("../../StatusCodes");
 
 describe("extensions/statusText", function () {
 
@@ -11,7 +11,7 @@ describe("extensions/statusText", function () {
 
     describe("Connection#statusText", function () {
 
-        var conn;
+        let conn;
         beforeEach(function () {
             conn = new mach.Connection;
         });

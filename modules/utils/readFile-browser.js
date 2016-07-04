@@ -1,9 +1,9 @@
 /* jshint -W058 */
-var Promise = require("./Promise");
+let Promise = require("./Promise");
 
 function readFile(file) {
     return new Promise(function (resolve, reject) {
-        var reader = new FileReader;
+        let reader = new FileReader;
 
         reader.onerror = reject;
         reader.onload = function () {

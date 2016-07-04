@@ -1,9 +1,9 @@
 /* jshint -W058 */
-var expect = require("expect");
-var Location = require("../Location");
+let expect = require("expect");
+let Location = require("../Location");
 
 describe("an empty Location", function () {
-    var location;
+    let location;
     beforeEach(function () {
         location = new Location;
     });
@@ -15,7 +15,7 @@ describe("an empty Location", function () {
 
 describe("a fully-specified Location", function () {
 
-    var location;
+    let location;
     beforeEach(function () {
         location = new Location("http://user:pass@example.com:5000/the/path?the=query");
     });
@@ -66,28 +66,28 @@ describe("a fully-specified Location", function () {
 
     describe("with http: protocol on the standard port", function () {
         it("leaves the port # out of host", function () {
-            var location = new Location("http://example.com:80/the/path");
+            let location = new Location("http://example.com:80/the/path");
             expect(location.host).toEqual("example.com");
         });
     });
 
     describe("with http: protocol on a non-standard port", function () {
         it("includes the port # in host", function () {
-            var location = new Location("http://example.com:8080/the/path");
+            let location = new Location("http://example.com:8080/the/path");
             expect(location.host).toEqual("example.com:8080");
         });
     });
 
     describe("with https: protocol on the standard port", function () {
         it("leaves the port # out of host", function () {
-            var location = new Location("https://example.com:443/the/path");
+            let location = new Location("https://example.com:443/the/path");
             expect(location.host).toEqual("example.com");
         });
     });
 
     describe("with https: protocol on a non-standard port", function () {
         it("includes the port # in host", function () {
-            var location = new Location("https://example.com:5000/the/path");
+            let location = new Location("https://example.com:5000/the/path");
             expect(location.host).toEqual("example.com:5000");
         });
     });
@@ -206,7 +206,7 @@ describe("a fully-specified Location", function () {
 
 describe("a Location with only a path", function () {
 
-    var location;
+    let location;
     beforeEach(function () {
         location = new Location("/the/path?the=query");
     });
@@ -239,7 +239,7 @@ describe("a Location with only a path", function () {
 
 describe("a Location with no search", function () {
 
-    var location;
+    let location;
     beforeEach(function () {
         location = new Location("/the/path");
     });

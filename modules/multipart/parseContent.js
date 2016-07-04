@@ -1,8 +1,8 @@
-var Stream = require("bufferedstream");
-var MaxLengthExceededError = require("../utils/MaxLengthExceededError");
-var resolveProperties = require("../utils/resolveProperties");
-var Promise = require("../utils/Promise");
-var Parser = require("./Parser");
+let Stream = require("bufferedstream");
+let MaxLengthExceededError = require("../utils/MaxLengthExceededError");
+let resolveProperties = require("../utils/resolveProperties");
+let Promise = require("../utils/Promise");
+let Parser = require("./Parser");
 
 function defaultPartHandler(part) {
     return part.parseContent();
@@ -27,23 +27,23 @@ function parseContent(content, boundary, maxLength, partHandler) {
         if (!(content instanceof Stream))
             content = new Stream(content);
 
-        var parts = {};
-        var contentLength = 0;
+        let parts = {};
+        let contentLength = 0;
 
-        var parser = new Parser(boundary, function (part) {
+        let parser = new Parser(boundary, function (part) {
             parts[part.name] = partHandler(part);
         });
 
         content.on("error", reject);
 
         content.on("data", function (chunk) {
-            var length = chunk.length;
+            let length = chunk.length;
             contentLength += length;
 
             if (maxLength && contentLength > maxLength) {
                 reject(new MaxLengthExceededError(maxLength));
             } else {
-                var parsedLength = parser.execute(chunk);
+                let parsedLength = parser.execute(chunk);
 
                 if (parsedLength !== length)
                     reject(new Error("Error parsing multipart body: " + parsedLength + " of " + length + " bytes parsed"));

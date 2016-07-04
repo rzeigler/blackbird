@@ -1,5 +1,5 @@
-var fs = require("fs");
-var Promise = require("./Promise");
+let fs = require("fs");
+let Promise = require("./Promise");
 
 function readFile(file) {
     return new Promise(function (resolve, reject) {

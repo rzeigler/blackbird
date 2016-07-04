@@ -1,12 +1,12 @@
-var assert = require("assert");
-var parseContent = require("../parseContent");
-var Parser = require("../Parser");
-var getFixture = require("./getFixture");
+let assert = require("assert");
+let parseContent = require("../parseContent");
+let Parser = require("../Parser");
+let getFixture = require("./getFixture");
 
 describe("Parser", function () {
 
     describe("with a boundary of \"abc\"", function () {
-        var parser = new Parser("abc", function () {});
+        let parser = new Parser("abc", function () {});
 
         it("has the correct boundary", function () {
             assert.deepEqual(Array.prototype.slice.call(parser.boundary), [ 13, 10, 45, 45, 97, 98, 99 ]);
@@ -14,12 +14,12 @@ describe("Parser", function () {
         });
     });
 
-    var parts;
+    let parts;
 
     function beforeEachParseFixture(fixtureName, boundary) {
         boundary = boundary || "AaB03x";
         beforeEach(function () {
-            var message = getFixture(fixtureName);
+            let message = getFixture(fixtureName);
             return parseContent(message, boundary, partHandler).then(function (object) {
                 parts = object;
             });

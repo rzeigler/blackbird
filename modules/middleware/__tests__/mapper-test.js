@@ -1,6 +1,6 @@
-var expect = require("expect");
-var callApp = require("../../utils/callApp");
-var createMapper = require("../mapper");
+let expect = require("expect");
+let callApp = require("../../utils/callApp");
+let createMapper = require("../mapper");
 
 describe("middleware/mapper", function () {
 
@@ -14,7 +14,7 @@ describe("middleware/mapper", function () {
         };
     }
 
-    var app;
+    let app;
     beforeEach(function () {
         app = createMapper({
             "/one": showInfo,

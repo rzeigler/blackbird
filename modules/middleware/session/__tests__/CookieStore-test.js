@@ -1,5 +1,5 @@
-var CookieStore = require("../CookieStore");
-var describeSessionStore = require("./describeSessionStore");
+let CookieStore = require("../CookieStore");
+let describeSessionStore = require("./describeSessionStore");
 
 describe("CookieStore", function () {
     describeSessionStore(

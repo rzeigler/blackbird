@@ -1,10 +1,10 @@
-var fs = require("fs");
-var d = require("describe-property");
-var objectAssign = require("object-assign");
-var getMimeType = require("../utils/getMimeType");
-var filterProperties = require("../utils/filterProperties");
-var stringifyCookie = require("../utils/stringifyCookie");
-var saveToDisk = require("../utils/saveToDisk");
+let fs = require("fs");
+let d = require("describe-property");
+let objectAssign = require("object-assign");
+let getMimeType = require("../utils/getMimeType");
+let filterProperties = require("../utils/filterProperties");
+let stringifyCookie = require("../utils/stringifyCookie");
+let saveToDisk = require("../utils/saveToDisk");
 
 module.exports = function (mach) {
     mach.bind = require("../utils/bindApp");
@@ -50,7 +50,7 @@ module.exports = function (mach) {
      *
      * The maxLength argument is passed directly to the request's parseContent method.
      *
-     *   var maxUploadLimit = Math.pow(2, 20); // 1 mb
+     *   let maxUploadLimit = Math.pow(2, 20); // 1 mb
      *
      *   function app(conn) {
      *     return conn.getParams(maxUploadLimit).then(function (params) {
@@ -66,12 +66,12 @@ module.exports = function (mach) {
                 paramTypes = null;
             }
 
-            var request = this.request;
-            var queryParams = objectAssign({}, this.query);
+            let request = this.request;
+            let queryParams = objectAssign({}, this.query);
 
             return request.parseContent(maxLength).then(function (contentParams) {
         // Content params take precedence over query params.
-                var params = objectAssign(queryParams, contentParams);
+                let params = objectAssign(queryParams, contentParams);
                 return paramTypes ? filterProperties(params, paramTypes) : params;
             });
         }),
@@ -174,7 +174,7 @@ module.exports = function (mach) {
                 options = status;
             }
 
-            var response = this.response;
+            let response = this.response;
 
             if (typeof options === "string")
                 options = { path: options };
@@ -201,7 +201,7 @@ module.exports = function (mach) {
 
     mach.extend(require("./multipart"));
 
-    var _handlePart = mach.Message.prototype.handlePart;
+    let _handlePart = mach.Message.prototype.handlePart;
 
     Object.defineProperties(mach.Message.prototype, {
 
