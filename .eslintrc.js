@@ -13,12 +13,14 @@ module.exports = {
         "quote-props":                          ["error", "as-needed"],
         semi:                                   ["error", "always"],
         curly:                                  ["error", "all"],
-        "no-trailing-spaces":                   ["error", { skipBlankLines: false }],
-        "space-before-function-paren":          ["error", { anonymous: "always", named: "never" }],
+        "no-trailing-spaces":                   ["error", {skipBlankLines: false}],
+        "space-before-function-paren":          ["error", {anonymous: "always", named: "never"}],
         "one-var":                              ["error", {var: "always"}],
         "prefer-template":                      ["error"],
         eqeqeq:                                 ["error", "always"],
         "no-cond-assign":                       ["error", "always"],
+        "object-curly-spacing":                 ["error", "never"],
+        "array-bracket-spacing":                ["error", "never"],
         "no-console":                           "off"
     }
 };

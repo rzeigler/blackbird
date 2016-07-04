@@ -26,7 +26,7 @@ function parseParams(app, options) {
     options = options || {};
 
     if (typeof options === "number")
-        options = { maxLength: options };
+        options = {maxLength: options};
 
     let maxLength = options.maxLength;
 

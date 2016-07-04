@@ -13,7 +13,7 @@ function stringifyCookie(name, options) {
     options = options || {};
 
     if (typeof options === "string")
-        options = { value: options };
+        options = {value: options};
 
     let cookie = encodeURIComponent(name) + "=" + encodeURIComponent(options.value || "");
 

@@ -12,7 +12,7 @@ describe("middleware/modified", function () {
             return {
                 status: 200,
                 headers: {
-                    "ETag": etag,
+                    ETag: etag,
                     "Last-Modified": lastModified
                 },
                 content: ""
@@ -37,7 +37,7 @@ describe("middleware/modified", function () {
             it("returns 304", function () {
                 return callApp(app, {
                     headers: {
-                        "If-None-Match": "\"" + etag + "\""
+                        "If-None-Match": `"${etag}"`
                     }
                 }).then(function (conn) {
                     expect(conn.status).toEqual(304);

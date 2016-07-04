@@ -8,7 +8,7 @@ let Message = require("../Message");
 describe("a Message with \"Content-Type: text/plain\"", function () {
     let message;
     beforeEach(function () {
-        message = new Message(null, { "Content-Type": "text/plain" });
+        message = new Message(null, {"Content-Type": "text/plain"});
     });
 
     it("has the correct mediaType", function () {
@@ -19,7 +19,7 @@ describe("a Message with \"Content-Type: text/plain\"", function () {
 describe("a Message with \"Content-Type: text/html; charset=utf-8\"", function () {
     let message;
     beforeEach(function () {
-        message = new Message(null, { "Content-Type": "text/html; charset=utf-8" });
+        message = new Message(null, {"Content-Type": "text/html; charset=utf-8"});
     });
 
     it("has the correct mediaType", function () {
@@ -137,9 +137,9 @@ describe("Message#parseContent", function () {
         describe("when the content is valid JSON", function () {
             let object;
             beforeEach(function () {
-                object = { a: 1, b: "some value" };
+                object = {a: 1, b: "some value"};
                 message = new Message(
-          JSON.stringify(object), { "Content-Type": "application/json" }
+          JSON.stringify(object), {"Content-Type": "application/json"}
         );
             });
 
@@ -153,7 +153,7 @@ describe("Message#parseContent", function () {
         describe("when the content is not valid JSON", function () {
             beforeEach(function () {
                 message = new Message(
-          "hello world", { "Content-Type": "application/json" }
+          "hello world", {"Content-Type": "application/json"}
         );
             });
 
@@ -169,7 +169,7 @@ describe("Message#parseContent", function () {
         describe("when the content is too large", function () {
             beforeEach(function () {
                 message = new Message(
-          "{}", { "Content-Type": "application/json" }
+          "{}", {"Content-Type": "application/json"}
         );
             });
 
@@ -188,13 +188,13 @@ describe("Message#parseContent", function () {
         describe("when the content is URL-encoded", function () {
             beforeEach(function () {
                 message = new Message(
-          "a=1&b=some+value", { "Content-Type": "application/x-www-form-urlencoded" }
+          "a=1&b=some+value", {"Content-Type": "application/x-www-form-urlencoded"}
         );
             });
 
             it("parses the content", function () {
                 return message.parseContent().then(function (params) {
-                    expect(params).toEqual({ a: "1", b: "some value" });
+                    expect(params).toEqual({a: "1", b: "some value"});
                 });
             });
         });
@@ -202,7 +202,7 @@ describe("Message#parseContent", function () {
         describe("when the content is too large", function () {
             beforeEach(function () {
                 message = new Message(
-          "a=b", { "Content-Type": "application/x-www-form-urlencoded" }
+          "a=b", {"Content-Type": "application/x-www-form-urlencoded"}
         );
             });
 

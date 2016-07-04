@@ -45,7 +45,7 @@ function createRequestHandler(app) {
             }
         }, function (error) {
             conn.onError(error);
-            nodeResponse.writeHead(500, { "Content-Type": "text/plain" });
+            nodeResponse.writeHead(500, {"Content-Type": "text/plain"});
             nodeResponse.end("Internal Server Error");
         });
     };

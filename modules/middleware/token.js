@@ -59,7 +59,7 @@ function verifyToken(app, options) {
     options = options || {};
 
     if (typeof options === "string")
-        options = { paramName: options };
+        options = {paramName: options};
 
     let paramName = options.paramName || "_token";
     let sessionKey = options.sessionKey || "_token";

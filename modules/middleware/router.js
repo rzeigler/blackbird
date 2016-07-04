@@ -119,7 +119,7 @@ function createRouter(app, map) {
                 throw new Error("Route needs an app");
 
             if (typeof methods === "string") {
-                methods = [ methods ];
+                methods = [methods];
             } else if (!Array.isArray(methods)) {
                 methods = [];
             }
@@ -140,7 +140,7 @@ function createRouter(app, map) {
             if (!isRegExp(pattern))
                 throw new Error("Route pattern must be a RegExp");
 
-            let route = { pattern: pattern, keys: keys, app: app };
+            let route = {pattern: pattern, keys: keys, app: app};
 
             if (methods.length === 0)
                 methods.push("ANY");
@@ -151,7 +151,7 @@ function createRouter(app, map) {
                 if (routes[upperMethod]) {
                     routes[upperMethod].push(route);
                 } else {
-                    routes[upperMethod] = [ route ];
+                    routes[upperMethod] = [route];
                 }
             });
         }),

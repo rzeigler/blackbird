@@ -61,7 +61,7 @@ describe("a fully-specified Location", function () {
     });
 
     it("has the correct query", function () {
-        expect(location.query).toEqual({ the: "query" });
+        expect(location.query).toEqual({the: "query"});
     });
 
     describe("with http: protocol on the standard port", function () {
@@ -175,7 +175,7 @@ describe("a fully-specified Location", function () {
 
     describe("when the query is set", function () {
         it("has the correct href", function () {
-            location.query = { another: "query" };
+            location.query = {another: "query"};
             expect(location.href).toEqual("http://user:pass@example.com:5000/the/path?another=query");
         });
     });
@@ -198,7 +198,7 @@ describe("a fully-specified Location", function () {
         });
 
         it("has the correct query", function () {
-            expect(location.query).toEqual({ the: "query", more: "query" });
+            expect(location.query).toEqual({the: "query", more: "query"});
         });
     });
 
@@ -232,7 +232,7 @@ describe("a Location with only a path", function () {
     });
 
     it("has the correct query", function () {
-        expect(location.query).toEqual({ the: "query" });
+        expect(location.query).toEqual({the: "query"});
     });
 
 });

@@ -7,7 +7,7 @@ describe("middleware/file", function () {
     describe("with a single index file", function () {
         let contents = getFixture("jquery-1.8.3.js", "utf8");
         let app = file({
-            root: __dirname + "/fixtures",
+            root: `${__dirname}/fixtures`,
             index: "jquery-1.8.3.js"
         });
 
@@ -52,8 +52,8 @@ describe("middleware/file", function () {
     describe("with multiple index files", function () {
         let contents = getFixture("jquery-1.8.3.js", "utf8");
         let app = file({
-            root: __dirname + "/fixtures",
-            index: [ "not-found1.html", "jquery-1.8.3.js", "not-found2.txt" ]
+            root: `${__dirname}/fixtures`,
+            index: ["not-found1.html", "jquery-1.8.3.js", "not-found2.txt"]
         });
 
         describe("when a directory is requested", function () {
@@ -69,7 +69,7 @@ describe("middleware/file", function () {
 
     describe("with useLastModified=false and useETag=true", function () {
         let app = file({
-            root: __dirname + "/fixtures",
+            root: `${__dirname}/fixtures`,
             index: "jquery-1.8.3.js",
             useLastModified: false,
             useETag: true

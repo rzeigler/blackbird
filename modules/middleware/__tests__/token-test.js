@@ -15,7 +15,7 @@ function extractCookie(setCookie) {
 describe("middleware/token", function () {
 
     let app = stack();
-    app.use(session, { secret: "foo" });
+    app.use(session, {secret: "foo"});
     app.use(params);
     app.use(token);
     app.run(function (conn) {
@@ -41,8 +41,8 @@ describe("middleware/token", function () {
 
                 return callApp(app, {
                     method: "POST",
-                    headers: { Cookie: cookie },
-                    params: { _token: token }
+                    headers: {Cookie: cookie},
+                    params: {_token: token}
                 }).then(function (conn) {
                     expect(conn.status).toEqual(200);
                 });

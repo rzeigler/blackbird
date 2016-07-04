@@ -22,7 +22,7 @@ function makeUniqueKey(client, keyLength) {
     let key = makeToken(keyLength);
 
   // Try to set an empty string to reserve the key.
-    return sendCommand(client, "setnx", [ key, "" ]).then(function (result) {
+    return sendCommand(client, "setnx", [key, ""]).then(function (result) {
         if (result === 1)
             return key; // The key was available.
 
@@ -87,7 +87,7 @@ Object.defineProperties(RedisStore.prototype, {
     }),
 
     load: d(function (value) {
-        return sendCommand(this.getClient(), "get", [ value ]).then(function (json) {
+        return sendCommand(this.getClient(), "get", [value]).then(function (json) {
             return json ? JSON.parse(json) : {};
         });
     }),
@@ -104,9 +104,9 @@ Object.defineProperties(RedisStore.prototype, {
 
             let promise;
             if (ttl) {
-                promise = sendCommand(client, "psetex", [ key, ttl, json ]);
+                promise = sendCommand(client, "psetex", [key, ttl, json]);
             } else {
-                promise = sendCommand(client, "set", [ key, json ]);
+                promise = sendCommand(client, "set", [key, json]);
             }
 
             return promise.then(function () {
@@ -117,7 +117,7 @@ Object.defineProperties(RedisStore.prototype, {
 
     purge: d(function (key) {
         if (key)
-            return sendCommand(this.getClient(), "del", [ key ]);
+            return sendCommand(this.getClient(), "del", [key]);
 
         return sendCommand(this.getClient(), "flushdb");
     }),

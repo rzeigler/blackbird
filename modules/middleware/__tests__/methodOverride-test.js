@@ -12,7 +12,7 @@ describe("middleware/methodOverride", function () {
         describe("and the params middleware is in front", function () {
             it("sets the request method", function () {
                 return callApp(params(app), {
-                    params: { "_method": "PUT" }
+                    params: {_method: "PUT"}
                 }).then(function (conn) {
                     expect(conn.responseText).toEqual("PUT");
                 });
@@ -30,7 +30,7 @@ describe("middleware/methodOverride", function () {
 
             it("does not set the request method and generates an error", function () {
                 return callApp(app, {
-                    params: { "_method": "PUT" },
+                    params: {_method: "PUT"},
                     onError: errorHandler
                 }).then(function (conn) {
                     expect(conn.responseText).toEqual("GET");
@@ -45,7 +45,7 @@ describe("middleware/methodOverride", function () {
         describe("and the params middleware is in front", function () {
             it("sets the request method to the last given value", function () {
                 return callApp(params(app), {
-                    params: { "_method": [ "PUT", "DELETE" ] }
+                    params: {_method: ["PUT", "DELETE"]}
                 }).then(function (conn) {
                     expect(conn.responseText).toEqual("DELETE");
                 });
@@ -56,7 +56,7 @@ describe("middleware/methodOverride", function () {
     describe("when the request method is given in an HTTP header", function () {
         it("sets the request method", function () {
             return callApp(app, {
-                headers: { "X-Http-Method-Override": "PUT" }
+                headers: {"X-Http-Method-Override": "PUT"}
             }).then(function (conn) {
                 expect(conn.responseText).toEqual("PUT");
             });

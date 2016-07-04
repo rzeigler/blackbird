@@ -23,7 +23,7 @@ function getSessionCookie(setCookieHeader) {
 describe("middleware/session", function () {
 
     describe("when using a server-side store", function () {
-        let store = new MemoryStore({ expireAfter: 10 });
+        let store = new MemoryStore({expireAfter: 10});
         let app = session(counter, {
             secret: "secret",
             store: store
@@ -48,7 +48,7 @@ describe("middleware/session", function () {
                         let cookie = getSessionCookie(conn.response.headers["Set-Cookie"]);
 
                         return callApp(app, {
-                            headers: { Cookie: cookie }
+                            headers: {Cookie: cookie}
                         }).then(function (conn) {
                             assert(!conn.response.headers["Set-Cookie"]);
                         });
@@ -60,7 +60,7 @@ describe("middleware/session", function () {
                         let cookie = getSessionCookie(conn.response.headers["Set-Cookie"]);
 
                         return callApp(app, {
-                            headers: { Cookie: cookie }
+                            headers: {Cookie: cookie}
                         }).then(function (conn) {
                             expect(JSON.parse(conn.responseText).count).toEqual(2);
                         });
@@ -71,7 +71,7 @@ describe("middleware/session", function () {
     });
 
     describe("when using a client-side store", function () {
-        let store = new CookieStore({ secret: "secret" });
+        let store = new CookieStore({secret: "secret"});
         let app = session(counter, {
             secret: "secret",
             store: store
@@ -97,7 +97,7 @@ describe("middleware/session", function () {
                         let cookie = getSessionCookie(conn.response.headers["Set-Cookie"]);
 
                         return callApp(app, {
-                            headers: { Cookie: cookie }
+                            headers: {Cookie: cookie}
                         }).then(function (conn) {
                             assert(conn.response.headers["Set-Cookie"]);
                         });
@@ -109,7 +109,7 @@ describe("middleware/session", function () {
                         let cookie = getSessionCookie(conn.response.headers["Set-Cookie"]);
 
                         return callApp(app, {
-                            headers: { Cookie: cookie }
+                            headers: {Cookie: cookie}
                         }).then(function (conn) {
                             expect(JSON.parse(conn.responseText).count).toEqual(2);
                         });

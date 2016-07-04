@@ -21,7 +21,7 @@ function propertyAlias(propertyName, defaultValue) {
 }
 
 // Order is important here. Later properties take priority.
-let PROPERTY_NAMES = [ "protocol", "auth", "hostname", "port", "host", "pathname", "search", "queryString", "query", "path" ];
+let PROPERTY_NAMES = ["protocol", "auth", "hostname", "port", "host", "pathname", "search", "queryString", "query", "path"];
 
 function setProperties(location, properties) {
     let propertyName;
