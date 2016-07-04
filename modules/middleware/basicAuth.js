@@ -25,33 +25,33 @@
  */
 module.exports = (function (mach, Promise, R) {
     "use strict";
-    mach.extend(require('../extensions/server'));
+    mach.extend(require("../extensions/server"));
     function basicAuth(app, options) {
         if (R.is(Function, options)) {
             options = {validate: options};
         }
-        var realm = options.realm || 'Authorization Required';
+        var realm = options.realm || "Authorization Required";
         return function (conn) {
-          if (conn.remoteUser)
-            return conn.call(app); // Don't overwrite existing remoteUser.
+            if (conn.remoteUser)
+                return conn.call(app); // Don't overwrite existing remoteUser.
 
-          var credentials = conn.auth.split(':', 2);
-          var username = credentials[0], password = credentials[1];
+            var credentials = conn.auth.split(":", 2);
+            var username = credentials[0], password = credentials[1];
 
-          return Promise.resolve(options.validate(username, password)).then(function (user) {
-            if (user) {
-              conn.remoteUser = (user === true) ? username : user;
-              return conn.call(app);
-            }
+            return Promise.resolve(options.validate(username, password)).then(function (user) {
+                if (user) {
+                    conn.remoteUser = (user === true) ? username : user;
+                    return conn.call(app);
+                }
 
-            conn.response.headers['WWW-Authenticate'] = 'Basic realm="' + realm + '"';
-            conn.text(401, 'Not Authorized');
-          });
+                conn.response.headers["WWW-Authenticate"] = "Basic realm=\"" + realm + "\"";
+                conn.text(401, "Not Authorized");
+            });
         };
     }
     return basicAuth;
 }(
-    require('../index'),
+    require("../index"),
     require("bluebird"),
     require("ramda")
 ));
