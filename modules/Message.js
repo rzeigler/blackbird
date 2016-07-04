@@ -5,6 +5,7 @@ let bufferStream = require("./utils/bufferStream");
 let normalizeHeaderName = require("./utils/normalizeHeaderName");
 let parseCookie = require("./utils/parseCookie");
 let parseQuery = require("./utils/parseQuery");
+const R = require("ramda");
 
 /**
  * The default content to use for new messages.
@@ -67,10 +68,12 @@ Object.defineProperties(Message.prototype, {
                     this.addHeader(line.substring(0, index), line.substring(index + HEADER_SEPARATOR.length));
                 }
             }, this);
-        } else if (value != null) {
-            for (let headerName in value)
-                if (value.hasOwnProperty(headerName))
+        } else if (!R.isNil(value)) {
+            for (let headerName in value) {
+                if (value.hasOwnProperty(headerName)) {
                     this.addHeader(headerName, value[headerName]);
+                }
+            }
         }
     }),
 
@@ -121,9 +124,11 @@ Object.defineProperties(Message.prototype, {
         // the Cookie header such that those with more specific Path attributes
         // precede those with less specific. Ordering with respect to other
         // attributes (e.g., Domain) is unspecified.
-                for (let cookieName in cookies)
-                    if (Array.isArray(cookies[cookieName]))
+                for (let cookieName in cookies) {
+                    if (Array.isArray(cookies[cookieName])) {
                         cookies[cookieName] = cookies[cookieName][0] || "";
+                    }
+                }
 
                 this._cookies = cookies;
             } else {
@@ -152,9 +157,11 @@ Object.defineProperties(Message.prototype, {
    */
     mediaType: d.gs(function () {
         let contentType = this.contentType, match;
-        return (contentType && (match = contentType.match(/^([^;,]+)/))) ? match[1].toLowerCase() : null;
+        if (!contentType) { return null; }
+        match = contentType.match(/^([^;,]+)/);
+        return match ? match[1].toLowerCase() : null;
     }, function (value) {
-        this.contentType = value + (this.charset ? ";charset=" + this.charset : "");
+        this.contentType = value + (this.charset ? `;charset=${this.charset}` : "");
     }),
 
   /**
@@ -165,9 +172,11 @@ Object.defineProperties(Message.prototype, {
    */
     charset: d.gs(function () {
         let contentType = this.contentType, match;
-        return (contentType && (match = contentType.match(/\bcharset=([\w-]+)/))) ? match[1] : null;
+        if (!contentType) { return null; }
+        match = contentType.match(/\bcharset=([\w-]+)/);
+        return match ? match[1] : null;
     }, function (value) {
-        this.contentType = this.mediaType + (value ? ";charset=" + value : "");
+        this.contentType = this.mediaType + (value ? `;charset=${value}` : "");
     }),
 
   /**
@@ -176,8 +185,9 @@ Object.defineProperties(Message.prototype, {
     content: d.gs(function () {
         return this._content;
     }, function (value) {
-        if (value == null)
+        if (R.isNil(value)) {
             value = DEFAULT_CONTENT;
+        }
 
         if (value instanceof Stream) {
             this._content = value;
@@ -193,7 +203,7 @@ Object.defineProperties(Message.prototype, {
    * True if the content of this message is buffered, false otherwise.
    */
     isBuffered: d.gs(function () {
-        return this._bufferedContent != null;
+        return !R.isNil(this._bufferedContent);
     }),
 
   /**
@@ -204,8 +214,9 @@ Object.defineProperties(Message.prototype, {
    * Note: 0 is a valid value for maxLength. It means "no limit".
    */
     bufferContent: d(function (maxLength) {
-        if (this._bufferedContent == null)
+        if (R.isNil(this._bufferedContent)) {
             this._bufferedContent = bufferStream(this.content, maxLength);
+        }
 
         return this._bufferedContent;
     }),
@@ -236,11 +247,13 @@ Object.defineProperties(Message.prototype, {
    * Note: 0 is a valid value for maxLength. It means "no limit".
    */
     parseContent: d(function (maxLength) {
-        if (this._parsedContent)
+        if (this._parsedContent) {
             return this._parsedContent;
+        }
 
-        if (typeof maxLength !== "number")
+        if (!R.is(Number, maxLength)) {
             maxLength = DEFAULT_MAX_CONTENT_LENGTH;
+        }
 
         let parser = Message.PARSERS[this.mediaType] || defaultParser;
         this._parsedContent = parser(this, maxLength);
