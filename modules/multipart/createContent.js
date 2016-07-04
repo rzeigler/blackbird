@@ -5,15 +5,17 @@ let readFile = require("../utils/readFile");
 let File = require("../utils/File");
 
 function createHeaders(name, filename, type) {
-    let header = "Content-Disposition: form-data; name=\"" + name + "\"";
+    let header = `Content-Disposition: form-data; name="${name}"`;
 
-    if (filename)
-        header += "; filename=\"" + filename + "\"";
+    if (filename) {
+        header += `; filename="${filename}"`;
+    }
 
-    if (type)
-        header += "\r\nContent-Type: " + type;
+    if (type) {
+        header += `\r\nContent-Type: ${type}`;
+    }
 
-    return header + "\r\n\r\n";
+    return `${header} \r\n\r\n`;
 }
 
 /**
@@ -33,7 +35,7 @@ function createContent(params, boundary) {
             let p = readFile(value);
 
             promise = promise.then(function () {
-                content.write("--" + boundary + "\r\n" + createHeaders(name, value.name, value.type));
+                content.write(`--${boundary}\r\n${createHeaders(name, value.name, value.type)}`);
 
                 return p.then(function (chunk) {
                     content.write(chunk);
@@ -42,21 +44,22 @@ function createContent(params, boundary) {
             });
         } else {
             promise = promise.then(function () {
-                content.write("--" + boundary + "\r\n" + createHeaders(name));
+                content.write(`--${boundary}\r\n${createHeaders(name)}`);
                 content.write(value);
                 content.write("\r\n");
             });
         }
     }
 
-    let param, i;
+    let param;
     for (let name in params) {
         if (params.hasOwnProperty(name)) {
             param = params[name];
 
             if (Array.isArray(param)) {
-                for (i = 0, len = param.length; i < len; ++i)
+                for (let i = 0, len = param.length; i < len; ++i) {
                     appendContent(name, param[i]);
+                }
             } else {
                 appendContent(name, param);
             }
@@ -64,7 +67,7 @@ function createContent(params, boundary) {
     }
 
     promise.then(function () {
-        content.end("--" + boundary + "--\r\n");
+        content.end(`--${boundary}--\r\n`);
     }, function (error) {
         content.emit("error", error);
     });
