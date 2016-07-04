@@ -1,5 +1,6 @@
 let Connection = require("../Connection");
-let Promise = require("./Promise");
+let Promise = require("bluebird");
+const R = require("ramda");
 
 /**
  * Creates a new Connection using the given options and sends
@@ -28,12 +29,14 @@ function callApp(app, options, modifier) {
     let c = new Connection(options);
 
     return Promise.resolve(modifier ? modifier(c) : c).then(function (conn) {
-        if (conn == null || !(conn instanceof Connection))
+        if (R.isNil(conn) || !R.is(Connection, conn)) {
             conn = c;
+        }
 
         return conn.call(app).then(function () {
-            if (options.binary)
+            if (options.binary) {
                 return conn;
+            }
 
             return conn.response.stringifyContent(options.maxLength, options.encoding).then(function (content) {
                 conn.responseText = content;

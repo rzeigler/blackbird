@@ -1,5 +1,5 @@
 let fs = require("fs");
-let Promise = require("./Promise");
+let Promise = require("bluebird");
 
 function readFile(file) {
     return new Promise(function (resolve, reject) {

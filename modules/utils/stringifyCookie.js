@@ -9,30 +9,37 @@
  * - secure
  * - httpOnly or HttpOnly
  */
-function stringifyCookie(name, options) {
-    options = options || {};
+ const R = require("ramda");
+ function stringifyCookie(name, options) {
+     options = options || {};
 
-    if (typeof options === "string")
-        options = {value: options};
+     if (R.is(String, options)) {
+         options = {value: options};
+     }
 
-    let cookie = encodeURIComponent(name) + "=" + encodeURIComponent(options.value || "");
+     let cookie = `${encodeURIComponent(name)}=${encodeURIComponent(options.value || "")}`;
 
-    if (options.domain)
-        cookie += "; domain=" + options.domain;
+     if (options.domain) {
+         cookie += `; domain=${options.domain}`;
+     }
 
-    if (options.path)
-        cookie += "; path=" + options.path;
+     if (options.path) {
+         cookie += `; path=${options.path}`;
+     }
 
-    if (options.expires)
-        cookie += "; expires=" + (options.expires instanceof Date) ? options.expires.toUTCString() : options.expires;
+     if (options.expires) {
+         cookie += `; expires=${(options.expires instanceof Date) ? options.expires.toUTCString() : options.expires}`;
+     }
 
-    if (options.secure)
-        cookie += "; secure";
+     if (options.secure) {
+         cookie += "; secure";
+     }
 
-    if (options.httpOnly || options.HttpOnly)
-        cookie += "; HttpOnly";
+     if (options.httpOnly || options.HttpOnly) {
+         cookie += "; HttpOnly";
+     }
 
-    return cookie;
-}
+     return cookie;
+ }
 
-module.exports = stringifyCookie;
+ module.exports = stringifyCookie;

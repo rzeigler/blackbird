@@ -7,6 +7,7 @@ let formatString = require("util").format;
 let joinPaths = require("./joinPaths");
 
 let MACH_VERSION = require("../version");
+const R = require("ramda");
 
 let PAGE_TEMPLATE = [
     "<html>",
@@ -54,8 +55,9 @@ function generateIndex(root, pathname, basename) {
         let path = joinPaths(root, pathname);
 
         fs.readdir(path, function (error, files) {
-            if (error)
+            if (error) {
                 return reject(error);
+            }
 
             let promises = files.map(function (file) {
                 return getFileStats(joinPaths(path, file));
@@ -66,8 +68,9 @@ function generateIndex(root, pathname, basename) {
                 let className = "even";
 
                 statsArray.forEach(function (stats, index) {
-                    if (stats == null)
+                    if (R.isNil(stats)) {
                         return; // Ignore broken symlinks!
+                    }
 
                     let file = files[index];
                     let url = basename + pathname + file;
@@ -84,12 +87,12 @@ function generateIndex(root, pathname, basename) {
                         type = getMimeType(file);
                     }
 
-                    rows += "\n" + formatString(ROW_TEMPLATE, className, url, file, size, type, mtime);
+                    rows += `\n${formatString(ROW_TEMPLATE, className, url, file, size, type, mtime)}`;
 
                     className = (className === "even") ? "odd" : "even";
                 });
 
-                let title = "Index of " + basename + pathname;
+                let title = `Index of ${basename}${pathname}`;
                 let content = formatString(PAGE_TEMPLATE, title, title, rows, "mach", MACH_VERSION);
 
                 resolve(content);

@@ -1,4 +1,4 @@
-let Promise = require("./Promise");
+let Promise = require("bluebird");
 
 function resolveProperties(object) {
     let keys = Object.keys(object);

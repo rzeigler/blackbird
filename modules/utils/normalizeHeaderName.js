@@ -6,8 +6,9 @@ let IrregularHeaderNames = require("./IrregularHeaderNames");
 function normalizeHeaderName(headerName) {
     headerName = headerName.toLowerCase();
 
-    if (headerName in IrregularHeaderNames)
+    if (headerName in IrregularHeaderNames) {
         return IrregularHeaderNames[headerName];
+    }
 
     return headerName.replace(/(^|-)([a-z])/g, function (match, dash, letter) {
         return dash + letter.toUpperCase();

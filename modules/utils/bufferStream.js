@@ -1,6 +1,7 @@
 let bodec = require("bodec");
 let Promise = require("./Promise");
 let MaxLengthExceededError = require("./MaxLengthExceededError");
+const R = require("ramda");
 
 /**
  * Returns a promise for a buffer of all content in the given stream up to
@@ -9,8 +10,9 @@ let MaxLengthExceededError = require("./MaxLengthExceededError");
 function bufferStream(stream, maxLength) {
     maxLength = maxLength || Infinity;
 
-    if (!stream.readable)
+    if (!stream.readable) {
         throw new Error("Cannot buffer stream that is not readable");
+    }
 
     return new Promise(function (resolve, reject) {
         let chunks = [];
@@ -32,8 +34,9 @@ function bufferStream(stream, maxLength) {
             resolve(bodec.join(chunks));
         });
 
-        if (typeof stream.resume === "function")
+        if (R.is(Function, stream.resume)) {
             stream.resume();
+        }
     });
 }
 

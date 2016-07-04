@@ -2,6 +2,7 @@ let fs = require("fs");
 let File = require("./File");
 let Promise = require("./Promise");
 let makeTemporaryPath = require("./makeTemporaryPath");
+const R = require("ramda");
 
 function saveToDisk(message, filePrefix) {
     return new Promise(function (resolve, reject) {
@@ -30,8 +31,9 @@ function saveToDisk(message, filePrefix) {
             });
         });
 
-        if (typeof content.resume === "function")
+        if (R.is(Function, content.resume)) {
             content.resume();
+        }
     });
 }
 
