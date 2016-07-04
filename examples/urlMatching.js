@@ -8,7 +8,7 @@ app.get("/", function () {
 });
 
 app.get("/b", function () {
-    return "<a href=\"/c/" + Date.now() + "\">go to c</a>";
+    return `<a href="/c/${Date.now()}">go to c</a>`;
 });
 
 app.get("/c/:id", function (conn) {

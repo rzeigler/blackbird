@@ -15,7 +15,7 @@ mach.serve(function (conn) {
     let content = conn.response.content = new Stream;
 
     let timer = setInterval(function () {
-        content.write((new Date).toString() + "\n");
+        content.write(`${new Date}\n`);
     }, 1000);
 
     conn.onClose = function () {

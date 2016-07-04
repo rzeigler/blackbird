@@ -5,7 +5,7 @@ app.use(mach.gzip);
 app.use(mach.logger);
 app.use(mach.modified);
 app.use(mach.file, {
-    root: __dirname + "/..",
+    root: `${__dirname}/..`,
     autoIndex: true,
     useLastModified: true,
     useETag: true

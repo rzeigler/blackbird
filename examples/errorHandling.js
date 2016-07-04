@@ -5,9 +5,10 @@
 let Promise = require("when").Promise;
 let mach = require("../modules");
 
-mach.serve(function (request) {
-    if (Math.random() > 0.75)
+mach.serve(function () {
+    if (Math.random() > 0.75) {
         throw new Error("boom!");
+    }
 
     return new Promise(function (resolve, reject) {
         setTimeout(function () {
