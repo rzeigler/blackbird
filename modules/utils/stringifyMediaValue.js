@@ -11,23 +11,26 @@
  *   stringifyMediaValue({ type: 'unicode-1-1', params: { q: '0.8' } }) =>
  *     "unicode-1-1;q=0.8"
  */
+const R = require("ramda");
 function stringifyMediaValue(value, typeSeparator) {
     typeSeparator = typeSeparator || "/";
 
     let string = value.type || "*";
 
-    if (value.subtype)
+    if (value.subtype) {
         string += typeSeparator + value.subtype;
+    }
 
     if (value.params) {
         let params = value.params;
 
         for (let paramName in params) {
             if (params.hasOwnProperty(paramName)) {
-                string += ";" + paramName;
+                string += `;${paramName}`;
 
-                if (params[paramName] != null)
-                    string += "=" + params[paramName];
+                if (R.isNil(params[paramName])) {
+                    string += `=${params[paramName]}`;
+                }
             }
         }
     }

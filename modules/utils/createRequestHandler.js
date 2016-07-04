@@ -1,5 +1,6 @@
 /* jshint -W058 */
 let createConnection = require("./createConnection");
+const R = require("ramda");
 
 /**
  * HTTP status codes that don't have entities.
@@ -27,19 +28,22 @@ function createRequestHandler(app) {
             let headers = conn.response.headers;
             let content = conn.response.content;
 
-            if (isEmpty && !isHead)
+            if (isEmpty && !isHead) {
                 headers["Content-Length"] = 0;
+            }
 
-            if (!headers["Date"])
+            if (!headers["Date"]) {
                 headers["Date"] = (new Date).toUTCString();
+            }
 
             nodeResponse.writeHead(conn.status, headers);
 
             if (isEmpty) {
                 nodeResponse.end();
 
-                if (typeof content.destroy === "function")
+                if (R.is(Function, content.destroy)) {
                     content.destroy();
+                }
             } else {
                 content.pipe(nodeResponse);
             }

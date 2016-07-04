@@ -12,8 +12,9 @@ function filterProperties(object, propertyTypes) {
         if (typeof type === "function" && object.hasOwnProperty(property)) {
             value = type(object[property]);
 
-            if (value !== undefined)
+            if (value !== undefined) {
                 properties[property] = value;
+            }
         }
     }
 

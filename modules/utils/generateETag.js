@@ -8,7 +8,7 @@ function generateETag(path) {
             if (error) {
                 reject(error);
             } else {
-                resolve("\"" + crypto.createHash("md5").update(data).digest("hex") + "\"");
+                resolve(`"${crypto.createHash("md5").update(data).digest("hex")}"`);
             }
         });
     });

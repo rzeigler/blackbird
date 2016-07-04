@@ -20,11 +20,11 @@ function compileRoute(route, keys) {
             keys.push("splat");
             return "(.*?)";
         } else {
-            return "\\" + match;
+            return `\\${match}`;
         }
     });
 
-    return new RegExp("^" + source + "$", "i");
+    return new RegExp(`^${source}$`, "i");
 }
 
 module.exports = compileRoute;

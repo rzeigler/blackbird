@@ -1,5 +1,6 @@
 let Connection = require("../Connection");
 let Location = require("../Location");
+const R = require("ramda");
 
 /**
  * Standard ports for HTTP protocols.
@@ -10,7 +11,7 @@ let STANDARD_PORTS = {
 };
 
 function ensureTrailingColon(string) {
-    return string[string.length - 1] === ":" ? string : string + ":";
+    return string[string.length - 1] === ":" ? string : `${string}:`;
 }
 
 /**
@@ -46,7 +47,7 @@ function createLocation(nodeRequest) {
     let hostname = hostParts[0];
     let port = hostParts[1] || headers["x-forwarded-port"];
 
-    if (port == null) {
+    if (R.isNil(port)) {
         if (headers["x-forwarded-host"]) {
             port = STANDARD_PORTS[protocol];
         } else if (headers["x-forwarded-proto"]) {

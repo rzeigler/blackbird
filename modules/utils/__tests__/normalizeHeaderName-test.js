@@ -11,7 +11,7 @@ describe("normalizeHeaderName", function () {
     Object.keys(IrregularHeaderNames).forEach(function (key) {
         let headerName = IrregularHeaderNames[key];
 
-        it("correctly normalizes " + headerName, function () {
+        it(`correctly normalizes ${headerName}`, function () {
             expect(normalizeHeaderName(key)).toEqual(headerName);
         });
     });

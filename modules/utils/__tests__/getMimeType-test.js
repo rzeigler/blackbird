@@ -6,9 +6,9 @@ describe("getMimeType", function () {
 
     Object.keys(MimeTypes).forEach(function (type) {
         MimeTypes[type].forEach(function (ext) {
-            describe("when given a file with a \"" + ext + "\" extension", function () {
+            describe(`when given a file with a "${ext}" extension`, function () {
                 it("returns the correct mime type", function () {
-                    expect(getMimeType("file." + ext)).toEqual(type);
+                    expect(getMimeType(`file.${ext}`)).toEqual(type);
                 });
             });
         });

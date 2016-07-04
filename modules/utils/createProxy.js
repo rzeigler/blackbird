@@ -1,5 +1,6 @@
 let Location = require("../Location");
 let sendRequest = require("./sendRequest");
+const R = require("ramda");
 
 /**
  * A proxy is a function that is used to forward a request to
@@ -9,8 +10,9 @@ let sendRequest = require("./sendRequest");
  * used more conveniently through the mach.proxy middleware.
  */
 function createProxy(location) {
-    if (!(location instanceof Location))
+    if (!R.is(Location, location)) {
         location = new Location(location);
+    }
 
     return function (conn) {
     // Only concat the path from the connection so the protocol,

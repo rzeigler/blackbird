@@ -49,14 +49,16 @@ function serveApp(app, options) {
     }
 
     function shutdown() {
-        if (!options.quiet)
+        if (!options.quiet) {
             console.log(">> Shutting down...");
+        }
 
     // Force the process to exit if the server doesn't
     // close all connections within the given timeout.
         let timer = setTimeout(function () {
-            if (!options.quiet)
+            if (!options.quiet) {
                 console.log(">> Exiting");
+            }
 
             process.exit(0);
         }, options.timeout || 100);
@@ -75,15 +77,16 @@ function serveApp(app, options) {
 
         if (!options.quiet) {
             let address = nodeServer.address();
-            let message = ">> mach web server started on node " + process.versions.node + "\n";
+            let message = `>> mach web server started on node ${process.versions.node}\n"`;
 
             if (typeof address === "string") {
-                message += ">> Listening on " + address;
+                message += `>> Listening on ${address}`;
             } else {
-                message += ">> Listening on " + address.address;
+                message += `>> Listening on ${address.address}`;
 
-                if (address.port)
-                    message += ":" + address.port;
+                if (address.port) {
+                    message += `:${address.port}`;
+                }
             }
 
             message += ", use CTRL+C to stop";

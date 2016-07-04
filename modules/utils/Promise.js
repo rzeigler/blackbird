@@ -1,6 +1,3 @@
-let Promise = require("when/lib/Promise");
-
-if (process.env.NODE_ENV !== "production")
-    require("when/monitor")(Promise);
+let Promise = require("bluebird");
 
 module.exports = Promise;
