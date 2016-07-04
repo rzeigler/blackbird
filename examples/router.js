@@ -2,16 +2,16 @@ let mach = require("../modules");
 let app = mach.stack();
 
 app.use(mach.logger);
-app.use(mach.file, __dirname + "/..");
+app.use(mach.file, `${__dirname}/..`);
 app.map("/ex", function (app) {
     app.use(mach.file, __dirname);
 });
 
-app.get("/", function (request) {
+app.get("/", function () {
     return "Hello world!";
 });
 
-app.get("/motd", function (request) {
+app.get("/motd", function () {
     return "Do not go where the path may lead, go instead where there is no path and leave a trail.";
 });
 
