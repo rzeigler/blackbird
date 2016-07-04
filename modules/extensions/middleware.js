@@ -1,7 +1,8 @@
-var middleware = require('../middleware');
-
-module.exports = function (mach) {
-  for (var property in middleware)
-    if (middleware.hasOwnProperty(property))
-      mach[property] = middleware[property];
-};
+/*jslint node: true, es6: true*/
+module.exports = (function (_, middleware) {
+    "use strict";
+    return (mach) => { _.assign(mach, middleware); };
+}(
+    require("lodash"),
+    require('../middleware')
+));

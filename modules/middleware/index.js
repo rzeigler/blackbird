@@ -1,20 +1,28 @@
-module.exports = {
-  basicAuth       : require('./basicAuth'),
-  catch           : require('./catch'),
-  charset         : require('./charset'),
-  contentType     : require('./contentType'),
-  favicon         : require('./favicon'),
-  file            : require('./file'),
-  gzip            : require('./gzip'),
-  logger          : require('./logger'),
-  mapper          : require('./mapper'),
-  methodOverride  : require('./methodOverride'),
-  modified        : require('./modified'),
-  params          : require('./params'),
-  proxy           : require('./proxy'),
-  rewrite         : require('./rewrite'),
-  router          : require('./router'),
-  session         : require('./session'),
-  stack           : require('./stack'),
-  token           : require('./token')
-};
+/*jslint node: true, es6: true */
+module.exports = (function (R, requireLocal) {
+    "use strict";
+    const middlewares = [
+        "basicAuth",
+        "catch",
+        "charset",
+        "contentType",
+        "favicon",
+        "file",
+        "gzip",
+        "logger",
+        "mapper",
+        "methodOverride",
+        "modified",
+        "params",
+        "proxy",
+        "rewrite",
+        "router",
+        "session",
+        "stack",
+        "token"
+    ];
+    return R.mergeAll(R.map((e) => R.objOf(e, requireLocal(e)), middlewares));
+}(
+    require("ramda"),
+    require("../core/loading").locally(require)
+));
