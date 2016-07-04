@@ -3,6 +3,7 @@ let parseMediaValues = require("../utils/parseMediaValues");
 let qualityFactorForMediaValue = require("../utils/qualityFactorForMediaValue");
 let stringifyMediaValues = require("../utils/stringifyMediaValues");
 let Header = require("../Header");
+const R = require("ramda");
 
 function byHighestPrecedence(a, b) {
   // "*" gets least precedence, all others are equal
@@ -47,8 +48,9 @@ class AcceptCharset extends Header {
 
         let givenValue = parseMediaValue(charset);
         let matchingValues = values.filter(function (value) {
-            if (value.type === "*")
+            if (value.type === "*") {
                 return true;
+            }
 
             return value.type === givenValue.type;
         }).sort(byHighestPrecedence);
@@ -60,14 +62,16 @@ class AcceptCharset extends Header {
     // mentioned get a quality value of 0, except for ISO-8859-1, which gets a quality value of
     // 1 if not explicitly mentioned.
         if (givenValue.type === "iso-8859-1") {
-            if (matchingValues.length && matchingValues[0].type === "iso-8859-1")
+            if (matchingValues.length && matchingValues[0].type === "iso-8859-1") {
                 return qualityFactorForMediaValue(matchingValues[0]);
+            }
 
             return 1;
         }
 
-        if (!matchingValues.length)
+        if (R.isEmpty(matchingValues)) {
             return 0;
+        }
 
         return qualityFactorForMediaValue(matchingValues[0]);
     }
