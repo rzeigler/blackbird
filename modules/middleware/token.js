@@ -1,8 +1,8 @@
-var mach = require('../index');
-var makeToken = require('../utils/makeToken');
+var mach = require("../index");
+var makeToken = require("../utils/makeToken");
 
 mach.extend(
-  require('../extensions/server')
+  require("../extensions/server")
 );
 
 /**
@@ -10,10 +10,10 @@ mach.extend(
  * do not alter server data.
  */
 var SAFE_METHODS = {
-  GET: true,
-  HEAD: true,
-  OPTIONS: true,
-  TRACE: true
+    GET: true,
+    HEAD: true,
+    OPTIONS: true,
+    TRACE: true
 };
 
 /**
@@ -56,40 +56,40 @@ var SAFE_METHODS = {
  * anything and are safe.
  */
 function verifyToken(app, options) {
-  options = options || {};
+    options = options || {};
 
-  if (typeof options === 'string')
-    options = { paramName: options };
+    if (typeof options === "string")
+        options = { paramName: options };
 
-  var paramName = options.paramName || '_token';
-  var sessionKey = options.sessionKey || '_token';
-  var byteLength = options.byteLength || 32;
+    var paramName = options.paramName || "_token";
+    var sessionKey = options.sessionKey || "_token";
+    var byteLength = options.byteLength || 32;
 
-  return function (conn) {
-    var session = conn.session, params = conn.params;
+    return function (conn) {
+        var session = conn.session, params = conn.params;
 
-    if (!session) {
-      conn.onError(new Error('No session! Use mach.session in front of mach.token'));
-    } else if (!params) {
-      conn.onError(new Error('No params! Use mach.params in front of mach.token'));
-    } else {
-      var token = session[sessionKey];
+        if (!session) {
+            conn.onError(new Error("No session! Use mach.session in front of mach.token"));
+        } else if (!params) {
+            conn.onError(new Error("No params! Use mach.params in front of mach.token"));
+        } else {
+            var token = session[sessionKey];
 
       // Create a new session token if needed.
-      if (!token)
-        token = session[sessionKey] = makeToken(byteLength);
+            if (!token)
+                token = session[sessionKey] = makeToken(byteLength);
 
-      if (params[paramName] && params[paramName] === token)
-        return conn.call(app);
-    }
+            if (params[paramName] && params[paramName] === token)
+                return conn.call(app);
+        }
 
     // If the request is not a POST we assume it's not a form submission
     // and therefore not modifying anything. Pass it downstream.
-    if (SAFE_METHODS[conn.method] === true)
-      return conn.call(app);
+        if (SAFE_METHODS[conn.method] === true)
+            return conn.call(app);
 
-    conn.text(403, 'Forbidden');
-  };
+        conn.text(403, "Forbidden");
+    };
 }
 
 module.exports = verifyToken;

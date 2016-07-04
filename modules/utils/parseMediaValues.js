@@ -1,4 +1,4 @@
-var parseMediaValue = require('./parseMediaValue');
+var parseMediaValue = require("./parseMediaValue");
 
 /**
  * Parses a string containing multiple media values and returns an array
@@ -6,9 +6,9 @@ var parseMediaValue = require('./parseMediaValue');
  * the values of the Accept* family of HTTP headers.
  */
 function parseMediaValues(value, typeSeparator) {
-  return value.split(/\s*,\s*/).map(function (mediaValue) {
-    return parseMediaValue(mediaValue, typeSeparator);
-  });
+    return value.split(/\s*,\s*/).map(function (mediaValue) {
+        return parseMediaValue(mediaValue, typeSeparator);
+    });
 }
 
 module.exports = parseMediaValues;

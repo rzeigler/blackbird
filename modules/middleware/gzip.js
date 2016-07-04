@@ -1,17 +1,17 @@
-var zlib = require('zlib');
-var mach = require('../index');
+var zlib = require("zlib");
+var mach = require("../index");
 
 mach.extend(
-  require('../extensions/acceptEncoding')
+  require("../extensions/acceptEncoding")
 );
 
 var GZIP_MATCHER = /text|javascript|json/i;
 
 function shouldGzipContentType(contentType) {
-  if (!contentType || contentType === 'text/event-stream')
-    return false;
+    if (!contentType || contentType === "text/event-stream")
+        return false;
 
-  return GZIP_MATCHER.test(contentType);
+    return GZIP_MATCHER.test(contentType);
 }
 
 /**
@@ -19,20 +19,20 @@ function shouldGzipContentType(contentType) {
  * Options may be any of node's zlib options (see http://nodejs.org/api/zlib.html).
  */
 function gzip(app, options) {
-  return function (conn) {
-    return conn.call(app).then(function () {
-      var response = conn.response;
-      var headers = response.headers;
+    return function (conn) {
+        return conn.call(app).then(function () {
+            var response = conn.response;
+            var headers = response.headers;
 
-      if (shouldGzipContentType(headers['Content-Type']) && conn.acceptsEncoding('gzip')) {
-        response.content = response.content.pipe(zlib.createGzip(options));
+            if (shouldGzipContentType(headers["Content-Type"]) && conn.acceptsEncoding("gzip")) {
+                response.content = response.content.pipe(zlib.createGzip(options));
 
-        delete headers['Content-Length'];
-        headers['Content-Encoding'] = 'gzip';
-        headers['Vary'] = 'Accept-Encoding';
-      }
-    });
-  };
+                delete headers["Content-Length"];
+                headers["Content-Encoding"] = "gzip";
+                headers["Vary"] = "Accept-Encoding";
+            }
+        });
+    };
 }
 
 module.exports = gzip;

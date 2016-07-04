@@ -1,4 +1,4 @@
-var stripQuotes = require('../utils/stripQuotes');
+var stripQuotes = require("../utils/stripQuotes");
 
 /**
  * A middleware that automatically performs content-based HTTP caching in
@@ -17,33 +17,33 @@ var stripQuotes = require('../utils/stripQuotes');
  *   });
  */
 function modified(app) {
-  return function (conn) {
-    return conn.call(app).then(function () {
-      var request = conn.request, response = conn.response;
+    return function (conn) {
+        return conn.call(app).then(function () {
+            var request = conn.request, response = conn.response;
 
-      var ifNoneMatch = request.headers['If-None-Match'];
-      var etag = response.headers['ETag'];
+            var ifNoneMatch = request.headers["If-None-Match"];
+            var etag = response.headers["ETag"];
 
-      if (ifNoneMatch && etag && etag === stripQuotes(ifNoneMatch)) {
-        conn.status = 304;
-        response.content = '';
-        return;
-      }
+            if (ifNoneMatch && etag && etag === stripQuotes(ifNoneMatch)) {
+                conn.status = 304;
+                response.content = "";
+                return;
+            }
 
-      var ifModifiedSince = request.headers['If-Modified-Since'];
-      var lastModified = response.headers['Last-Modified'];
+            var ifModifiedSince = request.headers["If-Modified-Since"];
+            var lastModified = response.headers["Last-Modified"];
 
-      if (ifModifiedSince && lastModified) {
-        if (typeof lastModified === 'string')
-          lastModified = Date.parse(lastModified);
+            if (ifModifiedSince && lastModified) {
+                if (typeof lastModified === "string")
+                    lastModified = Date.parse(lastModified);
 
-        if (lastModified <= Date.parse(ifModifiedSince)) {
-          conn.status = 304;
-          response.content = '';
-        }
-      }
-    });
-  };
+                if (lastModified <= Date.parse(ifModifiedSince)) {
+                    conn.status = 304;
+                    response.content = "";
+                }
+            }
+        });
+    };
 }
 
 module.exports = modified;

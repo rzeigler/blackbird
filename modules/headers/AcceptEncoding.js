@@ -1,12 +1,12 @@
-var parseMediaValue = require('../utils/parseMediaValue');
-var parseMediaValues = require('../utils/parseMediaValues');
-var qualityFactorForMediaValue = require('../utils/qualityFactorForMediaValue');
-var stringifyMediaValues = require('../utils/stringifyMediaValues');
-var Header = require('../Header');
+var parseMediaValue = require("../utils/parseMediaValue");
+var parseMediaValues = require("../utils/parseMediaValues");
+var qualityFactorForMediaValue = require("../utils/qualityFactorForMediaValue");
+var stringifyMediaValues = require("../utils/stringifyMediaValues");
+var Header = require("../Header");
 
 function byHighestPrecedence(a, b) {
   // "*" gets least precedence, all others are equal
-  return a === '*' ? -1 : (b === '*' ? 1 : 0);
+    return a === "*" ? -1 : (b === "*" ? 1 : 0);
 }
 
 /**
@@ -17,41 +17,41 @@ function byHighestPrecedence(a, b) {
  */
 class AcceptEncoding extends Header {
 
-  constructor(value) {
-    super('Accept-Encoding', value);
-  }
+    constructor(value) {
+        super("Accept-Encoding", value);
+    }
 
   /**
    * Returns the value of this header as a string.
    */
-  get value() {
-    return stringifyMediaValues(this._mediaValues) || '';
-  }
+    get value() {
+        return stringifyMediaValues(this._mediaValues) || "";
+    }
 
-  set value(value) {
-    this._mediaValues = value ? parseMediaValues(value) : [];
-  }
+    set value(value) {
+        this._mediaValues = value ? parseMediaValues(value) : [];
+    }
 
   /**
    * Returns true if the given encoding is acceptable.
    */
-  accepts(encoding) {
-    return this.qualityFactorForEncoding(encoding) !== 0;
-  }
+    accepts(encoding) {
+        return this.qualityFactorForEncoding(encoding) !== 0;
+    }
 
   /**
    * Returns the quality factor for the given encoding.
    */
-  qualityFactorForEncoding(encoding) {
-    var values = this._mediaValues;
+    qualityFactorForEncoding(encoding) {
+        var values = this._mediaValues;
 
-    var givenValue = parseMediaValue(encoding);
-    var matchingValues = values.filter(function (value) {
-      if (value.type === '*')
-        return true;
+        var givenValue = parseMediaValue(encoding);
+        var matchingValues = values.filter(function (value) {
+            if (value.type === "*")
+                return true;
 
-      return value.type === givenValue.type;
-    }).sort(byHighestPrecedence);
+            return value.type === givenValue.type;
+        }).sort(byHighestPrecedence);
 
     // From RFC 2616:
     // The "identity" content-coding is always acceptable, unless
@@ -60,18 +60,18 @@ class AcceptEncoding extends Header {
     // not explicitly include the "identity" content-coding. If the
     // Accept-Encoding field-value is empty, then only the "identity"
     // encoding is acceptable.
-    if (givenValue.type === 'identity') {
-      if (matchingValues.length && matchingValues[0].type === 'identity')
+        if (givenValue.type === "identity") {
+            if (matchingValues.length && matchingValues[0].type === "identity")
+                return qualityFactorForMediaValue(matchingValues[0]);
+
+            return 1;
+        }
+
+        if (!matchingValues.length)
+            return 0;
+
         return qualityFactorForMediaValue(matchingValues[0]);
-
-      return 1;
     }
-
-    if (!matchingValues.length)
-      return 0;
-
-    return qualityFactorForMediaValue(matchingValues[0]);
-  }
 
 }
 

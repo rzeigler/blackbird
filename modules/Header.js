@@ -1,23 +1,23 @@
-var normalizeHeaderName = require('./utils/normalizeHeaderName');
+var normalizeHeaderName = require("./utils/normalizeHeaderName");
 
 class Header {
 
-  constructor(name, value) {
-    this.name = name;
-    this.value = value;
-  }
+    constructor(name, value) {
+        this.name = name;
+        this.value = value;
+    }
 
-  get name() {
-    return this._name;
-  }
+    get name() {
+        return this._name;
+    }
 
-  set name(value) {
-    this._name = normalizeHeaderName(value);
-  }
+    set name(value) {
+        this._name = normalizeHeaderName(value);
+    }
 
-  toString() {
-    return this.name + ': ' + this.value;
-  }
+    toString() {
+        return this.name + ": " + this.value;
+    }
 
 }
 

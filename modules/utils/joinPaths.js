@@ -1,1 +1,1 @@
-module.exports = require('path').join;
+module.exports = require("path").join;

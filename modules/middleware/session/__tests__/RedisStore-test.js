@@ -1,11 +1,11 @@
-var RedisStore = require('../RedisStore');
-var describeSessionStore = require('./describeSessionStore');
+var RedisStore = require("../RedisStore");
+var describeSessionStore = require("./describeSessionStore");
 
-describe('RedisStore', function () {
-  describeSessionStore(
+describe("RedisStore", function () {
+    describeSessionStore(
     new RedisStore({
-      secret: 'secret'
+        secret: "secret"
     }),
-    process.env.WITH_REDIS !== '1'
+    process.env.WITH_REDIS !== "1"
   );
 });

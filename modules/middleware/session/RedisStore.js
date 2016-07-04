@@ -1,33 +1,33 @@
-var d = require('describe-property');
-var redis = require('redis');
-var makeToken = require('../../utils/makeToken');
-var Promise = require('../../utils/Promise');
-var parseURL = require('../../utils/parseURL');
+var d = require("describe-property");
+var redis = require("redis");
+var makeToken = require("../../utils/makeToken");
+var Promise = require("../../utils/Promise");
+var parseURL = require("../../utils/parseURL");
 
 function sendCommand(client, command, args) {
-  args = args || [];
+    args = args || [];
 
-  return new Promise(function (resolve, reject) {
-    client.send_command(command, args, function (error, value) {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(value);
-      }
+    return new Promise(function (resolve, reject) {
+        client.send_command(command, args, function (error, value) {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(value);
+            }
+        });
     });
-  });
 }
 
 function makeUniqueKey(client, keyLength) {
-  var key = makeToken(keyLength);
+    var key = makeToken(keyLength);
 
   // Try to set an empty string to reserve the key.
-  return sendCommand(client, 'setnx', [ key, '' ]).then(function (result) {
-    if (result === 1)
-      return key; // The key was available.
+    return sendCommand(client, "setnx", [ key, "" ]).then(function (result) {
+        if (result === 1)
+            return key; // The key was available.
 
-    return makeUniqueKey(client, keyLength); // Try again.
-  });
+        return makeUniqueKey(client, keyLength); // Try again.
+    });
 }
 
 /**
@@ -58,73 +58,73 @@ function makeUniqueKey(client, keyLength) {
  * happens automatically.
  */
 function RedisStore(options) {
-  options = options || {};
+    options = options || {};
 
-  this.options = options;
-  this.keyLength = options.keyLength || 32;
-  this.ttl = options.expireAfter
+    this.options = options;
+    this.keyLength = options.keyLength || 32;
+    this.ttl = options.expireAfter
     ? (1000 * options.expireAfter) // expireAfter is given in seconds
     : 0;
 }
 
 Object.defineProperties(RedisStore.prototype, {
 
-  getClient: d(function () {
-    if (!this._client) {
-      var options = this.options;
+    getClient: d(function () {
+        if (!this._client) {
+            var options = this.options;
 
-      var hostname, port;
-      if (typeof options.url === 'string') {
-        var parsedURL = parseURL(options.url);
-        hostname = parsedURL.hostname;
-        port = parsedURL.port;
-      }
+            var hostname, port;
+            if (typeof options.url === "string") {
+                var parsedURL = parseURL(options.url);
+                hostname = parsedURL.hostname;
+                port = parsedURL.port;
+            }
 
-      this._client = redis.createClient(port, hostname, options);
-    }
+            this._client = redis.createClient(port, hostname, options);
+        }
 
-    return this._client;
-  }),
+        return this._client;
+    }),
 
-  load: d(function (value) {
-    return sendCommand(this.getClient(), 'get', [ value ]).then(function (json) {
-      return json ? JSON.parse(json) : {};
-    });
-  }),
+    load: d(function (value) {
+        return sendCommand(this.getClient(), "get", [ value ]).then(function (json) {
+            return json ? JSON.parse(json) : {};
+        });
+    }),
 
-  save: d(function (session) {
-    var client = this.getClient();
-    var keyLength = this.keyLength;
-    var ttl = this.ttl;
+    save: d(function (session) {
+        var client = this.getClient();
+        var keyLength = this.keyLength;
+        var ttl = this.ttl;
 
-    return Promise.resolve(session._id || makeUniqueKey(client, keyLength)).then(function (key) {
-      session._id = key;
+        return Promise.resolve(session._id || makeUniqueKey(client, keyLength)).then(function (key) {
+            session._id = key;
 
-      var json = JSON.stringify(session);
+            var json = JSON.stringify(session);
 
-      var promise;
-      if (ttl) {
-        promise = sendCommand(client, 'psetex', [ key, ttl, json ]);
-      } else {
-        promise = sendCommand(client, 'set', [ key, json ]);
-      }
+            var promise;
+            if (ttl) {
+                promise = sendCommand(client, "psetex", [ key, ttl, json ]);
+            } else {
+                promise = sendCommand(client, "set", [ key, json ]);
+            }
 
-      return promise.then(function () {
-        return key;
-      });
-    });
-  }),
+            return promise.then(function () {
+                return key;
+            });
+        });
+    }),
 
-  purge: d(function (key) {
-    if (key)
-      return sendCommand(this.getClient(), 'del', [ key ]);
+    purge: d(function (key) {
+        if (key)
+            return sendCommand(this.getClient(), "del", [ key ]);
 
-    return sendCommand(this.getClient(), 'flushdb');
-  }),
+        return sendCommand(this.getClient(), "flushdb");
+    }),
 
-  destroy: d(function () {
-    return sendCommand(this.getClient(), 'quit');
-  })
+    destroy: d(function () {
+        return sendCommand(this.getClient(), "quit");
+    })
 
 });
 

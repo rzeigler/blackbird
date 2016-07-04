@@ -1,1 +1,1 @@
-module.exports = require('qs').stringify;
+module.exports = require("qs").stringify;

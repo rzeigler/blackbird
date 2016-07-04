@@ -4,5 +4,5 @@ module.exports = (function (_, middleware) {
     return (mach) => { _.assign(mach, middleware); };
 }(
     require("lodash"),
-    require('../middleware')
+    require("../middleware")
 ));

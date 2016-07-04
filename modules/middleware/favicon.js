@@ -3,11 +3,11 @@
  * Defaults to returning an empty 404.
  */
 function favicon(app, response) {
-  response = response || 404;
+    response = response || 404;
 
-  return function (conn) {
-    return conn.pathname === '/favicon.ico' ? response : conn.call(app);
-  };
+    return function (conn) {
+        return conn.pathname === "/favicon.ico" ? response : conn.call(app);
+    };
 }
 
 module.exports = favicon;

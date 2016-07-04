@@ -12,19 +12,19 @@ var paramMatcher = /:([a-zA-Z_$][a-zA-Z0-9_$]*)|[*.()\[\]\\+|{}^$]/g;
  * order they appear in the route string.
  */
 function compileRoute(route, keys) {
-  var source = route.replace(paramMatcher, function (match, key) {
-    if (key) {
-      keys.push(key);
-      return '([^./?#]+)';
-    } else if (match === '*') {
-      keys.push('splat');
-      return '(.*?)';
-    } else {
-      return '\\' + match;
-    }
-  });
+    var source = route.replace(paramMatcher, function (match, key) {
+        if (key) {
+            keys.push(key);
+            return "([^./?#]+)";
+        } else if (match === "*") {
+            keys.push("splat");
+            return "(.*?)";
+        } else {
+            return "\\" + match;
+        }
+    });
 
-  return new RegExp('^' + source + '$', 'i');
+    return new RegExp("^" + source + "$", "i");
 }
 
 module.exports = compileRoute;

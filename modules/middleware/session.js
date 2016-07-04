@@ -1,12 +1,12 @@
-var mach = require('../index');
-var Promise = require('../utils/Promise');
-var decodeBase64 = require('../utils/decodeBase64');
-var encodeBase64 = require('../utils/encodeBase64');
-var makeHash = require('../utils/makeHash');
-var CookieStore = require('./session/CookieStore');
+var mach = require("../index");
+var Promise = require("../utils/Promise");
+var decodeBase64 = require("../utils/decodeBase64");
+var encodeBase64 = require("../utils/encodeBase64");
+var makeHash = require("../utils/makeHash");
+var CookieStore = require("./session/CookieStore");
 
 mach.extend(
-  require('../extensions/server')
+  require("../extensions/server")
 );
 
 /**
@@ -19,14 +19,14 @@ var MAX_COOKIE_SIZE = 4096;
  * in the session cookie to retrieve the session data again on the next request.
  */
 function encodeSession(session, store, secret) {
-  return store.save(session).then(function (data) {
-    var cookie = encodeBase64(data + '--' + makeHashWithSecret(data, secret));
+    return store.save(session).then(function (data) {
+        var cookie = encodeBase64(data + "--" + makeHashWithSecret(data, secret));
 
-    if (cookie.length > MAX_COOKIE_SIZE)
-      throw new Error('Cookie data size exceeds 4kb; content dropped');
+        if (cookie.length > MAX_COOKIE_SIZE)
+            throw new Error("Cookie data size exceeds 4kb; content dropped");
 
-    return cookie;
-  });
+        return cookie;
+    });
 }
 
 /**
@@ -35,20 +35,20 @@ function encodeSession(session, store, secret) {
  * tampered with. If it has, returns null.
  */
 function decodeCookie(cookie, store, secret) {
-  var value = decodeBase64(cookie);
-  var index = value.lastIndexOf('--');
-  var data = value.substring(0, index);
-  var hash = value.substring(index + 2);
+    var value = decodeBase64(cookie);
+    var index = value.lastIndexOf("--");
+    var data = value.substring(0, index);
+    var hash = value.substring(index + 2);
 
   // Verify the cookie has not been tampered with.
-  if (hash === makeHashWithSecret(data, secret))
-    return store.load(data);
+    if (hash === makeHashWithSecret(data, secret))
+        return store.load(data);
 
-  return null;
+    return null;
 }
 
 function makeHashWithSecret(data, secret) {
-  return makeHash(secret ? data + secret : data);
+    return makeHash(secret ? data + secret : data);
 }
 
 /**
@@ -85,60 +85,60 @@ function makeHashWithSecret(data, secret) {
  * session cookie payload exceeds that the session will be dropped.
  */
 function session(app, options) {
-  options = options || {};
+    options = options || {};
 
-  if (typeof options === 'string')
-    options = { secret: options };
+    if (typeof options === "string")
+        options = { secret: options };
 
-  var secret = options.secret;
-  var name = options.name || '_session';
-  var path = options.path || '/';
-  var domain = options.domain;
-  var expireAfter = options.expireAfter || 0;
-  var httpOnly = ('httpOnly' in options) ? (options.httpOnly || false) : true;
-  var secure = options.secure || false;
-  var store = options.store || new CookieStore(options);
+    var secret = options.secret;
+    var name = options.name || "_session";
+    var path = options.path || "/";
+    var domain = options.domain;
+    var expireAfter = options.expireAfter || 0;
+    var httpOnly = ("httpOnly" in options) ? (options.httpOnly || false) : true;
+    var secure = options.secure || false;
+    var store = options.store || new CookieStore(options);
 
-  if (!secret) {
-    console.warn([
-      'WARNING: There was no "secret" option provided to mach.session! This poses',
-      'a security vulnerability because session data will be stored on clients without',
-      'any server-side verification that it has not been tampered with. It is strongly',
-      'recommended that you set a secret to prevent exploits that may be attempted using',
-      'carefully crafted cookies.'
-    ].join('\n'));
-  }
+    if (!secret) {
+        console.warn([
+            "WARNING: There was no \"secret\" option provided to mach.session! This poses",
+            "a security vulnerability because session data will be stored on clients without",
+            "any server-side verification that it has not been tampered with. It is strongly",
+            "recommended that you set a secret to prevent exploits that may be attempted using",
+            "carefully crafted cookies."
+        ].join("\n"));
+    }
 
-  return function (conn) {
-    if (conn.session)
-      return conn.call(app); // Don't overwrite the existing session.
+    return function (conn) {
+        if (conn.session)
+            return conn.call(app); // Don't overwrite the existing session.
 
-    var cookie = conn.request.cookies[name];
+        var cookie = conn.request.cookies[name];
 
-    return Promise.resolve(cookie && decodeCookie(cookie, store, secret)).then(function (object) {
-      conn.session = object || {};
+        return Promise.resolve(cookie && decodeCookie(cookie, store, secret)).then(function (object) {
+            conn.session = object || {};
 
-      return conn.call(app).then(function () {
-        return Promise.resolve(conn.session && encodeSession(conn.session, store, secret)).then(function (newCookie) {
-          var expires = expireAfter && new Date(Date.now() + (expireAfter * 1000));
+            return conn.call(app).then(function () {
+                return Promise.resolve(conn.session && encodeSession(conn.session, store, secret)).then(function (newCookie) {
+                    var expires = expireAfter && new Date(Date.now() + (expireAfter * 1000));
 
           // Don't bother setting the cookie if its value
           // hasn't changed and there is no expires date.
-          if (newCookie === cookie && !expires)
-            return;
+                    if (newCookie === cookie && !expires)
+                        return;
 
-          conn.response.setCookie(name, {
-            value: newCookie,
-            path: path,
-            domain: domain,
-            expires: expires,
-            httpOnly: httpOnly,
-            secure: secure
-          });
+                    conn.response.setCookie(name, {
+                        value: newCookie,
+                        path: path,
+                        domain: domain,
+                        expires: expires,
+                        httpOnly: httpOnly,
+                        secure: secure
+                    });
+                }, conn.onError);
+            });
         }, conn.onError);
-      });
-    }, conn.onError);
-  };
+    };
 }
 
 module.exports = session;

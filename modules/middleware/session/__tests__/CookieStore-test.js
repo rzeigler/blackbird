@@ -1,10 +1,10 @@
-var CookieStore = require('../CookieStore');
-var describeSessionStore = require('./describeSessionStore');
+var CookieStore = require("../CookieStore");
+var describeSessionStore = require("./describeSessionStore");
 
-describe('CookieStore', function () {
-  describeSessionStore(
+describe("CookieStore", function () {
+    describeSessionStore(
     new CookieStore({
-      secret: 'secret'
+        secret: "secret"
     })
   );
 });

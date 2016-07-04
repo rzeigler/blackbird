@@ -1,4 +1,4 @@
-var createRequestHandler = require('./createRequestHandler');
+var createRequestHandler = require("./createRequestHandler");
 
 /**
  * Binds the given app to the "request" event of the given node HTTP server
@@ -6,9 +6,9 @@ var createRequestHandler = require('./createRequestHandler');
  * the request handler function.
  */
 function bindApp(app, nodeServer) {
-  var requestHandler = createRequestHandler(app);
-  nodeServer.on('request', requestHandler);
-  return requestHandler;
+    var requestHandler = createRequestHandler(app);
+    nodeServer.on("request", requestHandler);
+    return requestHandler;
 }
 
 module.exports = bindApp;

@@ -1,1 +1,1 @@
-module.exports = require('bodec').encodeBase64;
+module.exports = require("bodec").encodeBase64;

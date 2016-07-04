@@ -1,3 +1,3 @@
-require('../modules').serve(function () {
-  return 'Hello world!';
+require("../modules").serve(function () {
+    return "Hello world!";
 });

@@ -1,10 +1,10 @@
 /* jshint -W084 */
-var d = require('describe-property');
-var objectAssign = require('object-assign');
-var compileRoute = require('../utils/compileRoute');
-var isRegExp = require('../utils/isRegExp');
-var makeParams = require('../utils/makeParams');
-var RoutingProperties = require('../utils/RoutingProperties');
+var d = require("describe-property");
+var objectAssign = require("object-assign");
+var compileRoute = require("../utils/compileRoute");
+var isRegExp = require("../utils/isRegExp");
+var makeParams = require("../utils/makeParams");
+var RoutingProperties = require("../utils/RoutingProperties");
 
 var LEADING_HTTP_METHOD_MATCHER = /^(DELETE|GET|HEAD|OPTIONS|POST|PUT|TRACE)\s+(.+)$/;
 
@@ -64,40 +64,40 @@ var LEADING_HTTP_METHOD_MATCHER = /^(DELETE|GET|HEAD|OPTIONS|POST|PUT|TRACE)\s+(
  */
 function createRouter(app, map) {
   // Allow mach.router(map)
-  if (typeof app === 'object') {
-    map = app;
-    app = null;
-  }
-
-  var routes = {};
-
-  function router(conn) {
-    var method = conn.method;
-    var routesToTry = (routes[method] || []).concat(routes.ANY || []);
-
-    var route, match;
-    for (var i = 0, len = routesToTry.length; i < len; ++i) {
-      route = routesToTry[i];
-
-      // Try to match the route.
-      if (match = route.pattern.exec(conn.pathname)) {
-        var params = makeParams(route.keys, Array.prototype.slice.call(match, 1));
-
-        if (conn.params) {
-          // Route params take precedence above all others.
-          objectAssign(conn.params, params);
-        } else {
-          conn.params = params;
-        }
-
-        return conn.call(route.app);
-      }
+    if (typeof app === "object") {
+        map = app;
+        app = null;
     }
 
-    return conn.call(app);
-  }
+    var routes = {};
 
-  Object.defineProperties(router, {
+    function router(conn) {
+        var method = conn.method;
+        var routesToTry = (routes[method] || []).concat(routes.ANY || []);
+
+        var route, match;
+        for (var i = 0, len = routesToTry.length; i < len; ++i) {
+            route = routesToTry[i];
+
+      // Try to match the route.
+            if (match = route.pattern.exec(conn.pathname)) {
+                var params = makeParams(route.keys, Array.prototype.slice.call(match, 1));
+
+                if (conn.params) {
+          // Route params take precedence above all others.
+                    objectAssign(conn.params, params);
+                } else {
+                    conn.params = params;
+                }
+
+                return conn.call(route.app);
+            }
+        }
+
+        return conn.call(app);
+    }
+
+    Object.defineProperties(router, {
 
     /**
      * Adds a new route that runs the given app when the pattern matches the
@@ -109,71 +109,71 @@ function createRouter(app, map) {
      *   route('/users/:id', [ 'GET', 'PUT' ], app)
      *   route('GET /users/:id', app)
      */
-    route: d(function (pattern, methods, app) {
-      if (typeof methods === 'function') {
-        app = methods;
-        methods = null;
-      }
+        route: d(function (pattern, methods, app) {
+            if (typeof methods === "function") {
+                app = methods;
+                methods = null;
+            }
 
-      if (typeof app !== 'function')
-        throw new Error('Route needs an app');
+            if (typeof app !== "function")
+                throw new Error("Route needs an app");
 
-      if (typeof methods === 'string') {
-        methods = [ methods ];
-      } else if (!Array.isArray(methods)) {
-        methods = [];
-      }
+            if (typeof methods === "string") {
+                methods = [ methods ];
+            } else if (!Array.isArray(methods)) {
+                methods = [];
+            }
 
-      var keys = [];
+            var keys = [];
 
-      if (typeof pattern === 'string') {
-        var match;
+            if (typeof pattern === "string") {
+                var match;
 
-        if (match = pattern.match(LEADING_HTTP_METHOD_MATCHER)) {
-          methods.push(match[1]);
-          pattern = match[2];
-        }
+                if (match = pattern.match(LEADING_HTTP_METHOD_MATCHER)) {
+                    methods.push(match[1]);
+                    pattern = match[2];
+                }
 
-        pattern = compileRoute(pattern, keys);
-      }
+                pattern = compileRoute(pattern, keys);
+            }
 
-      if (!isRegExp(pattern))
-        throw new Error('Route pattern must be a RegExp');
+            if (!isRegExp(pattern))
+                throw new Error("Route pattern must be a RegExp");
 
-      var route = { pattern: pattern, keys: keys, app: app };
+            var route = { pattern: pattern, keys: keys, app: app };
 
-      if (methods.length === 0)
-        methods.push('ANY');
+            if (methods.length === 0)
+                methods.push("ANY");
 
-      methods.forEach(function (method) {
-        var upperMethod = method.toUpperCase();
+            methods.forEach(function (method) {
+                var upperMethod = method.toUpperCase();
 
-        if (routes[upperMethod]) {
-          routes[upperMethod].push(route);
-        } else {
-          routes[upperMethod] = [ route ];
-        }
-      });
-    }),
+                if (routes[upperMethod]) {
+                    routes[upperMethod].push(route);
+                } else {
+                    routes[upperMethod] = [ route ];
+                }
+            });
+        }),
 
     /**
      * Sets the given app as the default for this router.
      */
-    run: d(function (downstreamApp) {
-      app = downstreamApp;
-    })
+        run: d(function (downstreamApp) {
+            app = downstreamApp;
+        })
 
-  });
+    });
 
   // Allow app.use(mach.router, map)
-  if (typeof map === 'object')
-    for (var route in map)
-      if (map.hasOwnProperty(route))
-        router.route(route, map[route]);
+    if (typeof map === "object")
+        for (var route in map)
+            if (map.hasOwnProperty(route))
+                router.route(route, map[route]);
 
-  Object.defineProperties(router, RoutingProperties);
+    Object.defineProperties(router, RoutingProperties);
 
-  return router;
+    return router;
 }
 
 module.exports = createRouter;

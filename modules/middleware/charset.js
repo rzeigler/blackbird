@@ -3,16 +3,16 @@
  * header of the response if none is already specified.
  */
 function charset(app, defaultCharset) {
-  defaultCharset = defaultCharset || 'utf-8';
+    defaultCharset = defaultCharset || "utf-8";
 
-  return function (conn) {
-    return conn.call(app).then(function () {
-      var response = conn.response;
+    return function (conn) {
+        return conn.call(app).then(function () {
+            var response = conn.response;
 
-      if (response.contentType && response.charset == null)
-        response.charset = defaultCharset;
-    });
-  };
+            if (response.contentType && response.charset == null)
+                response.charset = defaultCharset;
+        });
+    };
 }
 
 module.exports = charset;
