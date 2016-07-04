@@ -7,17 +7,18 @@ module.exports = {
         mocha: true
     },
     rules: {
-        // enable additional rules
-        indent: ["error", 4],
-        "linebreak-style": ["error", "unix"],
-        quotes: ["error", "double"],
-        "quote-props": ["error", "as-needed"],
-        semi: ["error", "always"],
-
-        // override default options for rules from base configurations
-        "no-cond-assign": ["error", "always"],
-
-        // disable rules from base configurations
-        "no-console": "off"
+        indent:                                 ["error", 4],
+        "linebreak-style":                      ["error", "unix"],
+        quotes:                                 ["error", "double"],
+        "quote-props":                          ["error", "as-needed"],
+        semi:                                   ["error", "always"],
+        curly:                                  ["error", "all"],
+        "no-trailing-spaces":                   ["error", { skipBlankLines: false }],
+        "space-before-function-paren":          ["error", { anonymous: "always", named: "never" }],
+        "one-var":                              ["error", {var: "always"}],
+        "prefer-template":                      ["error"],
+        eqeqeq:                                 ["error", "always"],
+        "no-cond-assign":                       ["error", "always"],
+        "no-console":                           "off"
     }
 };
