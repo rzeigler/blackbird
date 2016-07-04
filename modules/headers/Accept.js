@@ -4,11 +4,14 @@ let qualityFactorForMediaValue = require("../utils/qualityFactorForMediaValue");
 let stringifyMediaValues = require("../utils/stringifyMediaValues");
 let stringifyMediaValueWithoutQualityFactor = require("../utils/stringifyMediaValueWithoutQualityFactor");
 let Header = require("../Header");
+const R = require("ramda");
 
 function paramsMatchIgnoringQualityFactor(params, givenParams) {
-    for (let paramName in params)
-        if (params.hasOwnProperty(paramName) && paramName !== "q" && givenParams[paramName] !== params[paramName])
+    for (let paramName in params) {
+        if (params.hasOwnProperty(paramName) && paramName !== "q" && givenParams[paramName] !== params[paramName]) {
             return false;
+        }
+    }
 
     return true;
 }
@@ -61,8 +64,9 @@ class Accept extends Header {
     qualityFactorForMediaType(mediaType) {
         let values = this._mediaValues;
 
-        if (!values.length)
+        if (R.isEmpty(values)) {
             return 1;
+        }
 
         let givenValue = parseMediaValue(mediaType);
         let matchingValues = values.filter(function (value) {
@@ -71,8 +75,9 @@ class Accept extends Header {
              paramsMatchIgnoringQualityFactor(value.params, givenValue.params);
         }).sort(byHighestPrecedence);
 
-        if (!matchingValues.length)
+        if (R.isEmpty(matchingValues)) {
             return 0;
+        }
 
         return qualityFactorForMediaValue(matchingValues[0]);
     }

@@ -3,6 +3,7 @@ let parseMediaValues = require("../utils/parseMediaValues");
 let qualityFactorForMediaValue = require("../utils/qualityFactorForMediaValue");
 let stringifyMediaValues = require("../utils/stringifyMediaValues");
 let Header = require("../Header");
+const R = require("ramda");
 
 function byHighestPrecedence(a, b) {
   // "*" gets least precedence, all others are equal
@@ -47,8 +48,9 @@ class AcceptEncoding extends Header {
 
         let givenValue = parseMediaValue(encoding);
         let matchingValues = values.filter(function (value) {
-            if (value.type === "*")
+            if (value.type === "*") {
                 return true;
+            }
 
             return value.type === givenValue.type;
         }).sort(byHighestPrecedence);
@@ -61,14 +63,16 @@ class AcceptEncoding extends Header {
     // Accept-Encoding field-value is empty, then only the "identity"
     // encoding is acceptable.
         if (givenValue.type === "identity") {
-            if (matchingValues.length && matchingValues[0].type === "identity")
+            if (matchingValues.length && matchingValues[0].type === "identity") {
                 return qualityFactorForMediaValue(matchingValues[0]);
+            }
 
             return 1;
         }
 
-        if (!matchingValues.length)
+        if (R.isEmpty(matchingValues)) {
             return 0;
+        }
 
         return qualityFactorForMediaValue(matchingValues[0]);
     }
