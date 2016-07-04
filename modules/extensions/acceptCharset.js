@@ -20,8 +20,9 @@ module.exports = function (mach) {
      * Returns true if the client accepts the given character set.
      */
         acceptsCharset: d(function (charset) {
-            if (!this._acceptCharsetHeader)
+            if (!this._acceptCharsetHeader) {
                 this._acceptCharsetHeader = new AcceptCharset(this.headers["Accept-Charset"]);
+            }
 
             return this._acceptCharsetHeader.accepts(charset);
         })

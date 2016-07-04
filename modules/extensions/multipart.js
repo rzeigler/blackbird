@@ -28,7 +28,9 @@ module.exports = function (mach) {
      */
         multipartBoundary: d.gs(function () {
             let contentType = this.contentType, match;
-            return (contentType && (match = contentType.match(BOUNDARY_MATCHER))) ? (match[1] || match[2]) : null;
+            if (!contentType) { return null; }
+            match = contentType.match(BOUNDARY_MATCHER);
+            return match ? (match[1] || match[2]) : null;
         }),
 
     /**
@@ -38,7 +40,9 @@ module.exports = function (mach) {
      */
         name: d.gs(function () {
             let contentDisposition = this.headers["Content-Disposition"], match;
-            return (contentDisposition && (match = contentDisposition.match(NAME_MATCHER))) ? match[1] : this.headers["Content-ID"];
+            if (!contentDisposition) { return null; }
+            match = contentDisposition.match(NAME_MATCHER);
+            return match ? match[1] : this.headers["Content-ID"];
         }),
 
     /**
@@ -60,8 +64,9 @@ module.exports = function (mach) {
           // Match unquoted filenames.
                     match = contentDisposition.match(/filename=([^;]+)/i);
 
-                    if (match)
+                    if (match) {
                         filename = decodeURIComponent(match[1]);
+                    }
                 }
 
                 if (filename) {

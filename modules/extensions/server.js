@@ -5,6 +5,7 @@ let getMimeType = require("../utils/getMimeType");
 let filterProperties = require("../utils/filterProperties");
 let stringifyCookie = require("../utils/stringifyCookie");
 let saveToDisk = require("../utils/saveToDisk");
+const R = require("ramda");
 
 module.exports = function (mach) {
     mach.bind = require("../utils/bindApp");
@@ -109,14 +110,15 @@ module.exports = function (mach) {
      *   conn.send(fs.createReadStream('welcome.txt'));
      */
         send: d(function (status, content) {
-            if (typeof status === "number") {
+            if (R.is(Number, status)) {
                 this.status = status;
             } else {
                 content = status;
             }
 
-            if (content != null)
+            if (R.isNil(content)) {
                 this.response.content = content;
+            }
         }),
 
     /**
@@ -147,8 +149,9 @@ module.exports = function (mach) {
                 json = status;
             }
 
-            if (json != null)
+            if (R.isNil(json)) {
                 this.response.content = typeof json === "string" ? json : JSON.stringify(json);
+            }
         }),
 
     /**
@@ -176,8 +179,9 @@ module.exports = function (mach) {
 
             let response = this.response;
 
-            if (typeof options === "string")
+            if (R.is(String, options)) {
                 options = { path: options };
+            }
 
             if (options.content) {
                 response.content = options.content;
@@ -187,8 +191,9 @@ module.exports = function (mach) {
                 throw new Error("Missing file content/path");
             }
 
-            if (options.type || options.path)
+            if (options.type || options.path) {
                 response.headers["Content-Type"] = options.type || getMimeType(options.path);
+            }
 
             if (options.length || options.size) {
                 response.headers["Content-Length"] = options.length || options.size;

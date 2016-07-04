@@ -17,13 +17,13 @@ describe("extensions/statusText", function () {
         });
 
         Object.keys(StatusCodes).forEach(function (status) {
-            describe("with status " + status, function () {
+            describe(`with status ${status}`, function () {
                 beforeEach(function () {
                     conn.status = status;
                 });
 
                 it("has the correct statusText", function () {
-                    expect(conn.statusText).toEqual(status + " " + StatusCodes[status]);
+                    expect(conn.statusText).toEqual(`${status} ${StatusCodes[status]}`);
                 });
             });
         });

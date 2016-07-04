@@ -20,8 +20,9 @@ module.exports = function (mach) {
      * Returns true if the client accepts the given content encoding.
      */
         acceptsEncoding: d(function (encoding) {
-            if (!this._acceptEncodingHeader)
+            if (!this._acceptEncodingHeader) {
                 this._acceptEncodingHeader = new AcceptEncoding(this.headers["Accept-Encoding"]);
+            }
 
             return this._acceptEncodingHeader.accepts(encoding);
         })
