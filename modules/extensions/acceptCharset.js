@@ -1,5 +1,5 @@
-var d = require("describe-property");
-var AcceptCharset = require("../headers/AcceptCharset");
+let d = require("describe-property");
+let AcceptCharset = require("../headers/AcceptCharset");
 
 module.exports = function (mach) {
     Object.defineProperties(mach.Connection.prototype, {

@@ -1,10 +1,10 @@
-var expect = require("expect");
-var callApp = require("../../utils/callApp");
-var methodOverride = require("../methodOverride");
-var params = require("../params");
+let expect = require("expect");
+let callApp = require("../../utils/callApp");
+let methodOverride = require("../methodOverride");
+let params = require("../params");
 
 describe("middleware/methodOverride", function () {
-    var app = methodOverride(function (conn) {
+    let app = methodOverride(function (conn) {
         return conn.method;
     });
 
@@ -20,7 +20,7 @@ describe("middleware/methodOverride", function () {
         });
 
         describe("but the params middleware is not in front", function () {
-            var errors, errorHandler;
+            let errors, errorHandler;
             beforeEach(function () {
                 errors = [];
                 errorHandler = function (error) {

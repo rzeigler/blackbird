@@ -1,10 +1,10 @@
 /* jshint -W058 */
-var createConnection = require("./createConnection");
+let createConnection = require("./createConnection");
 
 /**
  * HTTP status codes that don't have entities.
  */
-var STATUS_WITHOUT_CONTENT = {
+let STATUS_WITHOUT_CONTENT = {
     100: true,
     101: true,
     204: true,
@@ -19,13 +19,13 @@ var STATUS_WITHOUT_CONTENT = {
  */
 function createRequestHandler(app) {
     return function (nodeRequest, nodeResponse) {
-        var conn = createConnection(nodeRequest);
+        let conn = createConnection(nodeRequest);
 
         conn.call(app).then(function () {
-            var isHead = conn.method === "HEAD";
-            var isEmpty = isHead || STATUS_WITHOUT_CONTENT[conn.status] === true;
-            var headers = conn.response.headers;
-            var content = conn.response.content;
+            let isHead = conn.method === "HEAD";
+            let isEmpty = isHead || STATUS_WITHOUT_CONTENT[conn.status] === true;
+            let headers = conn.response.headers;
+            let content = conn.response.content;
 
             if (isEmpty && !isHead)
                 headers["Content-Length"] = 0;

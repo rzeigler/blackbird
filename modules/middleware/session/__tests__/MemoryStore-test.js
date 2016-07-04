@@ -1,5 +1,5 @@
-var MemoryStore = require("../MemoryStore");
-var describeSessionStore = require("./describeSessionStore");
+let MemoryStore = require("../MemoryStore");
+let describeSessionStore = require("./describeSessionStore");
 
 describe("MemoryStore", function () {
     describeSessionStore(

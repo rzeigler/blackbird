@@ -1,4 +1,4 @@
-var stringifyMediaValue = require("./stringifyMediaValue");
+let stringifyMediaValue = require("./stringifyMediaValue");
 
 /**
  * Creates a string from objects containing media values. Such a string may

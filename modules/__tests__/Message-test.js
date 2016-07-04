@@ -1,12 +1,12 @@
 /* jshint -W058 */
-var assert = require("assert");
-var expect = require("expect");
-var bodec = require("bodec");
-var MaxLengthExceededError = require("../utils/MaxLengthExceededError");
-var Message = require("../Message");
+let assert = require("assert");
+let expect = require("expect");
+let bodec = require("bodec");
+let MaxLengthExceededError = require("../utils/MaxLengthExceededError");
+let Message = require("../Message");
 
 describe("a Message with \"Content-Type: text/plain\"", function () {
-    var message;
+    let message;
     beforeEach(function () {
         message = new Message(null, { "Content-Type": "text/plain" });
     });
@@ -17,7 +17,7 @@ describe("a Message with \"Content-Type: text/plain\"", function () {
 });
 
 describe("a Message with \"Content-Type: text/html; charset=utf-8\"", function () {
-    var message;
+    let message;
     beforeEach(function () {
         message = new Message(null, { "Content-Type": "text/html; charset=utf-8" });
     });
@@ -60,7 +60,7 @@ describe("a Message with \"Content-Type: text/html; charset=utf-8\"", function (
 });
 
 describe("Message#addHeader", function () {
-    var message;
+    let message;
     beforeEach(function () {
         message = new Message;
     });
@@ -93,7 +93,7 @@ describe("Message#addHeader", function () {
 });
 
 describe("Message#bufferContent", function () {
-    var message;
+    let message;
     beforeEach(function () {
         message = new Message;
     });
@@ -116,7 +116,7 @@ describe("Message#bufferContent", function () {
 
 describe("Message#parseContent", function () {
 
-    var message;
+    let message;
     beforeEach(function () {
         message = new Message;
     });
@@ -135,7 +135,7 @@ describe("Message#parseContent", function () {
 
     describe("when using Content-Type: application/json", function () {
         describe("when the content is valid JSON", function () {
-            var object;
+            let object;
             beforeEach(function () {
                 object = { a: 1, b: "some value" };
                 message = new Message(

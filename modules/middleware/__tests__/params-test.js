@@ -1,6 +1,6 @@
-var expect = require("expect");
-var callApp = require("../../utils/callApp");
-var paramsMiddleware = require("../params");
+let expect = require("expect");
+let callApp = require("../../utils/callApp");
+let paramsMiddleware = require("../params");
 
 function stringifyParams(conn) {
     return JSON.stringify(conn.params);
@@ -15,7 +15,7 @@ describe("middleware/params", function () {
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 content: "a=c"
             }).then(function (conn) {
-                var params = JSON.parse(conn.responseText);
+                let params = JSON.parse(conn.responseText);
                 expect(params.a).toEqual("c");
                 expect(params.c).toEqual("d");
             });

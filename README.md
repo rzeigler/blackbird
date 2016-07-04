@@ -14,7 +14,7 @@
 Writing a "Hello world" HTTP server in Mach is simple.
 
 ```js
-var mach = require('mach');
+let mach = require('mach');
 
 mach.serve(function (conn) {
   return "Hello world!";
@@ -26,12 +26,12 @@ All mach applications receive a single argument: a [Connection](https://github.c
 Applications can send responses asynchronously using JavaScript promises. Simply return a promise from your app that resolves when the response is ready.
 
 ```js
-var app = mach.stack();
+let app = mach.stack();
 
 app.use(mach.logger);
 
 app.get('/users/:id', function (conn) {
-  var id = conn.params.id;
+  let id = conn.params.id;
 
   return getUser(id).then(function (user) {
     conn.json(200, user);
@@ -67,7 +67,7 @@ Please check out the source of a middleware file for detailed documentation on h
 Writing an HTTP client is similarly straightforward.
 
 ```js
-var mach = require('mach');
+let mach = require('mach');
 
 mach.get('http://twitter.com').then(function (conn) {
   console.log(conn.status, conn.response.headers, conn.responseText);
@@ -77,7 +77,7 @@ mach.get('http://twitter.com').then(function (conn) {
 By default client responses are buffered and stored in the `responseText` connection variable for convenience. However, if you'd like to access the raw stream of binary data in the response, you can use the `binary` flag.
 
 ```js
-var fs = require('fs');
+let fs = require('fs');
 
 mach.get({
   url: 'http://twitter.com',
@@ -93,7 +93,7 @@ mach.get({
 Because all Mach applications share the same signature, it's easy to combine them in interesting ways. Mach's HTTP proxy implementation illustrates this beautifully: a proxy is simply an application that forwards the request somewhere else.
 
 ```js
-var proxyApp = mach.createProxy('http://twitter.com');
+let proxyApp = mach.createProxy('http://twitter.com');
 
 // In a server environment we can use the mach.proxy middleware
 // to proxy all requests to the proxy's location.

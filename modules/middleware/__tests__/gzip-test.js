@@ -1,12 +1,12 @@
-var expect = require("expect");
-var gzip = require("../gzip");
-var callApp = require("../../utils/callApp");
-var getFixture = require("./getFixture");
+let expect = require("expect");
+let gzip = require("../gzip");
+let callApp = require("../../utils/callApp");
+let getFixture = require("./getFixture");
 
 describe("middleware/gzip", function () {
-    var contents = getFixture("test.txt");
-    var gzippedContents = getFixture("test.txt.gz");
-    var app = gzip(function () {
+    let contents = getFixture("test.txt");
+    let gzippedContents = getFixture("test.txt.gz");
+    let app = gzip(function () {
         return {
             headers: { "Content-Type": "text/plain" },
             content: contents
@@ -41,7 +41,7 @@ describe("middleware/gzip", function () {
     });
 
     describe("when the response is a text/event-stream", function () {
-        var app = gzip(function () {
+        let app = gzip(function () {
             return {
                 headers: { "Content-Type": "text/event-stream" },
                 content: contents

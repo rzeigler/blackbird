@@ -1,4 +1,4 @@
-var parseMediaValue = require("./parseMediaValue");
+let parseMediaValue = require("./parseMediaValue");
 
 /**
  * Parses a string containing multiple media values and returns an array

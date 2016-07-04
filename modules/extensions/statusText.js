@@ -1,5 +1,5 @@
-var d = require("describe-property");
-var StatusCodes = require("../StatusCodes");
+let d = require("describe-property");
+let StatusCodes = require("../StatusCodes");
 
 module.exports = function (mach) {
     Object.defineProperties(mach.Connection.prototype, {

@@ -1,6 +1,6 @@
-var expect = require("expect");
-var callApp = require("../../utils/callApp");
-var proxy = require("../proxy");
+let expect = require("expect");
+let callApp = require("../../utils/callApp");
+let proxy = require("../proxy");
 
 function ok() {
     return "ok";

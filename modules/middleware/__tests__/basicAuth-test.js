@@ -1,6 +1,6 @@
-var expect = require("expect");
-var callApp = require("../../utils/callApp");
-var basicAuth = require("../basicAuth");
+let expect = require("expect");
+let callApp = require("../../utils/callApp");
+let basicAuth = require("../basicAuth");
 
 function ok() {
     return 200;
@@ -11,7 +11,7 @@ function validateCredentials(username, password) {
 }
 
 describe("middleware/basicAuth", function () {
-    var app;
+    let app;
     beforeEach(function () {
         app = basicAuth(ok, validateCredentials);
     });

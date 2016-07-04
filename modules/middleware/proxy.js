@@ -1,6 +1,6 @@
-var Location = require("../Location");
-var createProxy = require("../utils/createProxy");
-var isRegExp = require("../utils/isRegExp");
+let Location = require("../Location");
+let createProxy = require("../utils/createProxy");
+let isRegExp = require("../utils/isRegExp");
 
 function returnTrue() {
     return true;
@@ -13,8 +13,8 @@ function returnTrue() {
  *
  * Example:
  *
- *   var mach = require('mach');
- *   var app = mach.stack();
+ *   let mach = require('mach');
+ *   let app = mach.stack();
  *
  *   // Forward all requests to example.com.
  *   app.use(mach.proxy, 'http://www.example.com');
@@ -28,7 +28,7 @@ function proxy(app, target, test) {
     test = test || returnTrue;
 
     if (isRegExp(test)) {
-        var pattern = test;
+        let pattern = test;
         test = function (conn) {
             return pattern.test(conn.href);
         };
@@ -36,7 +36,7 @@ function proxy(app, target, test) {
         throw new Error("mach.proxy needs a test function");
     }
 
-    var targetApp;
+    let targetApp;
     if (typeof target === "function") {
         targetApp = target;
     } else if (typeof target === "string" || target instanceof Location) {

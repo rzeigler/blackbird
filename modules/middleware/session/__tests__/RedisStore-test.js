@@ -1,5 +1,5 @@
-var RedisStore = require("../RedisStore");
-var describeSessionStore = require("./describeSessionStore");
+let RedisStore = require("../RedisStore");
+let describeSessionStore = require("./describeSessionStore");
 
 describe("RedisStore", function () {
     describeSessionStore(

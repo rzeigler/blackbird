@@ -1,7 +1,7 @@
-var Promise = require("./Promise");
+let Promise = require("./Promise");
 
 function resolveProperties(object) {
-    var keys = Object.keys(object);
+    let keys = Object.keys(object);
 
     return Promise.all(
     keys.map(function (key) {

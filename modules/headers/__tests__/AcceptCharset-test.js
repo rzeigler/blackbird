@@ -1,10 +1,10 @@
 /* jshint -W058 */
-var assert = require("assert");
-var expect = require("expect");
-var AcceptCharset = require("../AcceptCharset");
+let assert = require("assert");
+let expect = require("expect");
+let AcceptCharset = require("../AcceptCharset");
 
 describe("AcceptCharset", function () {
-    var header;
+    let header;
 
     describe("with no value", function () {
         beforeEach(function () {

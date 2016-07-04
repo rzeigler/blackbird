@@ -1,12 +1,12 @@
 /* jshint -W058 */
-var d = require("describe-property");
-var isBinary = require("bodec").isBinary;
-var decodeBase64 = require("./utils/decodeBase64");
-var encodeBase64 = require("./utils/encodeBase64");
-var stringifyQuery = require("./utils/stringifyQuery");
-var Promise = require("./utils/Promise");
-var Location = require("./Location");
-var Message = require("./Message");
+let d = require("describe-property");
+let isBinary = require("bodec").isBinary;
+let decodeBase64 = require("./utils/decodeBase64");
+let encodeBase64 = require("./utils/encodeBase64");
+let stringifyQuery = require("./utils/stringifyQuery");
+let Promise = require("./utils/Promise");
+let Location = require("./Location");
+let Message = require("./Message");
 
 function locationPropertyAlias(name) {
     return d.gs(function () {
@@ -76,7 +76,7 @@ function defaultApp(conn) {
 function Connection(options) {
     options = options || {};
 
-    var location;
+    let location;
     if (typeof options === "string") {
         location = options; // options may be a URL string.
     } else if (options.location || options.url) {
@@ -154,11 +154,11 @@ Object.defineProperties(Connection.prototype, {
    * if no auth was provided.
    */
     auth: d.gs(function () {
-        var header = this.request.headers["Authorization"];
+        let header = this.request.headers["Authorization"];
 
         if (header) {
-            var parts = header.split(" ", 2);
-            var scheme = parts[0];
+            let parts = header.split(" ", 2);
+            let scheme = parts[0];
 
             if (scheme.toLowerCase() === "basic")
                 return decodeBase64(parts[1]);
@@ -168,7 +168,7 @@ Object.defineProperties(Connection.prototype, {
 
         return this.location.auth;
     }, function (value) {
-        var headers = this.request.headers;
+        let headers = this.request.headers;
 
         if (value && typeof value === "string") {
             headers["Authorization"] = "Basic " + encodeBase64(value);
@@ -203,7 +203,7 @@ Object.defineProperties(Connection.prototype, {
     call: d(function (app) {
         app = app || defaultApp;
 
-        var conn = this;
+        let conn = this;
 
         try {
             return Promise.resolve(app(conn)).then(function (value) {

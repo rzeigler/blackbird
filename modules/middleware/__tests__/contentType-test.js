@@ -1,6 +1,6 @@
-var expect = require("expect");
-var callApp = require("../../utils/callApp");
-var contentType = require("../contentType");
+let expect = require("expect");
+let callApp = require("../../utils/callApp");
+let contentType = require("../contentType");
 
 function ok() {
     return 200;

@@ -15,7 +15,7 @@ function stringifyCookie(name, options) {
     if (typeof options === "string")
         options = { value: options };
 
-    var cookie = encodeURIComponent(name) + "=" + encodeURIComponent(options.value || "");
+    let cookie = encodeURIComponent(name) + "=" + encodeURIComponent(options.value || "");
 
     if (options.domain)
         cookie += "; domain=" + options.domain;

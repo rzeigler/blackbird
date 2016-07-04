@@ -1,9 +1,9 @@
-var d = require("describe-property");
-var makeToken = require("../../utils/makeToken");
-var Promise = require("../../utils/Promise");
+let d = require("describe-property");
+let makeToken = require("../../utils/makeToken");
+let Promise = require("../../utils/Promise");
 
 function makeUniqueKey(sessions, keyLength) {
-    var key;
+    let key;
     do {
         key = makeToken(keyLength);
     } while (sessions[key]);
@@ -12,11 +12,11 @@ function makeUniqueKey(sessions, keyLength) {
 }
 
 function pruneStore(store, interval) {
-    var timer = setInterval(function () {
-        var now = Date.now();
+    let timer = setInterval(function () {
+        let now = Date.now();
 
-        var session;
-        for (var key in store.sessions) {
+        let session;
+        for (let key in store.sessions) {
             session = store.sessions[key];
 
             if (session._expiry && session._expiry < now)
@@ -58,7 +58,7 @@ function MemoryStore(options) {
 Object.defineProperties(MemoryStore.prototype, {
 
     load: d(function (value) {
-        var session = this.sessions[value];
+        let session = this.sessions[value];
 
         if (!session)
             return Promise.resolve({});
@@ -71,7 +71,7 @@ Object.defineProperties(MemoryStore.prototype, {
     }),
 
     save: d(function (session) {
-        var key = session._id;
+        let key = session._id;
         if (!key)
             key = session._id = makeUniqueKey(this.sessions, this.keyLength);
 

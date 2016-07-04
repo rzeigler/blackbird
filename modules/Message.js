@@ -1,23 +1,23 @@
-var bodec = require("bodec");
-var d = require("describe-property");
-var Stream = require("bufferedstream");
-var bufferStream = require("./utils/bufferStream");
-var normalizeHeaderName = require("./utils/normalizeHeaderName");
-var parseCookie = require("./utils/parseCookie");
-var parseQuery = require("./utils/parseQuery");
+let bodec = require("bodec");
+let d = require("describe-property");
+let Stream = require("bufferedstream");
+let bufferStream = require("./utils/bufferStream");
+let normalizeHeaderName = require("./utils/normalizeHeaderName");
+let parseCookie = require("./utils/parseCookie");
+let parseQuery = require("./utils/parseQuery");
 
 /**
  * The default content to use for new messages.
  */
-var DEFAULT_CONTENT = bodec.fromString("");
+let DEFAULT_CONTENT = bodec.fromString("");
 
 /**
  * The default maximum length (in bytes) to use in Message#parseContent.
  */
-var DEFAULT_MAX_CONTENT_LENGTH = Math.pow(2, 20); // 1M
+let DEFAULT_MAX_CONTENT_LENGTH = Math.pow(2, 20); // 1M
 
-var HEADERS_LINE_SEPARATOR = /\r?\n/;
-var HEADER_SEPARATOR = ": ";
+let HEADERS_LINE_SEPARATOR = /\r?\n/;
+let HEADER_SEPARATOR = ": ";
 
 function defaultParser(message, maxLength) {
     return message.stringifyContent(maxLength);
@@ -59,7 +59,7 @@ Object.defineProperties(Message.prototype, {
 
         if (typeof value === "string") {
             value.split(HEADERS_LINE_SEPARATOR).forEach(function (line) {
-                var index = line.indexOf(HEADER_SEPARATOR);
+                let index = line.indexOf(HEADER_SEPARATOR);
 
                 if (index === -1) {
                     this.addHeader(line, true);
@@ -68,7 +68,7 @@ Object.defineProperties(Message.prototype, {
                 }
             }, this);
         } else if (value != null) {
-            for (var headerName in value)
+            for (let headerName in value)
                 if (value.hasOwnProperty(headerName))
                     this.addHeader(headerName, value[headerName]);
         }
@@ -94,7 +94,7 @@ Object.defineProperties(Message.prototype, {
     addHeader: d(function (headerName, value) {
         headerName = normalizeHeaderName(headerName);
 
-        var headers = this.headers;
+        let headers = this.headers;
         if (headerName in headers) {
             if (Array.isArray(headers[headerName])) {
                 headers[headerName].push(value);
@@ -111,17 +111,17 @@ Object.defineProperties(Message.prototype, {
    */
     cookies: d.gs(function () {
         if (!this._cookies) {
-            var header = this.headers["Cookie"];
+            let header = this.headers["Cookie"];
 
             if (header) {
-                var cookies = parseCookie(header);
+                let cookies = parseCookie(header);
 
         // From RFC 2109:
         // If multiple cookies satisfy the criteria above, they are ordered in
         // the Cookie header such that those with more specific Path attributes
         // precede those with less specific. Ordering with respect to other
         // attributes (e.g., Domain) is unspecified.
-                for (var cookieName in cookies)
+                for (let cookieName in cookies)
                     if (Array.isArray(cookies[cookieName]))
                         cookies[cookieName] = cookies[cookieName][0] || "";
 
@@ -151,7 +151,7 @@ Object.defineProperties(Message.prototype, {
    * See http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7
    */
     mediaType: d.gs(function () {
-        var contentType = this.contentType, match;
+        let contentType = this.contentType, match;
         return (contentType && (match = contentType.match(/^([^;,]+)/))) ? match[1].toLowerCase() : null;
     }, function (value) {
         this.contentType = value + (this.charset ? ";charset=" + this.charset : "");
@@ -164,7 +164,7 @@ Object.defineProperties(Message.prototype, {
    * See http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.4
    */
     charset: d.gs(function () {
-        var contentType = this.contentType, match;
+        let contentType = this.contentType, match;
         return (contentType && (match = contentType.match(/\bcharset=([\w-]+)/))) ? match[1] : null;
     }, function (value) {
         this.contentType = this.mediaType + (value ? ";charset=" + value : "");
@@ -242,7 +242,7 @@ Object.defineProperties(Message.prototype, {
         if (typeof maxLength !== "number")
             maxLength = DEFAULT_MAX_CONTENT_LENGTH;
 
-        var parser = Message.PARSERS[this.mediaType] || defaultParser;
+        let parser = Message.PARSERS[this.mediaType] || defaultParser;
         this._parsedContent = parser(this, maxLength);
 
         return this._parsedContent;

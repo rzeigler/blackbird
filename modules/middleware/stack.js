@@ -1,13 +1,13 @@
-var d = require("describe-property");
-var RoutingProperties = require("../utils/RoutingProperties");
-var createMapper = require("./mapper");
-var createRouter = require("./router");
+let d = require("describe-property");
+let RoutingProperties = require("../utils/RoutingProperties");
+let createMapper = require("./mapper");
+let createRouter = require("./router");
 
 function mapperCreator(mappings) {
     return function (app) {
         app = createMapper(app);
 
-        for (var i = 0, len = mappings.length; i < len; ++i)
+        for (let i = 0, len = mappings.length; i < len; ++i)
             app.map.apply(app, mappings[i]);
 
         return app;
@@ -18,7 +18,7 @@ function routerCreator(routes) {
     return function (app) {
         app = createRouter(app);
 
-        for (var i = 0, len = routes.length; i < len; ++i)
+        for (let i = 0, len = routes.length; i < len; ++i)
             app.route.apply(app, routes[i]);
 
         return app;
@@ -40,7 +40,7 @@ function routerCreator(routes) {
  * is received, all middleware, mappings, and routes run in the order they are
  * defined in the stack, top to bottom.
  *
- *   var app = mach.stack();
+ *   let app = mach.stack();
  *
  *   app.use(mach.gzip);
  *   app.use(mach.file, __dirname + '/public');
@@ -69,8 +69,8 @@ function routerCreator(routes) {
  * the stack doesn't change between requests, this happens only once.
  */
 function createStack(app) {
-    var layers = [], mappings = [], routes = [];
-    var compiledApp;
+    let layers = [], mappings = [], routes = [];
+    let compiledApp;
 
     function compile(app) {
         if (routes.length)
@@ -79,7 +79,7 @@ function createStack(app) {
         if (mappings.length)
             app = mapperCreator(mappings)(app);
 
-        var index = layers.length;
+        let index = layers.length;
 
         while (index)
             app = layers[--index].call(this, app);
@@ -100,7 +100,7 @@ function createStack(app) {
      * stack is compiled.
      */
         use: d(function (middleware) {
-            var args = Array.prototype.slice.call(arguments, 1);
+            let args = Array.prototype.slice.call(arguments, 1);
 
             if (mappings.length)
                 layers.push(mapperCreator(mappings.splice(0, mappings.length)));

@@ -1,5 +1,5 @@
-var mach = require("../index");
-var makeToken = require("../utils/makeToken");
+let mach = require("../index");
+let makeToken = require("../utils/makeToken");
 
 mach.extend(
   require("../extensions/server")
@@ -9,7 +9,7 @@ mach.extend(
  * The set of HTTP request methods that are considered safe because they
  * do not alter server data.
  */
-var SAFE_METHODS = {
+let SAFE_METHODS = {
     GET: true,
     HEAD: true,
     OPTIONS: true,
@@ -61,19 +61,19 @@ function verifyToken(app, options) {
     if (typeof options === "string")
         options = { paramName: options };
 
-    var paramName = options.paramName || "_token";
-    var sessionKey = options.sessionKey || "_token";
-    var byteLength = options.byteLength || 32;
+    let paramName = options.paramName || "_token";
+    let sessionKey = options.sessionKey || "_token";
+    let byteLength = options.byteLength || 32;
 
     return function (conn) {
-        var session = conn.session, params = conn.params;
+        let session = conn.session, params = conn.params;
 
         if (!session) {
             conn.onError(new Error("No session! Use mach.session in front of mach.token"));
         } else if (!params) {
             conn.onError(new Error("No params! Use mach.params in front of mach.token"));
         } else {
-            var token = session[sessionKey];
+            let token = session[sessionKey];
 
       // Create a new session token if needed.
             if (!token)

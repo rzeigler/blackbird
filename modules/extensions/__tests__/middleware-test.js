@@ -1,6 +1,6 @@
-var expect = require("expect");
-var mach = require("../../index");
-var middleware = require("../../middleware");
+let expect = require("expect");
+let mach = require("../../index");
+let middleware = require("../../middleware");
 
 describe("extensions/middleware", function () {
 

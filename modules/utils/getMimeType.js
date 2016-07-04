@@ -1,5 +1,5 @@
-var MimeTypes = require("../MimeTypes");
-var ExtTypes = {};
+let MimeTypes = require("../MimeTypes");
+let ExtTypes = {};
 
 Object.keys(MimeTypes).forEach(function (type) {
     MimeTypes[type].forEach(function (ext) {
@@ -7,11 +7,11 @@ Object.keys(MimeTypes).forEach(function (type) {
     });
 });
 
-var DEFAULT_TYPE = "application/octet-stream";
-var EXT_MATCHER = /\.(\w+)$/;
+let DEFAULT_TYPE = "application/octet-stream";
+let EXT_MATCHER = /\.(\w+)$/;
 
 function getMimeType(file, defaultType) {
-    var match = file.match(EXT_MATCHER);
+    let match = file.match(EXT_MATCHER);
     return (match && ExtTypes[match[1]]) || defaultType || DEFAULT_TYPE;
 }
 

@@ -1,5 +1,5 @@
-var Connection = require("../Connection");
-var Promise = require("./Promise");
+let Connection = require("../Connection");
+let Promise = require("./Promise");
 
 /**
  * Creates a new Connection using the given options and sends
@@ -25,7 +25,7 @@ var Promise = require("./Promise");
 function callApp(app, options, modifier) {
     options = options || {};
 
-    var c = new Connection(options);
+    let c = new Connection(options);
 
     return Promise.resolve(modifier ? modifier(c) : c).then(function (conn) {
         if (conn == null || !(conn instanceof Connection))

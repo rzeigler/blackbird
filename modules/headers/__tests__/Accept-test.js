@@ -1,10 +1,10 @@
 /* jshint -W058 */
-var assert = require("assert");
-var expect = require("expect");
-var Accept = require("../Accept");
+let assert = require("assert");
+let expect = require("expect");
+let Accept = require("../Accept");
 
 describe("Accept", function () {
-    var header;
+    let header;
 
     describe("with no value", function () {
         beforeEach(function () {

@@ -1,11 +1,11 @@
-var http = require("http");
-var https = require("https");
-var bindApp = require("./bindApp");
+let http = require("http");
+let https = require("https");
+let bindApp = require("./bindApp");
 
 /**
  * The default port that node servers bind to.
  */
-var DEFAULT_PORT = 5000;
+let DEFAULT_PORT = 5000;
 
 /**
  * Creates and starts a node HTTP server that serves the given app.
@@ -41,7 +41,7 @@ function serveApp(app, options) {
         options = { socket: options };
     }
 
-    var nodeServer;
+    let nodeServer;
     if (options.key && options.cert) {
         nodeServer = https.createServer({ key: options.key, cert: options.cert });
     } else {
@@ -54,7 +54,7 @@ function serveApp(app, options) {
 
     // Force the process to exit if the server doesn't
     // close all connections within the given timeout.
-        var timer = setTimeout(function () {
+        let timer = setTimeout(function () {
             if (!options.quiet)
                 console.log(">> Exiting");
 
@@ -74,8 +74,8 @@ function serveApp(app, options) {
         process.once("SIGTERM", shutdown);
 
         if (!options.quiet) {
-            var address = nodeServer.address();
-            var message = ">> mach web server started on node " + process.versions.node + "\n";
+            let address = nodeServer.address();
+            let message = ">> mach web server started on node " + process.versions.node + "\n";
 
             if (typeof address === "string") {
                 message += ">> Listening on " + address;

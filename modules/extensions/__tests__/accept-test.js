@@ -1,5 +1,5 @@
-var expect = require("expect");
-var mach = require("../../index");
+let expect = require("expect");
+let mach = require("../../index");
 
 describe("extensions/accept", function () {
 
@@ -8,7 +8,7 @@ describe("extensions/accept", function () {
     });
 
     describe("a message with an Accept header", function () {
-        var message;
+        let message;
         beforeEach(function () {
             message = new mach.Message(null, {
                 Accept: "application/json"

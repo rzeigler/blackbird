@@ -1,20 +1,20 @@
-var assert = require("assert");
-var expect = require("expect");
-var callApp = require("../../utils/callApp");
-var params = require("../params");
-var session = require("../session");
-var stack = require("../stack");
-var token = require("../token");
+let assert = require("assert");
+let expect = require("expect");
+let callApp = require("../../utils/callApp");
+let params = require("../params");
+let session = require("../session");
+let stack = require("../stack");
+let token = require("../token");
 
 function extractCookie(setCookie) {
-    var match = setCookie.match(/_session=[^;]+/);
+    let match = setCookie.match(/_session=[^;]+/);
     assert(match);
     return match[0];
 }
 
 describe("middleware/token", function () {
 
-    var app = stack();
+    let app = stack();
     app.use(session, { secret: "foo" });
     app.use(params);
     app.use(token);
@@ -36,8 +36,8 @@ describe("middleware/token", function () {
         it("passes the request downstream", function () {
       // Call it twice. First time is to get the token and cookie.
             return callApp(app).then(function (conn) {
-                var cookie = extractCookie(conn.response.headers["Set-Cookie"]);
-                var token = conn.responseText;
+                let cookie = extractCookie(conn.response.headers["Set-Cookie"]);
+                let token = conn.responseText;
 
                 return callApp(app, {
                     method: "POST",

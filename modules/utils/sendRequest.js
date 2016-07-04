@@ -1,12 +1,12 @@
-var http = require("http");
-var https = require("https");
-var AbortablePromise = require("./AbortablePromise");
+let http = require("http");
+let https = require("https");
+let AbortablePromise = require("./AbortablePromise");
 
 function sendRequest(conn, location) {
-    var transport = location.protocol === "https:" ? https : http;
+    let transport = location.protocol === "https:" ? https : http;
 
     return new AbortablePromise(function (resolve, reject, onAbort) {
-        var nodeRequest = transport.request({
+        let nodeRequest = transport.request({
             method: conn.method,
             protocol: location.protocol,
             auth: location.auth,

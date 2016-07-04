@@ -1,4 +1,4 @@
-var normalizeHeaderName = require("../utils/normalizeHeaderName");
+let normalizeHeaderName = require("../utils/normalizeHeaderName");
 
 /**
  * A middleware that overrides the method of the request to a value that was
@@ -14,7 +14,7 @@ var normalizeHeaderName = require("../utils/normalizeHeaderName");
  *
  * with an app that uses methodOverride:
  *
- *   var app = mach.stack();
+ *   let app = mach.stack();
  *   app.use(mach.params);
  *   app.use(mach.methodOverride);
  *   app.run(function (request) {
@@ -39,11 +39,11 @@ function methodOverride(app, options) {
     if (typeof options === "string")
         options = { paramName: options };
 
-    var paramName = options.paramName || "_method";
-    var headerName = normalizeHeaderName(options.headerName || "X-Http-Method-Override");
+    let paramName = options.paramName || "_method";
+    let headerName = normalizeHeaderName(options.headerName || "X-Http-Method-Override");
 
     return function (conn) {
-        var method;
+        let method;
         if (conn.request.headers[headerName]) {
             method = conn.request.headers[headerName];
         } else if (!conn.params) {

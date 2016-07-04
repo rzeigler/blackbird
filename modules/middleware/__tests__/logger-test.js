@@ -1,7 +1,7 @@
-var assert = require("assert");
-var expect = require("expect");
-var callApp = require("../../utils/callApp");
-var logger = require("../logger");
+let assert = require("assert");
+let expect = require("expect");
+let callApp = require("../../utils/callApp");
+let logger = require("../logger");
 
 function zeroLength() {
     return {
@@ -11,7 +11,7 @@ function zeroLength() {
 
 describe("middleware/logger", function () {
     describe("when a response has Content-Length of 100", function () {
-        var messages, messageHandler;
+        let messages, messageHandler;
         beforeEach(function () {
             messages = [];
             messageHandler = function (message) {
@@ -23,10 +23,10 @@ describe("middleware/logger", function () {
             return callApp(logger(zeroLength, messageHandler)).then(function (conn) {
                 assert(messages[0]);
 
-                var match = messages[0].match(/\b(\d+) ([0-9\.]+)\b$/);
+                let match = messages[0].match(/\b(\d+) ([0-9\.]+)\b$/);
                 assert(match);
 
-                var contentLength = match[1];
+                let contentLength = match[1];
                 expect(contentLength).toEqual("0");
             });
         });

@@ -1,6 +1,6 @@
-var fs = require("fs");
-var crypto = require("crypto");
-var Promise = require("./Promise");
+let fs = require("fs");
+let crypto = require("crypto");
+let Promise = require("./Promise");
 
 function generateETag(path) {
     return new Promise(function (resolve, reject) {

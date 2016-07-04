@@ -1,13 +1,13 @@
-var path = require("path");
-var TMP_DIR = require("os").tmpDir();
+let path = require("path");
+let TMP_DIR = require("os").tmpDir();
 
 function makeTemporaryPath(prefix) {
     prefix = prefix || "";
 
-    var random = (Math.random() * 0x100000000 + 1).toString(36);
-    var now = new Date();
-    var date = "" + now.getYear() + now.getMonth() + now.getDate();
-    var name = [ prefix, date, "-", process.pid, "-", random ].join("");
+    let random = (Math.random() * 0x100000000 + 1).toString(36);
+    let now = new Date();
+    let date = "" + now.getYear() + now.getMonth() + now.getDate();
+    let name = [ prefix, date, "-", process.pid, "-", random ].join("");
 
     return path.join(TMP_DIR, name);
 }
