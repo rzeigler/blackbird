@@ -1,26 +1,26 @@
-var expect = require('expect');
-var mach = require('../../index');
+var expect = require("expect");
+var mach = require("../../index");
 
-describe('extensions/acceptLanguage', function () {
+describe("extensions/acceptLanguage", function () {
 
-  beforeEach(function () {
-    mach.extend(require('../acceptLanguage'));
-  });
-
-  describe('a message with an Accept-Language header', function () {
-    var message;
     beforeEach(function () {
-      message = new mach.Message(null, {
-        'Accept-Language': 'jp'
-      });
+        mach.extend(require("../acceptLanguage"));
     });
 
-    it('accepts acceptable languages', function () {
-      expect(message.acceptsLanguage('jp')).toBe(true);
-    });
+    describe("a message with an Accept-Language header", function () {
+        var message;
+        beforeEach(function () {
+            message = new mach.Message(null, {
+                "Accept-Language": "jp"
+            });
+        });
 
-    it('does not accept unacceptable languages', function () {
-      expect(message.acceptsLanguage('da')).toBe(false);
+        it("accepts acceptable languages", function () {
+            expect(message.acceptsLanguage("jp")).toBe(true);
+        });
+
+        it("does not accept unacceptable languages", function () {
+            expect(message.acceptsLanguage("da")).toBe(false);
+        });
     });
-  });
 });
