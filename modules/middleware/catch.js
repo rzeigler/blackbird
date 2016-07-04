@@ -10,14 +10,14 @@
  *   });
  */
 function catchError(app) {
-  return function (conn) {
-    return conn.call(app).then(undefined, function (reason) {
-      if (reason instanceof Error)
-        throw reason;
-      
-      return reason;
-    });
-  };
+    return function (conn) {
+        return conn.call(app).then(undefined, function (reason) {
+            if (reason instanceof Error)
+                throw reason;
+
+            return reason;
+        });
+    };
 }
 
 module.exports = catchError;

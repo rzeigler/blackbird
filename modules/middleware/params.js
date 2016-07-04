@@ -1,9 +1,9 @@
-var objectAssign = require('object-assign');
-var mach = require('../index');
-var MaxLengthExceededError = require('../utils/MaxLengthExceededError');
+var objectAssign = require("object-assign");
+var mach = require("../index");
+var MaxLengthExceededError = require("../utils/MaxLengthExceededError");
 
 mach.extend(
-  require('../extensions/server')
+  require("../extensions/server")
 );
 
 /**
@@ -23,30 +23,30 @@ mach.extend(
  * conn.getParams inside your app instead.
  */
 function parseParams(app, options) {
-  options = options || {};
+    options = options || {};
 
-  if (typeof options === 'number')
-    options = { maxLength: options };
+    if (typeof options === "number")
+        options = { maxLength: options };
 
-  var maxLength = options.maxLength;
+    var maxLength = options.maxLength;
 
-  return function (conn) {
-    return conn.getParams(maxLength).then(function (params) {
-      if (conn.params) {
+    return function (conn) {
+        return conn.getParams(maxLength).then(function (params) {
+            if (conn.params) {
         // Route params take precedence over content params.
-        conn.params = objectAssign(params, conn.params);
-      } else {
-        conn.params = params;
-      }
+                conn.params = objectAssign(params, conn.params);
+            } else {
+                conn.params = params;
+            }
 
-      return conn.call(app);
-    }, function (error) {
-      if (error instanceof MaxLengthExceededError)
-        return conn.text(413, 'Request Entity Too Large');
+            return conn.call(app);
+        }, function (error) {
+            if (error instanceof MaxLengthExceededError)
+                return conn.text(413, "Request Entity Too Large");
 
-      throw error;
-    });
-  };
+            throw error;
+        });
+    };
 }
 
 module.exports = parseParams;

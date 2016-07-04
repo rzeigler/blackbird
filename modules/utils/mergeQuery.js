@@ -1,1 +1,1 @@
-module.exports = require('qs/lib/utils').merge;
+module.exports = require("qs/lib/utils").merge;

@@ -1,1 +1,1 @@
-module.exports = require('qs').parse;
+module.exports = require("qs").parse;

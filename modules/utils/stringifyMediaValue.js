@@ -12,27 +12,27 @@
  *     "unicode-1-1;q=0.8"
  */
 function stringifyMediaValue(value, typeSeparator) {
-  typeSeparator = typeSeparator || '/';
+    typeSeparator = typeSeparator || "/";
 
-  var string = value.type || '*';
+    var string = value.type || "*";
 
-  if (value.subtype)
-    string += typeSeparator + value.subtype;
+    if (value.subtype)
+        string += typeSeparator + value.subtype;
 
-  if (value.params) {
-    var params = value.params;
+    if (value.params) {
+        var params = value.params;
 
-    for (var paramName in params) {
-      if (params.hasOwnProperty(paramName)) {
-        string += ';' + paramName;
+        for (var paramName in params) {
+            if (params.hasOwnProperty(paramName)) {
+                string += ";" + paramName;
 
-        if (params[paramName] != null)
-          string += '=' + params[paramName];
-      }
+                if (params[paramName] != null)
+                    string += "=" + params[paramName];
+            }
+        }
     }
-  }
 
-  return string;
+    return string;
 }
 
 module.exports = stringifyMediaValue;

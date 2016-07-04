@@ -3,21 +3,21 @@
  * filtered by the functions in propertyTypes.
  */
 function filterProperties(object, propertyTypes) {
-  var properties = {};
+    var properties = {};
 
-  var type, value;
-  for (var property in object) {
-    type = propertyTypes[property];
+    var type, value;
+    for (var property in object) {
+        type = propertyTypes[property];
 
-    if (typeof type === 'function' && object.hasOwnProperty(property)) {
-      value = type(object[property]);
+        if (typeof type === "function" && object.hasOwnProperty(property)) {
+            value = type(object[property]);
 
-      if (value !== undefined)
-        properties[property] = value;
+            if (value !== undefined)
+                properties[property] = value;
+        }
     }
-  }
 
-  return properties;
+    return properties;
 }
 
 module.exports = filterProperties;

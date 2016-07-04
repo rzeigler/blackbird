@@ -1,6 +1,6 @@
-var http = require('http');
-var https = require('https');
-var bindApp = require('./bindApp');
+var http = require("http");
+var https = require("https");
+var bindApp = require("./bindApp");
 
 /**
  * The default port that node servers bind to.
@@ -33,72 +33,72 @@ var DEFAULT_PORT = 5000;
  * Returns the node HTTP server instance.
  */
 function serveApp(app, options) {
-  options = options || {};
+    options = options || {};
 
-  if (typeof options === 'number') {
-    options = { port: options };
-  } else if (typeof options === 'string') {
-    options = { socket: options };
-  }
+    if (typeof options === "number") {
+        options = { port: options };
+    } else if (typeof options === "string") {
+        options = { socket: options };
+    }
 
-  var nodeServer;
-  if (options.key && options.cert) {
-    nodeServer = https.createServer({ key: options.key, cert: options.cert });
-  } else {
-    nodeServer = http.createServer();
-  }
+    var nodeServer;
+    if (options.key && options.cert) {
+        nodeServer = https.createServer({ key: options.key, cert: options.cert });
+    } else {
+        nodeServer = http.createServer();
+    }
 
-  function shutdown() {
-    if (!options.quiet)
-      console.log('>> Shutting down...');
+    function shutdown() {
+        if (!options.quiet)
+            console.log(">> Shutting down...");
 
     // Force the process to exit if the server doesn't
     // close all connections within the given timeout.
-    var timer = setTimeout(function () {
-      if (!options.quiet)
-        console.log('>> Exiting');
+        var timer = setTimeout(function () {
+            if (!options.quiet)
+                console.log(">> Exiting");
 
-      process.exit(0);
-    }, options.timeout || 100);
+            process.exit(0);
+        }, options.timeout || 100);
 
     // Don't let this timer keep the event loop running.
-    timer.unref();
+        timer.unref();
 
-    nodeServer.close();
-  }
-
-  nodeServer.once('listening', function () {
-    bindApp(app, nodeServer);
-
-    process.once('SIGINT', shutdown);
-    process.once('SIGTERM', shutdown);
-
-    if (!options.quiet) {
-      var address = nodeServer.address();
-      var message = '>> mach web server started on node ' + process.versions.node + '\n';
-
-      if (typeof address === 'string') {
-        message += '>> Listening on ' + address;
-      } else {
-        message += '>> Listening on ' + address.address;
-
-        if (address.port)
-          message += ':' + address.port;
-      }
-
-      message += ', use CTRL+C to stop';
-
-      console.log(message);
+        nodeServer.close();
     }
-  });
 
-  if (options.socket) {
-    nodeServer.listen(options.socket);
-  } else {
-    nodeServer.listen(options.port || DEFAULT_PORT, options.host);
-  }
+    nodeServer.once("listening", function () {
+        bindApp(app, nodeServer);
 
-  return nodeServer;
+        process.once("SIGINT", shutdown);
+        process.once("SIGTERM", shutdown);
+
+        if (!options.quiet) {
+            var address = nodeServer.address();
+            var message = ">> mach web server started on node " + process.versions.node + "\n";
+
+            if (typeof address === "string") {
+                message += ">> Listening on " + address;
+            } else {
+                message += ">> Listening on " + address.address;
+
+                if (address.port)
+                    message += ":" + address.port;
+            }
+
+            message += ", use CTRL+C to stop";
+
+            console.log(message);
+        }
+    });
+
+    if (options.socket) {
+        nodeServer.listen(options.socket);
+    } else {
+        nodeServer.listen(options.port || DEFAULT_PORT, options.host);
+    }
+
+    return nodeServer;
 }
 
 module.exports = serveApp;

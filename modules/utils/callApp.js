@@ -1,5 +1,5 @@
-var Connection = require('../Connection');
-var Promise = require('./Promise');
+var Connection = require("../Connection");
+var Promise = require("./Promise");
 
 /**
  * Creates a new Connection using the given options and sends
@@ -23,24 +23,24 @@ var Promise = require('./Promise');
  * the Connection object immediately before the request is made.
  */
 function callApp(app, options, modifier) {
-  options = options || {};
+    options = options || {};
 
-  var c = new Connection(options);
+    var c = new Connection(options);
 
-  return Promise.resolve(modifier ? modifier(c) : c).then(function (conn) {
-    if (conn == null || !(conn instanceof Connection))
-      conn = c;
+    return Promise.resolve(modifier ? modifier(c) : c).then(function (conn) {
+        if (conn == null || !(conn instanceof Connection))
+            conn = c;
 
-    return conn.call(app).then(function () {
-      if (options.binary)
-        return conn;
+        return conn.call(app).then(function () {
+            if (options.binary)
+                return conn;
 
-      return conn.response.stringifyContent(options.maxLength, options.encoding).then(function (content) {
-        conn.responseText = content;
-        return conn;
-      });
+            return conn.response.stringifyContent(options.maxLength, options.encoding).then(function (content) {
+                conn.responseText = content;
+                return conn;
+            });
+        });
     });
-  });
 }
 
 module.exports = callApp;

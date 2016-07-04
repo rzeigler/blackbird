@@ -1,33 +1,33 @@
 /* jshint -W058 */
-var expect = require('expect');
-var mach = require('../../index');
-var StatusCodes = require('../../StatusCodes');
+var expect = require("expect");
+var mach = require("../../index");
+var StatusCodes = require("../../StatusCodes");
 
-describe('extensions/statusText', function () {
+describe("extensions/statusText", function () {
 
-  beforeEach(function () {
-    mach.extend(require('../statusText'));
-  });
-
-  describe('Connection#statusText', function () {
-
-    var conn;
     beforeEach(function () {
-      conn = new mach.Connection;
+        mach.extend(require("../statusText"));
     });
 
-    Object.keys(StatusCodes).forEach(function (status) {
-      describe('with status ' + status, function () {
+    describe("Connection#statusText", function () {
+
+        var conn;
         beforeEach(function () {
-          conn.status = status;
+            conn = new mach.Connection;
         });
 
-        it('has the correct statusText', function () {
-          expect(conn.statusText).toEqual(status + ' ' + StatusCodes[status]);
+        Object.keys(StatusCodes).forEach(function (status) {
+            describe("with status " + status, function () {
+                beforeEach(function () {
+                    conn.status = status;
+                });
+
+                it("has the correct statusText", function () {
+                    expect(conn.statusText).toEqual(status + " " + StatusCodes[status]);
+                });
+            });
         });
-      });
+
     });
-
-  });
 
 });

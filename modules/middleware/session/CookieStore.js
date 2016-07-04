@@ -1,5 +1,5 @@
-var d = require('describe-property');
-var Promise = require('../../utils/Promise');
+var d = require("describe-property");
+var Promise = require("../../utils/Promise");
 
 /**
  * Client-side storage for sessions using HTTP cookies.
@@ -16,37 +16,37 @@ var Promise = require('../../utils/Promise');
  * you may want to use a server-side storage, such as mach.session.RedisStore.
  */
 function CookieStore(options) {
-  options = options || {};
+    options = options || {};
 
-  this.ttl = options.expireAfter
+    this.ttl = options.expireAfter
     ? (1000 * options.expireAfter) // expireAfter is given in seconds
     : 0;
 }
 
 Object.defineProperties(CookieStore.prototype, {
 
-  load: d(function (value) {
-    var session;
-    try {
-      session = JSON.parse(value);
-    } catch (error) {
+    load: d(function (value) {
+        var session;
+        try {
+            session = JSON.parse(value);
+        } catch (error) {
       // Ignore invalid JSON data.
-      return Promise.resolve({});
-    }
+            return Promise.resolve({});
+        }
 
     // Verify the session is not expired.
-    if (session._expiry && session._expiry <= Date.now())
-      return Promise.resolve({});
+        if (session._expiry && session._expiry <= Date.now())
+            return Promise.resolve({});
 
-    return Promise.resolve(session);
-  }),
+        return Promise.resolve(session);
+    }),
 
-  save: d(function (session) {
-    if (this.ttl)
-      session._expiry = Date.now() + this.ttl;
+    save: d(function (session) {
+        if (this.ttl)
+            session._expiry = Date.now() + this.ttl;
 
-    return Promise.resolve(JSON.stringify(session));
-  })
+        return Promise.resolve(JSON.stringify(session));
+    })
 
 });
 

@@ -1,16 +1,16 @@
-var parseMediaValue = require('../utils/parseMediaValue');
-var parseMediaValues = require('../utils/parseMediaValues');
-var qualityFactorForMediaValue = require('../utils/qualityFactorForMediaValue');
-var stringifyMediaValues = require('../utils/stringifyMediaValues');
-var stringifyMediaValueWithoutQualityFactor = require('../utils/stringifyMediaValueWithoutQualityFactor');
-var Header = require('../Header');
+var parseMediaValue = require("../utils/parseMediaValue");
+var parseMediaValues = require("../utils/parseMediaValues");
+var qualityFactorForMediaValue = require("../utils/qualityFactorForMediaValue");
+var stringifyMediaValues = require("../utils/stringifyMediaValues");
+var stringifyMediaValueWithoutQualityFactor = require("../utils/stringifyMediaValueWithoutQualityFactor");
+var Header = require("../Header");
 
 function paramsMatchIgnoringQualityFactor(params, givenParams) {
-  for (var paramName in params)
-    if (params.hasOwnProperty(paramName) && paramName !== 'q' && givenParams[paramName] !== params[paramName])
-      return false;
+    for (var paramName in params)
+        if (params.hasOwnProperty(paramName) && paramName !== "q" && givenParams[paramName] !== params[paramName])
+            return false;
 
-  return true;
+    return true;
 }
 
 function byHighestPrecedence(a, b) {
@@ -22,7 +22,7 @@ function byHighestPrecedence(a, b) {
   //   2) text/html
   //   3) text/*
   //   4) */*
-  return stringifyMediaValueWithoutQualityFactor(b).length - stringifyMediaValueWithoutQualityFactor(a).length;
+    return stringifyMediaValueWithoutQualityFactor(b).length - stringifyMediaValueWithoutQualityFactor(a).length;
 }
 
 /**
@@ -33,49 +33,49 @@ function byHighestPrecedence(a, b) {
  */
 class Accept extends Header {
 
-  constructor(value) {
-    super('Accept', value);
-  }
+    constructor(value) {
+        super("Accept", value);
+    }
 
   /**
    * Returns the value of this header as a string.
    */
-  get value() {
-    return stringifyMediaValues(this._mediaValues) || '*/*';
-  }
+    get value() {
+        return stringifyMediaValues(this._mediaValues) || "*/*";
+    }
 
-  set value(value) {
-    this._mediaValues = value ? parseMediaValues(value) : [];
-  }
+    set value(value) {
+        this._mediaValues = value ? parseMediaValues(value) : [];
+    }
 
   /**
    * Returns true if the given media type is acceptable.
    */
-  accepts(mediaType) {
-    return this.qualityFactorForMediaType(mediaType) !== 0;
-  }
+    accepts(mediaType) {
+        return this.qualityFactorForMediaType(mediaType) !== 0;
+    }
 
   /**
    * Returns the quality factor for the given media type.
    */
-  qualityFactorForMediaType(mediaType) {
-    var values = this._mediaValues;
+    qualityFactorForMediaType(mediaType) {
+        var values = this._mediaValues;
 
-    if (!values.length)
-      return 1;
+        if (!values.length)
+            return 1;
 
-    var givenValue = parseMediaValue(mediaType);
-    var matchingValues = values.filter(function (value) {
-      return (value.type === '*' || value.type === givenValue.type) &&
-             (value.subtype === '*' || value.subtype === givenValue.subtype) &&
+        var givenValue = parseMediaValue(mediaType);
+        var matchingValues = values.filter(function (value) {
+            return (value.type === "*" || value.type === givenValue.type) &&
+             (value.subtype === "*" || value.subtype === givenValue.subtype) &&
              paramsMatchIgnoringQualityFactor(value.params, givenValue.params);
-    }).sort(byHighestPrecedence);
+        }).sort(byHighestPrecedence);
 
-    if (!matchingValues.length)
-      return 0;
+        if (!matchingValues.length)
+            return 0;
 
-    return qualityFactorForMediaValue(matchingValues[0]);
-  }
+        return qualityFactorForMediaValue(matchingValues[0]);
+    }
 
 }
 

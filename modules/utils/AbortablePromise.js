@@ -1,15 +1,15 @@
-var Promise = require('./Promise');
+var Promise = require("./Promise");
 
 function makeAbortable(promise, abort) {
-  promise.abort = abort;
+    promise.abort = abort;
 
   // Hijack promise.then so it returns an abortable promise.
-  var _then = promise.then;
-  promise.then = function () {
-    return makeAbortable(_then.apply(promise, arguments), abort);
-  };
+    var _then = promise.then;
+    promise.then = function () {
+        return makeAbortable(_then.apply(promise, arguments), abort);
+    };
 
-  return promise;
+    return promise;
 }
 
 /**
@@ -27,7 +27,7 @@ function makeAbortable(promise, abort) {
  *         resolve(response);
  *       }
  *     });
- *   
+ *
  *     // Use onAbort to register a promise.abort() function. It is the
  *     // responsibility of this function to abort the execution of the
  *     // promise and resolve/reject as needed.
@@ -40,47 +40,47 @@ function makeAbortable(promise, abort) {
  *   promise.abort(); // Calls the onAbort handler.
  */
 function AbortablePromise(resolver) {
-  if (typeof resolver !== 'function')
-    throw new Error('AbortablePromise needs a resolver function');
+    if (typeof resolver !== "function")
+        throw new Error("AbortablePromise needs a resolver function");
 
-  var abort;
-  var promise = new Promise(function (resolve, reject) {
-    var aborter;
+    var abort;
+    var promise = new Promise(function (resolve, reject) {
+        var aborter;
 
-    abort = function () {
-      if (aborter == null)
-        return;
+        abort = function () {
+            if (aborter == null)
+                return;
 
-      var fn = aborter;
-      aborter = null;
+            var fn = aborter;
+            aborter = null;
 
-      try {
-        return fn.apply(this, arguments);
-      } catch (error) {
-        reject(error);
-      }
-    };
+            try {
+                return fn.apply(this, arguments);
+            } catch (error) {
+                reject(error);
+            }
+        };
 
-    resolver(function (child) {
-      if (child && typeof child.abort === 'function') {
-        aborter = child.abort;
-      } else {
-        aborter = null;
-      }
+        resolver(function (child) {
+            if (child && typeof child.abort === "function") {
+                aborter = child.abort;
+            } else {
+                aborter = null;
+            }
 
-      resolve.apply(this, arguments);
-    }, function () {
-      aborter = null;
-      reject.apply(this, arguments);
-    }, function (fn) {
-      if (typeof fn !== 'function')
-        throw new Error('onAbort needs a function');
+            resolve.apply(this, arguments);
+        }, function () {
+            aborter = null;
+            reject.apply(this, arguments);
+        }, function (fn) {
+            if (typeof fn !== "function")
+                throw new Error("onAbort needs a function");
 
-      aborter = fn;
+            aborter = fn;
+        });
     });
-  });
 
-  return makeAbortable(promise, abort);
+    return makeAbortable(promise, abort);
 }
 
 module.exports = AbortablePromise;

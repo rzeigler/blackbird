@@ -1,9 +1,9 @@
-var Location = require('../Location');
-var createProxy = require('../utils/createProxy');
-var isRegExp = require('../utils/isRegExp');
+var Location = require("../Location");
+var createProxy = require("../utils/createProxy");
+var isRegExp = require("../utils/isRegExp");
 
 function returnTrue() {
-  return true;
+    return true;
 }
 
 /**
@@ -21,33 +21,33 @@ function returnTrue() {
  *
  *   // Forward all requests that match "/images/*.jpg" to S3.
  *   app.use(mach.proxy, 'http://s3.amazon.com/my-bucket', /\/images/*.jpg/);
- *   
+ *
  *   mach.serve(app);
  */
 function proxy(app, target, test) {
-  test = test || returnTrue;
+    test = test || returnTrue;
 
-  if (isRegExp(test)) {
-    var pattern = test;
-    test = function (conn) {
-      return pattern.test(conn.href);
+    if (isRegExp(test)) {
+        var pattern = test;
+        test = function (conn) {
+            return pattern.test(conn.href);
+        };
+    } else if (typeof test !== "function") {
+        throw new Error("mach.proxy needs a test function");
+    }
+
+    var targetApp;
+    if (typeof target === "function") {
+        targetApp = target;
+    } else if (typeof target === "string" || target instanceof Location) {
+        targetApp = createProxy(target);
+    } else {
+        throw new Error("mach.proxy needs a target app");
+    }
+
+    return function (conn) {
+        return conn.call(test(conn) ? targetApp : app);
     };
-  } else if (typeof test !== 'function') {
-    throw new Error('mach.proxy needs a test function');
-  }
-
-  var targetApp;
-  if (typeof target === 'function') {
-    targetApp = target;
-  } else if (typeof target === 'string' || target instanceof Location) {
-    targetApp = createProxy(target);
-  } else {
-    throw new Error('mach.proxy needs a target app');
-  }
-
-  return function (conn) {
-    return conn.call(test(conn) ? targetApp : app);
-  };
 }
 
 module.exports = proxy;

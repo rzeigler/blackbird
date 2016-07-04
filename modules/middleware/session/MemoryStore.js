@@ -1,33 +1,33 @@
-var d = require('describe-property');
-var makeToken = require('../../utils/makeToken');
-var Promise = require('../../utils/Promise');
+var d = require("describe-property");
+var makeToken = require("../../utils/makeToken");
+var Promise = require("../../utils/Promise");
 
 function makeUniqueKey(sessions, keyLength) {
-  var key;
-  do {
-    key = makeToken(keyLength);
-  } while (sessions[key]);
+    var key;
+    do {
+        key = makeToken(keyLength);
+    } while (sessions[key]);
 
-  return key;
+    return key;
 }
 
 function pruneStore(store, interval) {
-  var timer = setInterval(function () {
-    var now = Date.now();
+    var timer = setInterval(function () {
+        var now = Date.now();
 
-    var session;
-    for (var key in store.sessions) {
-      session = store.sessions[key];
+        var session;
+        for (var key in store.sessions) {
+            session = store.sessions[key];
 
-      if (session._expiry && session._expiry < now)
-        store.purge(key);
-    }
-  }, interval);
+            if (session._expiry && session._expiry < now)
+                store.purge(key);
+        }
+    }, interval);
 
   // Don't let this timer keep the event loop running.
-  timer.unref();
+    timer.unref();
 
-  return timer;
+    return timer;
 }
 
 /**
@@ -45,60 +45,60 @@ function pruneStore(store, interval) {
  *                    Defaults to 0 (no expiration)
  */
 function MemoryStore(options) {
-  options = options || {};
+    options = options || {};
 
-  this.sessions = {};
-  this.timer = pruneStore(this, options.purgeInterval || 5000);
-  this.keyLength = options.keyLength || 32;
-  this.ttl = options.expireAfter
+    this.sessions = {};
+    this.timer = pruneStore(this, options.purgeInterval || 5000);
+    this.keyLength = options.keyLength || 32;
+    this.ttl = options.expireAfter
     ? (1000 * options.expireAfter) // expireAfter is given in seconds
     : 0;
 }
 
 Object.defineProperties(MemoryStore.prototype, {
 
-  load: d(function (value) {
-    var session = this.sessions[value];
+    load: d(function (value) {
+        var session = this.sessions[value];
 
-    if (!session)
-      return Promise.resolve({});
+        if (!session)
+            return Promise.resolve({});
 
     // Verify the session is not expired.
-    if (session._expiry && session._expiry <= Date.now())
-      return Promise.resolve({});
+        if (session._expiry && session._expiry <= Date.now())
+            return Promise.resolve({});
 
-    return Promise.resolve(session);
-  }),
+        return Promise.resolve(session);
+    }),
 
-  save: d(function (session) {
-    var key = session._id;
-    if (!key)
-      key = session._id = makeUniqueKey(this.sessions, this.keyLength);
+    save: d(function (session) {
+        var key = session._id;
+        if (!key)
+            key = session._id = makeUniqueKey(this.sessions, this.keyLength);
 
-    if (this.ttl)
-      session._expiry = Date.now() + this.ttl;
+        if (this.ttl)
+            session._expiry = Date.now() + this.ttl;
 
-    this.sessions[key] = session;
+        this.sessions[key] = session;
 
-    return Promise.resolve(key);
-  }),
+        return Promise.resolve(key);
+    }),
 
-  purge: d(function (key) {
-    if (key) {
-      delete this.sessions[key];
-    } else {
-      this.sessions = {};
-    }
-  }),
+    purge: d(function (key) {
+        if (key) {
+            delete this.sessions[key];
+        } else {
+            this.sessions = {};
+        }
+    }),
 
-  destroy: d(function () {
-    delete this.sessions;
+    destroy: d(function () {
+        delete this.sessions;
 
-    if (this.timer) {
-      clearInterval(this.timer);
-      delete this.timer;
-    }
-  })
+        if (this.timer) {
+            clearInterval(this.timer);
+            delete this.timer;
+        }
+    })
 
 });
 

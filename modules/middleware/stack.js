@@ -1,28 +1,28 @@
-var d = require('describe-property');
-var RoutingProperties = require('../utils/RoutingProperties');
-var createMapper = require('./mapper');
-var createRouter = require('./router');
+var d = require("describe-property");
+var RoutingProperties = require("../utils/RoutingProperties");
+var createMapper = require("./mapper");
+var createRouter = require("./router");
 
 function mapperCreator(mappings) {
-  return function (app) {
-    app = createMapper(app);
+    return function (app) {
+        app = createMapper(app);
 
-    for (var i = 0, len = mappings.length; i < len; ++i)
-      app.map.apply(app, mappings[i]);
+        for (var i = 0, len = mappings.length; i < len; ++i)
+            app.map.apply(app, mappings[i]);
 
-    return app;
-  };
+        return app;
+    };
 }
 
 function routerCreator(routes) {
-  return function (app) {
-    app = createRouter(app);
+    return function (app) {
+        app = createRouter(app);
 
-    for (var i = 0, len = routes.length; i < len; ++i)
-      app.route.apply(app, routes[i]);
+        for (var i = 0, len = routes.length; i < len; ++i)
+            app.route.apply(app, routes[i]);
 
-    return app;
-  };
+        return app;
+    };
 }
 
 /**
@@ -69,29 +69,29 @@ function routerCreator(routes) {
  * the stack doesn't change between requests, this happens only once.
  */
 function createStack(app) {
-  var layers = [], mappings = [], routes = [];
-  var compiledApp;
+    var layers = [], mappings = [], routes = [];
+    var compiledApp;
 
-  function compile(app) {
-    if (routes.length)
-      app = routerCreator(routes)(app);
+    function compile(app) {
+        if (routes.length)
+            app = routerCreator(routes)(app);
 
-    if (mappings.length)
-      app = mapperCreator(mappings)(app);
+        if (mappings.length)
+            app = mapperCreator(mappings)(app);
 
-    var index = layers.length;
+        var index = layers.length;
 
-    while (index)
-      app = layers[--index].call(this, app);
+        while (index)
+            app = layers[--index].call(this, app);
 
-    return app;
-  }
+        return app;
+    }
 
-  function stack(conn) {
-    return conn.call(compiledApp || (compiledApp = compile(app)));
-  }
+    function stack(conn) {
+        return conn.call(compiledApp || (compiledApp = compile(app)));
+    }
 
-  Object.defineProperties(stack, {
+    Object.defineProperties(stack, {
 
     /**
      * Declares that the given `middleware` should be used at the current point
@@ -99,51 +99,51 @@ function createStack(app) {
      * to the middleware with the downstream app as the first argument when the
      * stack is compiled.
      */
-    use: d(function (middleware) {
-      var args = Array.prototype.slice.call(arguments, 1);
+        use: d(function (middleware) {
+            var args = Array.prototype.slice.call(arguments, 1);
 
-      if (mappings.length)
-        layers.push(mapperCreator(mappings.splice(0, mappings.length)));
+            if (mappings.length)
+                layers.push(mapperCreator(mappings.splice(0, mappings.length)));
 
-      if (routes.length)
-        layers.push(routerCreator(routes.splice(0, routes.length)));
+            if (routes.length)
+                layers.push(routerCreator(routes.splice(0, routes.length)));
 
-      layers.push(function (app) {
-        return middleware.apply(this, [ app ].concat(args));
-      });
+            layers.push(function (app) {
+                return middleware.apply(this, [ app ].concat(args));
+            });
 
-      compiledApp = null;
-    }),
+            compiledApp = null;
+        }),
 
     /**
      * Uses a mapper to map a URL path to an app.
      */
-    map: d(function (location, app) {
-      mappings.push([ location, app ]);
-      compiledApp = null;
-    }),
+        map: d(function (location, app) {
+            mappings.push([ location, app ]);
+            compiledApp = null;
+        }),
 
     /**
      * Uses a router to route URLs that match a pattern/method to an app.
      */
-    route: d(function (pattern, methods, app) {
-      routes.push([ pattern, methods, app ]);
-      compiledApp = null;
-    }),
+        route: d(function (pattern, methods, app) {
+            routes.push([ pattern, methods, app ]);
+            compiledApp = null;
+        }),
 
     /**
      * Sets the given app as the default for this stack.
      */
-    run: d(function (downstreamApp) {
-      app = downstreamApp;
-      compiledApp = null;
-    })
+        run: d(function (downstreamApp) {
+            app = downstreamApp;
+            compiledApp = null;
+        })
 
-  });
+    });
 
-  Object.defineProperties(stack, RoutingProperties);
+    Object.defineProperties(stack, RoutingProperties);
 
-  return stack;
+    return stack;
 }
 
 module.exports = createStack;

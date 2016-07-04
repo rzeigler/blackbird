@@ -1,13 +1,13 @@
-var stringifyMediaValue = require('./stringifyMediaValue');
+var stringifyMediaValue = require("./stringifyMediaValue");
 
 function cloneParamsWithoutQualityFactor(params) {
-  var clone = {};
+    var clone = {};
 
-  for (var paramName in params)
-    if (params.hasOwnProperty(paramName) && paramName !== 'q')
-      clone[paramName] = params[paramName]; 
+    for (var paramName in params)
+        if (params.hasOwnProperty(paramName) && paramName !== "q")
+            clone[paramName] = params[paramName];
 
-  return clone;
+    return clone;
 }
 
 /**
@@ -15,11 +15,11 @@ function cloneParamsWithoutQualityFactor(params) {
  * ignoring any "q" value parameters.
  */
 function stringifyMediaValueWithoutQualityFactor(value, typeSeparator) {
-  return stringifyMediaValue({
-    type: value.type,
-    subtype: value.subtype,
-    params: value.params && cloneParamsWithoutQualityFactor(value.params)
-  }, typeSeparator);
+    return stringifyMediaValue({
+        type: value.type,
+        subtype: value.subtype,
+        params: value.params && cloneParamsWithoutQualityFactor(value.params)
+    }, typeSeparator);
 }
 
 module.exports = stringifyMediaValueWithoutQualityFactor;

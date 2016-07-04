@@ -3,16 +3,16 @@
  * already been set in a downstream app.
  */
 function contentType(app, defaultType) {
-  defaultType = defaultType || 'text/html';
+    defaultType = defaultType || "text/html";
 
-  return function (conn) {
-    return conn.call(app).then(function () {
-      var headers = conn.response.headers;
+    return function (conn) {
+        return conn.call(app).then(function () {
+            var headers = conn.response.headers;
 
-      if (!headers['Content-Type'])
-        headers['Content-Type'] = defaultType;
-    });
-  };
+            if (!headers["Content-Type"])
+                headers["Content-Type"] = defaultType;
+        });
+    };
 }
 
 module.exports = contentType;
