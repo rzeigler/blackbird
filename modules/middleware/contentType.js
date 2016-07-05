@@ -9,8 +9,9 @@ function contentType(app, defaultType) {
         return conn.call(app).then(function () {
             let headers = conn.response.headers;
 
-            if (!headers["Content-Type"])
+            if (!headers["Content-Type"]) {
                 headers["Content-Type"] = defaultType;
+            }
         });
     };
 }

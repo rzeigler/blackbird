@@ -1,6 +1,8 @@
 let d = require("describe-property");
 let escapeRegExp = require("../utils/escapeRegExp");
 
+const {is} = require("ramda");
+
 function byMostSpecific(a, b) {
     return (b.path.length - a.path.length) || ((b.host || "").length - (a.host || "").length);
 }
@@ -65,17 +67,21 @@ function createMapper(app, map) {
             mapping = mappings[i];
 
       // Try to match the hostname.
-            if (mapping.hostname && mapping.hostname !== hostname)
+            if (mapping.hostname && mapping.hostname !== hostname) {
                 continue;
+            }
 
       // Try to match the path.
-            if (!(match = pathname.match(mapping.pattern)))
+            match = pathname.match(mapping.pattern);
+            if (!match) {
                 continue;
+            }
 
       // Skip if the remaining path doesn't start with a "/".
             remainingPath = match[1];
-            if (remainingPath.length > 0 && remainingPath[0] !== "/")
+            if (remainingPath.length > 0 && remainingPath[0] !== "/") {
                 continue;
+            }
 
             conn.basename += mapping.path;
 
@@ -103,12 +109,13 @@ function createMapper(app, map) {
                 path = location;
             }
 
-            if (path.charAt(0) !== "/")
-                throw new Error("Mapping path must start with \"/\", was \"" + path + "\"");
+            if (path.charAt(0) !== "/") {
+                throw new Error(`Mapping path must start with "/", was "${path}"`);
+            }
 
             path = path.replace(/\/$/, "");
 
-            let pattern = new RegExp("^" + escapeRegExp(path).replace(/\/+/g, "/+") + "(.*)");
+            let pattern = new RegExp(`^${escapeRegExp(path).replace(/\/+/g, "/+")}(.*)`);
 
             mappings.push({
                 hostname: hostname,
@@ -130,10 +137,13 @@ function createMapper(app, map) {
     });
 
   // Allow app.use(mach.mapper, map)
-    if (typeof map === "object")
-        for (let location in map)
-            if (map.hasOwnProperty(location))
+    if (is(Object, map)) {
+        for (let location in map) {
+            if (map.hasOwnProperty(location)) {
                 mapper.map(location, map[location]);
+            }
+        }
+    }
 
     return mapper;
 }

@@ -35,15 +35,17 @@ Object.defineProperties(CookieStore.prototype, {
         }
 
     // Verify the session is not expired.
-        if (session._expiry && session._expiry <= Date.now())
+        if (session._expiry && session._expiry <= Date.now()) {
             return Promise.resolve({});
+        }
 
         return Promise.resolve(session);
     }),
 
     save: d(function (session) {
-        if (this.ttl)
+        if (this.ttl) {
             session._expiry = Date.now() + this.ttl;
+        }
 
         return Promise.resolve(JSON.stringify(session));
     })

@@ -19,8 +19,9 @@ function pruneStore(store, interval) {
         for (let key in store.sessions) {
             session = store.sessions[key];
 
-            if (session._expiry && session._expiry < now)
+            if (session._expiry && session._expiry < now) {
                 store.purge(key);
+            }
         }
     }, interval);
 
@@ -60,23 +61,27 @@ Object.defineProperties(MemoryStore.prototype, {
     load: d(function (value) {
         let session = this.sessions[value];
 
-        if (!session)
+        if (!session) {
             return Promise.resolve({});
+        }
 
     // Verify the session is not expired.
-        if (session._expiry && session._expiry <= Date.now())
+        if (session._expiry && session._expiry <= Date.now()) {
             return Promise.resolve({});
+        }
 
         return Promise.resolve(session);
     }),
 
     save: d(function (session) {
         let key = session._id;
-        if (!key)
+        if (!key) {
             key = session._id = makeUniqueKey(this.sessions, this.keyLength);
+        }
 
-        if (this.ttl)
+        if (this.ttl) {
             session._expiry = Date.now() + this.ttl;
+        }
 
         this.sessions[key] = session;
 

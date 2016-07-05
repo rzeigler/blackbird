@@ -4,7 +4,7 @@ let decodeBase64 = require("../utils/decodeBase64");
 let encodeBase64 = require("../utils/encodeBase64");
 let makeHash = require("../utils/makeHash");
 let CookieStore = require("./session/CookieStore");
-
+const {is} = require("ramda");
 mach.extend(
   require("../extensions/server")
 );
@@ -20,10 +20,11 @@ let MAX_COOKIE_SIZE = 4096;
  */
 function encodeSession(session, store, secret) {
     return store.save(session).then(function (data) {
-        let cookie = encodeBase64(data + "--" + makeHashWithSecret(data, secret));
+        let cookie = encodeBase64(`${data}--${makeHashWithSecret(data, secret)}`);
 
-        if (cookie.length > MAX_COOKIE_SIZE)
+        if (cookie.length > MAX_COOKIE_SIZE) {
             throw new Error("Cookie data size exceeds 4kb; content dropped");
+        }
 
         return cookie;
     });
@@ -41,8 +42,9 @@ function decodeCookie(cookie, store, secret) {
     let hash = value.substring(index + 2);
 
   // Verify the cookie has not been tampered with.
-    if (hash === makeHashWithSecret(data, secret))
+    if (hash === makeHashWithSecret(data, secret)) {
         return store.load(data);
+    }
 
     return null;
 }
@@ -87,8 +89,9 @@ function makeHashWithSecret(data, secret) {
 function session(app, options) {
     options = options || {};
 
-    if (typeof options === "string")
+    if (is(String, options)) {
         options = {secret: options};
+    }
 
     let secret = options.secret;
     let name = options.name || "_session";
@@ -110,8 +113,9 @@ function session(app, options) {
     }
 
     return function (conn) {
-        if (conn.session)
+        if (conn.session) {
             return conn.call(app); // Don't overwrite the existing session.
+        }
 
         let cookie = conn.request.cookies[name];
 
@@ -124,8 +128,9 @@ function session(app, options) {
 
           // Don't bother setting the cookie if its value
           // hasn't changed and there is no expires date.
-                    if (newCookie === cookie && !expires)
+                    if (newCookie === cookie && !expires) {
                         return;
+                    }
 
                     conn.response.setCookie(name, {
                         value: newCookie,

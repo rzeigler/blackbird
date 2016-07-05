@@ -2,16 +2,20 @@ let assert = require("assert");
 let expect = require("expect");
 let delay = require("when/delay");
 
+const {is} = require("ramda");
+
 function describeSessionStore(store, skip) {
     if (!skip) {
         beforeEach(function () {
-            if (typeof store.purge === "function")
+            if (is(Function, store.purge)) {
                 return store.purge();
+            }
         });
 
         after(function () {
-            if (typeof store.destroy === "function")
+            if (is(Function, store.destroy)) {
                 return store.destroy();
+            }
         });
     }
 

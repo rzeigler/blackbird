@@ -23,8 +23,9 @@ function makeUniqueKey(client, keyLength) {
 
   // Try to set an empty string to reserve the key.
     return sendCommand(client, "setnx", [key, ""]).then(function (result) {
-        if (result === 1)
+        if (result === 1) {
             return key; // The key was available.
+        }
 
         return makeUniqueKey(client, keyLength); // Try again.
     });
@@ -116,8 +117,9 @@ Object.defineProperties(RedisStore.prototype, {
     }),
 
     purge: d(function (key) {
-        if (key)
+        if (key) {
             return sendCommand(this.getClient(), "del", [key]);
+        }
 
         return sendCommand(this.getClient(), "flushdb");
     }),

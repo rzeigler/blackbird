@@ -7,7 +7,8 @@ let makeParams = require("../utils/makeParams");
 let RoutingProperties = require("../utils/RoutingProperties");
 
 let LEADING_HTTP_METHOD_MATCHER = /^(DELETE|GET|HEAD|OPTIONS|POST|PUT|TRACE)\s+(.+)$/;
-
+const {is, not, isEmpty, compose} = require("ramda"),
+    isnt = compose(not, is);
 /**
  * A middleware that provides pattern-based routing for URLs, with optional
  * support for restricting matches to a specific request method. Named segments
@@ -80,7 +81,8 @@ function createRouter(app, map) {
             route = routesToTry[i];
 
       // Try to match the route.
-            if (match = route.pattern.exec(conn.pathname)) {
+            match = route.pattern.exec(conn.pathname);
+            if (match) {
                 let params = makeParams(route.keys, Array.prototype.slice.call(match, 1));
 
                 if (conn.params) {
@@ -110,15 +112,16 @@ function createRouter(app, map) {
      *   route('GET /users/:id', app)
      */
         route: d(function (pattern, methods, app) {
-            if (typeof methods === "function") {
+            if (is(Function, methods)) {
                 app = methods;
                 methods = null;
             }
 
-            if (typeof app !== "function")
+            if (isnt(Function, app)) {
                 throw new Error("Route needs an app");
+            }
 
-            if (typeof methods === "string") {
+            if (is(String, methods)) {
                 methods = [methods];
             } else if (!Array.isArray(methods)) {
                 methods = [];
@@ -126,10 +129,11 @@ function createRouter(app, map) {
 
             let keys = [];
 
-            if (typeof pattern === "string") {
+            if (is(String, pattern)) {
                 let match;
 
-                if (match = pattern.match(LEADING_HTTP_METHOD_MATCHER)) {
+                match = pattern.match(LEADING_HTTP_METHOD_MATCHER);
+                if (match) {
                     methods.push(match[1]);
                     pattern = match[2];
                 }
@@ -137,13 +141,15 @@ function createRouter(app, map) {
                 pattern = compileRoute(pattern, keys);
             }
 
-            if (!isRegExp(pattern))
+            if (!isRegExp(pattern)) {
                 throw new Error("Route pattern must be a RegExp");
+            }
 
             let route = {pattern: pattern, keys: keys, app: app};
 
-            if (methods.length === 0)
+            if (isEmpty(methods)) {
                 methods.push("ANY");
+            }
 
             methods.forEach(function (method) {
                 let upperMethod = method.toUpperCase();
@@ -166,10 +172,13 @@ function createRouter(app, map) {
     });
 
   // Allow app.use(mach.router, map)
-    if (typeof map === "object")
-        for (let route in map)
-            if (map.hasOwnProperty(route))
+    if (is(Object, map)) {
+        for (let route in map) {
+            if (map.hasOwnProperty(route)) {
                 router.route(route, map[route]);
+            }
+        }
+    }
 
     Object.defineProperties(router, RoutingProperties);
 

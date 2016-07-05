@@ -1,7 +1,7 @@
 let objectAssign = require("object-assign");
 let mach = require("../index");
 let MaxLengthExceededError = require("../utils/MaxLengthExceededError");
-
+const {is} = require("ramda");
 mach.extend(
   require("../extensions/server")
 );
@@ -25,8 +25,9 @@ mach.extend(
 function parseParams(app, options) {
     options = options || {};
 
-    if (typeof options === "number")
+    if (is(Number, options)) {
         options = {maxLength: options};
+    }
 
     let maxLength = options.maxLength;
 
@@ -41,8 +42,9 @@ function parseParams(app, options) {
 
             return conn.call(app);
         }, function (error) {
-            if (error instanceof MaxLengthExceededError)
+            if (is(MaxLengthExceededError, error)) {
                 return conn.text(413, "Request Entity Too Large");
+            }
 
             throw error;
         });

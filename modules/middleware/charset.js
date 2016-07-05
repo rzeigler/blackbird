@@ -2,6 +2,7 @@
  * A middleware that sets a default character set in the Content-Type
  * header of the response if none is already specified.
  */
+const {isNil} = require("ramda");
 function charset(app, defaultCharset) {
     defaultCharset = defaultCharset || "utf-8";
 
@@ -9,8 +10,9 @@ function charset(app, defaultCharset) {
         return conn.call(app).then(function () {
             let response = conn.response;
 
-            if (response.contentType && response.charset == null)
+            if (response.contentType && isNil(response.charset)) {
                 response.charset = defaultCharset;
+            }
         });
     };
 }
