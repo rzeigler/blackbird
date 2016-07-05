@@ -19,9 +19,8 @@ function compileRoute(route, keys) {
         } else if (match === "*") {
             keys.push("splat");
             return "(.*?)";
-        } else {
-            return `\\${match}`;
         }
+        return `\\${match}`;
     });
 
     return new RegExp(`^${source}$`, "i");

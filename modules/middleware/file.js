@@ -92,8 +92,8 @@ function file(app, options) {
         }
     }
 
-    let useLastModified = "useLastModified" in options ? !!options.useLastModified : true;
-    let useETag = !!options.useETag;
+    let useLastModified = "useLastModified" in options ? Boolean(options.useLastModified) : true;
+    let useETag = Boolean(options.useETag);
 
     function sendFile(conn, path, stats) {
         conn.file({
