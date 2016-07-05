@@ -154,7 +154,7 @@ Object.defineProperties(Connection.prototype, {
    * if no auth was provided.
    */
     auth: d.gs(function () {
-        let header = this.request.headers["Authorization"];
+        let header = this.request.headers.Authorization;
 
         if (header) {
             let parts = header.split(" ", 2);
@@ -172,9 +172,9 @@ Object.defineProperties(Connection.prototype, {
         let headers = this.request.headers;
 
         if (value && typeof value === "string") {
-            headers["Authorization"] = `Basic ${encodeBase64(value)}`;
+            headers.Authorization = `Basic ${encodeBase64(value)}`;
         } else {
-            delete headers["Authorization"];
+            delete headers.Authorization;
         }
     }),
 

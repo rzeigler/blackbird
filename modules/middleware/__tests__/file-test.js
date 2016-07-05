@@ -84,7 +84,7 @@ describe("middleware/file", function () {
 
             it("sets the ETag header", function () {
                 return callApp(app, "/jquery-1.8.3.js").then(function (conn) {
-                    expect(conn.response.headers["ETag"]).toMatch(/"[a-f0-9]+"/);
+                    expect(conn.response.headers.ETag).toMatch(/"[a-f0-9]+"/);
                 });
             });
         });

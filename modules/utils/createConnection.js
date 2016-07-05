@@ -37,8 +37,8 @@ function createLocation(nodeRequest) {
     if (headers["x-forwarded-host"]) {
         let hosts = headers["x-forwarded-host"].split(/,\s?/);
         host = hosts[hosts.length - 1];
-    } else if (headers["host"]) {
-        host = headers["host"];
+    } else if (headers.host) {
+        host = headers.host;
     } else if (process.env.SERVER_NAME) {
         host = process.env.SERVER_NAME;
     }

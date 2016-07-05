@@ -2,6 +2,8 @@ let d = require("describe-property");
 let makeToken = require("../../utils/makeToken");
 let Promise = require("../../utils/Promise");
 
+const {forEach, keys} = require("ramda");
+
 function makeUniqueKey(sessions, keyLength) {
     let key;
     do {
@@ -16,13 +18,13 @@ function pruneStore(store, interval) {
         let now = Date.now();
 
         let session;
-        for (let key in store.sessions) {
+        forEach(function (key) {
             session = store.sessions[key];
 
             if (session._expiry && session._expiry < now) {
                 store.purge(key);
             }
-        }
+        }, keys(store.sessions));
     }, interval);
 
   // Don't let this timer keep the event loop running.

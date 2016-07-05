@@ -21,7 +21,7 @@ module.exports = function (mach) {
      */
         accepts: d(function (mediaType) {
             if (!this._acceptHeader) {
-                this._acceptHeader = new Accept(this.headers["Accept"]);
+                this._acceptHeader = new Accept(this.headers.Accept);
             }
 
             return this._acceptHeader.accepts(mediaType);

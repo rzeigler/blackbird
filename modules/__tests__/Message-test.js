@@ -73,7 +73,7 @@ describe("Message#addHeader", function () {
     describe("when the header has not been previously set", function () {
         it("sets the header to the given value", function () {
             message.addHeader("Test", "value");
-            expect(message.headers["Test"]).toEqual("value");
+            expect(message.headers.Test).toEqual("value");
 
             message.addHeader("Test-Int", 1);
             expect(message.headers["Test-Int"]).toEqual(1);
@@ -87,7 +87,7 @@ describe("Message#addHeader", function () {
 
         it("sets the header to an array of header values", function () {
             message.addHeader("Test", "value");
-            expect(message.headers["Test"]).toEqual(["previousValue", "value"]);
+            expect(message.headers.Test).toEqual(["previousValue", "value"]);
         });
     });
 });

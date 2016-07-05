@@ -20,7 +20,7 @@ describe("middleware/gzip", function () {
                 binary: true
             }).then(function (conn) {
                 expect(conn.response.headers["Content-Encoding"]).toEqual("gzip");
-                expect(conn.response.headers["Vary"]).toEqual("Accept-Encoding");
+                expect(conn.response.headers.Vary).toEqual("Accept-Encoding");
                 return conn.response.bufferContent().then(function (buffer) {
                     expect(buffer).toEqual(gzippedContents);
                 });
