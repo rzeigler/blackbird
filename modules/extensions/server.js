@@ -88,7 +88,7 @@ module.exports = function (mach) {
             }
 
             this.status = status;
-            this.response.headers["Location"] = location;
+            this.response.headers.Location = location;
         }),
 
     /**
@@ -96,7 +96,7 @@ module.exports = function (mach) {
      * to the given location if it isn't known.
      */
         back: d(function (location) {
-            this.redirect(this.request.headers["Referer"] || location || "/");
+            this.redirect(this.request.headers.Referer || location || "/");
         }),
 
     /**

@@ -22,7 +22,7 @@ function modified(app) {
             let request = conn.request, response = conn.response;
 
             let ifNoneMatch = request.headers["If-None-Match"];
-            let etag = response.headers["ETag"];
+            let etag = response.headers.ETag;
 
             if (ifNoneMatch && etag && etag === stripQuotes(ifNoneMatch)) {
                 conn.status = 304;

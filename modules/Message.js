@@ -114,7 +114,7 @@ Object.defineProperties(Message.prototype, {
    */
     cookies: d.gs(function () {
         if (!this._cookies) {
-            let header = this.headers["Cookie"];
+            let header = this.headers.Cookie;
 
             if (header) {
                 let cookies = parseCookie(header);

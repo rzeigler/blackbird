@@ -36,9 +36,9 @@ describe("middleware/stack", function () {
     describe("a request that does not match any mappings or routes", function () {
         it("calls all middleware", function () {
             return callApp(app, "/").then(function (conn) {
-                assert(conn.response.headers["One"]);
-                assert(conn.response.headers["Two"]);
-                assert(conn.response.headers["Three"]);
+                assert(conn.response.headers.One);
+                assert(conn.response.headers.Two);
+                assert(conn.response.headers.Three);
             });
         });
     });
@@ -52,14 +52,14 @@ describe("middleware/stack", function () {
 
         it("calls all middleware in front of that location", function () {
             return callApp(app, "/images").then(function (conn) {
-                assert(conn.response.headers["One"]);
-                assert(conn.response.headers["Two"]);
+                assert(conn.response.headers.One);
+                assert(conn.response.headers.Two);
             });
         });
 
         it("does not call any middleware after that location", function () {
             return callApp(app, "/images").then(function (conn) {
-                assert(R.isNil(conn.response.headers["Three"]));
+                assert(R.isNil(conn.response.headers.Three));
             });
         });
     });
@@ -73,14 +73,14 @@ describe("middleware/stack", function () {
 
         it("calls all middlware in front of that route", function () {
             return callApp(app, "/home").then(function (conn) {
-                assert(conn.response.headers["One"]);
-                assert(conn.response.headers["Two"]);
+                assert(conn.response.headers.One);
+                assert(conn.response.headers.Two);
             });
         });
 
         it("does not call middleware after that route", function () {
             return callApp(app, "/home").then(function (conn) {
-                assert(R.isNil(conn.response.headers["Three"]));
+                assert(R.isNil(conn.response.headers.Three));
             });
         });
     });

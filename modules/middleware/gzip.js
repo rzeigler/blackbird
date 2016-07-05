@@ -30,7 +30,7 @@ function gzip(app, options) {
 
                 delete headers["Content-Length"];
                 headers["Content-Encoding"] = "gzip";
-                headers["Vary"] = "Accept-Encoding";
+                headers.Vary = "Accept-Encoding";
             }
         });
     };

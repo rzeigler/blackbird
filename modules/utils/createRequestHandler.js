@@ -32,8 +32,8 @@ function createRequestHandler(app) {
                 headers["Content-Length"] = 0;
             }
 
-            if (!headers["Date"]) {
-                headers["Date"] = (new Date).toUTCString();
+            if (!headers.Date) {
+                headers.Date = (new Date).toUTCString();
             }
 
             nodeResponse.writeHead(conn.status, headers);

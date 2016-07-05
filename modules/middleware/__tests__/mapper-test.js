@@ -44,8 +44,8 @@ describe("middleware/mapper", function () {
             it("passes the request through to the mapping", function () {
                 return callApp(app, "/one/messages").then(function (conn) {
                     expect(conn.status).toEqual(200);
-                    expect(conn.response.headers["Basename"]).toEqual("/one");
-                    expect(conn.response.headers["Pathname"]).toEqual("/messages");
+                    expect(conn.response.headers.Basename).toEqual("/one");
+                    expect(conn.response.headers.Pathname).toEqual("/messages");
                 });
             });
         });
@@ -54,8 +54,8 @@ describe("middleware/mapper", function () {
             it("passes the request through to the mapping", function () {
                 return callApp(app, "http://example.org/two/messages").then(function (conn) {
                     expect(conn.status).toEqual(200);
-                    expect(conn.response.headers["Basename"]).toEqual("/two");
-                    expect(conn.response.headers["Pathname"]).toEqual("/messages");
+                    expect(conn.response.headers.Basename).toEqual("/two");
+                    expect(conn.response.headers.Pathname).toEqual("/messages");
                 });
             });
 
@@ -63,8 +63,8 @@ describe("middleware/mapper", function () {
                 it("passes the request through to the mapping", function () {
                     return callApp(app, "http://example.org:5000/two/messages").then(function (conn) {
                         expect(conn.status).toEqual(200);
-                        expect(conn.response.headers["Basename"]).toEqual("/two");
-                        expect(conn.response.headers["Pathname"]).toEqual("/messages");
+                        expect(conn.response.headers.Basename).toEqual("/two");
+                        expect(conn.response.headers.Pathname).toEqual("/messages");
                     });
                 });
             });
@@ -73,8 +73,8 @@ describe("middleware/mapper", function () {
                 it("passes the request through to the mapping", function () {
                     return callApp(app, "http://example.net/three/messages").then(function (conn) {
                         expect(conn.status).toEqual(200);
-                        expect(conn.response.headers["Basename"]).toEqual("/three");
-                        expect(conn.response.headers["Pathname"]).toEqual("/messages");
+                        expect(conn.response.headers.Basename).toEqual("/three");
+                        expect(conn.response.headers.Pathname).toEqual("/messages");
                     });
                 });
             });
@@ -84,8 +84,8 @@ describe("middleware/mapper", function () {
             it("passes the request through to the mapping", function () {
                 return callApp(app, "/one").then(function (conn) {
                     expect(conn.status).toEqual(200);
-                    expect(conn.response.headers["Basename"]).toEqual("/one");
-                    expect(conn.response.headers["Pathname"]).toEqual("/");
+                    expect(conn.response.headers.Basename).toEqual("/one");
+                    expect(conn.response.headers.Pathname).toEqual("/");
                 });
             });
         });
