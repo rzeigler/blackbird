@@ -98,7 +98,7 @@ function session(app, options) {
     let path = options.path || "/";
     let domain = options.domain;
     let expireAfter = options.expireAfter || 0;
-    let httpOnly = ("httpOnly" in options) ? (options.httpOnly || false) : true;
+    let httpOnly = "httpOnly" in options ? options.httpOnly || false : true;
     let secure = options.secure || false;
     let store = options.store || new CookieStore(options);
 
@@ -124,7 +124,7 @@ function session(app, options) {
 
             return conn.call(app).then(function () {
                 return Promise.resolve(conn.session && encodeSession(conn.session, store, secret)).then(function (newCookie) {
-                    let expires = expireAfter && new Date(Date.now() + (expireAfter * 1000));
+                    let expires = expireAfter && new Date(Date.now() + expireAfter * 1000);
 
           // Don't bother setting the cookie if its value
           // hasn't changed and there is no expires date.

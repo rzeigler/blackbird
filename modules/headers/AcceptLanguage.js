@@ -8,7 +8,7 @@ const R = require("ramda");
 
 function byHighestPrecedence(a, b) {
   // "*" gets least precedence, all others are compared by specificity
-    return a === "*" ? -1 : (b === "*" ? 1 : byMostSpecific(a, b));
+    return a === "*" ? -1 : b === "*" ? 1 : byMostSpecific(a, b);
 }
 
 function byMostSpecific(a, b) {

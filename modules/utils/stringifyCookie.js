@@ -9,7 +9,8 @@
  * - secure
  * - httpOnly or HttpOnly
  */
- const R = require("ramda");
+ const R = require("ramda"),
+     {is} = R;
  function stringifyCookie(name, options) {
      options = options || {};
 
@@ -28,7 +29,7 @@
      }
 
      if (options.expires) {
-         cookie += `; expires=${(options.expires instanceof Date) ? options.expires.toUTCString() : options.expires}`;
+         cookie += `; expires=${is(Date, options.expires) ? options.expires.toUTCString() : options.expires}`;
      }
 
      if (options.secure) {

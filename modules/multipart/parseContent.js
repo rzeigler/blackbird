@@ -25,7 +25,7 @@ function parseContent(content, boundary, maxLength, partHandler) {
     maxLength = maxLength || Infinity;
 
     return new Promise(function (resolve, reject) {
-        if (!(R.is(Stream, content))) {
+        if (!R.is(Stream, content)) {
             content = new Stream(content);
         }
 

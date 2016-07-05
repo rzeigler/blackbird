@@ -4,7 +4,8 @@ let escapeRegExp = require("../utils/escapeRegExp");
 const {is} = require("ramda");
 
 function byMostSpecific(a, b) {
-    return (b.path.length - a.path.length) || ((b.host || "").length - (a.host || "").length);
+    return b.path.length - a.path.length ||
+           (b.host || "").length - (a.host || "").length;
 }
 
 /**

@@ -52,7 +52,7 @@ function MemoryStore(options) {
     this.timer = pruneStore(this, options.purgeInterval || 5000);
     this.keyLength = options.keyLength || 32;
     this.ttl = options.expireAfter
-    ? (1000 * options.expireAfter) // expireAfter is given in seconds
+    ? 1000 * options.expireAfter // expireAfter is given in seconds
     : 0;
 }
 
