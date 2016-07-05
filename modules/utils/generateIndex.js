@@ -89,7 +89,7 @@ function generateIndex(root, pathname, basename) {
 
                     rows += `\n${formatString(ROW_TEMPLATE, className, url, file, size, type, mtime)}`;
 
-                    className = (className === "even") ? "odd" : "even";
+                    className = className === "even" ? "odd" : "even";
                 });
 
                 let title = `Index of ${basename}${pathname}`;

@@ -7,7 +7,7 @@ const R = require("ramda");
 
 function byHighestPrecedence(a, b) {
   // "*" gets least precedence, all others are equal
-    return a === "*" ? -1 : (b === "*" ? 1 : 0);
+    return a === "*" ? -1 : b === "*" ? 1 : 0;
 }
 
 /**

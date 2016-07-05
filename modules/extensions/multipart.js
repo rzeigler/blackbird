@@ -30,7 +30,7 @@ module.exports = function (mach) {
             let contentType = this.contentType, match;
             if (!contentType) { return null; }
             match = contentType.match(BOUNDARY_MATCHER);
-            return match ? (match[1] || match[2]) : null;
+            return match ? match[1] || match[2] : null;
         }),
 
     /**

@@ -7,7 +7,8 @@ let stringifyQuery = require("./utils/stringifyQuery");
 let Promise = require("./utils/Promise");
 let Location = require("./Location");
 let Message = require("./Message");
-const R = require("ramda");
+const R = require("ramda"),
+    {is} = R;
 
 function locationPropertyAlias(name) {
     return d.gs(function () {
@@ -19,7 +20,7 @@ function locationPropertyAlias(name) {
 
 function defaultErrorHandler(error) {
     if (typeof console !== "undefined" && console.error) {
-        console.error((error && error.stack) || error);
+        console.error(error && error.stack || error);
     } else {
         throw error; // Don't silently swallow errors!
     }
@@ -129,7 +130,7 @@ Object.defineProperties(Connection.prototype, {
     location: d.gs(function () {
         return this._location;
     }, function (value) {
-        this._location = (value instanceof Location) ? value : new Location(value);
+        this._location = is(Location, value) ? value : new Location(value);
     }),
 
     href: locationPropertyAlias("href"),

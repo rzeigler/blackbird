@@ -41,7 +41,7 @@ module.exports = (function (mach, Promise, R) {
 
             return Promise.resolve(options.validate(username, password)).then(function (user) {
                 if (user) {
-                    conn.remoteUser = (user === true) ? username : user;
+                    conn.remoteUser = user === true ? username : user;
                     return conn.call(app);
                 }
 
