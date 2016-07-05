@@ -61,10 +61,14 @@ module.exports = function (mach) {
      *
      * Note: Content parameters take precedence over query parameters with the same name.
      */
-        getParams: d(function (paramTypes, maxLength) {
-            if (typeof paramTypes !== "object") {
-                maxLength = paramTypes;
+        getParams: d(function (pt, ml) {
+            let maxLength, paramTypes;
+            if (typeof pt !== "object") {
+                maxLength = pt;
                 paramTypes = null;
+            } else {
+                maxLength = ml;
+                paramTypes = pt;
             }
 
             let request = this.request;
@@ -81,10 +85,14 @@ module.exports = function (mach) {
      * Redirects the client to the given location. If status is not
      * given, it defaults to 302 Found.
      */
-        redirect: d(function (status, location) {
+        redirect: d(function (st, loc) {
+            let status, location;
             if (typeof status !== "number") {
-                location = status;
+                location = st;
                 status = 302;
+            } else {
+                location = loc;
+                status = st;
             }
 
             this.status = status;
@@ -109,9 +117,11 @@ module.exports = function (mach) {
      *   conn.send('Hello world');
      *   conn.send(fs.createReadStream('welcome.txt'));
      */
-        send: d(function (status, content) {
+        send: d(function (status, cont) {
+            let content;
             if (R.is(Number, status)) {
                 this.status = status;
+                content = cont;
             } else {
                 content = status;
             }
@@ -140,11 +150,12 @@ module.exports = function (mach) {
     /**
      * Sends the given JSON in an application/json response.
      */
-        json: d(function (status, json) {
+        json: d(function (status, js) {
             this.response.contentType = "application/json";
-
+            let json;
             if (typeof status === "number") {
                 this.status = status;
+                json = js;
             } else {
                 json = status;
             }
@@ -170,9 +181,11 @@ module.exports = function (mach) {
      *   response.file('path/to/file.txt');
      *   response.file(200, 'path/to/file.txt');
      */
-        file: d(function (status, options) {
+        file: d(function (status, opts) {
+            let options;
             if (typeof status === "number") {
                 this.status = status;
+                options = opts;
             } else {
                 options = status;
             }

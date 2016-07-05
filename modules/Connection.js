@@ -75,8 +75,8 @@ function defaultApp(conn) {
  *
  * The options may also be a URL string to specify the URL.
  */
-function Connection(options) {
-    options = options || {};
+function Connection(opts) {
+    let options = opts || {};
 
     let location;
     if (typeof options === "string") {
@@ -201,8 +201,8 @@ Object.defineProperties(Connection.prototype, {
    * Calls the given `app` with this connection as the only argument.
    * as the first argument and returns a promise for a Response.
    */
-    call: d(function (app) {
-        app = app || defaultApp;
+    call: d(function (a) {
+        let app = a || defaultApp;
 
         let conn = this;
 

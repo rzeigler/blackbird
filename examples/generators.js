@@ -3,8 +3,8 @@
 //   node --harmony examples/generators.js
 
 let mach = require("../modules");
-let app  = mach.stack();
-let Q    = require("q");
+let app = mach.stack();
+let Q = require("q");
 
 function sleep(millis, answer) {
     const deferredResult = Q.defer();
