@@ -9,11 +9,13 @@
  *     throw 200;
  *   });
  */
+const {is} = require("ramda");
 function catchError(app) {
     return function (conn) {
         return conn.call(app).then(undefined, function (reason) {
-            if (reason instanceof Error)
+            if (is(Error, reason)) {
                 throw reason;
+            }
 
             return reason;
         });

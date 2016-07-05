@@ -6,6 +6,8 @@ let generateETag = require("../utils/generateETag");
 let generateIndex = require("../utils/generateIndex");
 let joinPaths = require("../utils/joinPaths");
 
+const {is, contains} = require("ramda");
+
 mach.extend(
   require("../extensions/server")
 );
@@ -72,12 +74,14 @@ function file(app, options) {
     options = options || {};
 
   // Allow mach.file(path) and app.use(mach.file, path)
-    if (typeof options === "string")
+    if (is(String, options)) {
         options = {root: options};
+    }
 
     let root = options.root;
-    if (typeof root !== "string" || !fs.existsSync(root) || !fs.statSync(root).isDirectory())
-        throw new Error("Invalid root directory: " + root);
+    if (!is(String, root) || !fs.existsSync(root) || !fs.statSync(root).isDirectory()) {
+        throw new Error(`Invalid root directory: ${root}`);
+    }
 
     let index = options.index || [];
     if (index) {
@@ -97,8 +101,9 @@ function file(app, options) {
             size: stats.size
         });
 
-        if (useLastModified)
+        if (useLastModified) {
             conn.response.headers["Last-Modified"] = stats.mtime.toUTCString();
+        }
 
         if (useETag) {
             return generateETag(path).then(function (etag) {
@@ -108,23 +113,27 @@ function file(app, options) {
     }
 
     return function (conn) {
-        if (conn.method !== "GET" && conn.method !== "HEAD")
+        if (conn.method !== "GET" && conn.method !== "HEAD") {
             return conn.call(app);
+        }
 
         let pathname = conn.pathname;
 
     // Reject paths that contain "..".
-        if (pathname.indexOf("..") !== -1)
+        if (contains("..", pathname)) {
             return conn.text(403, "Forbidden");
+        }
 
         let path = joinPaths(root, pathname);
 
         return getFileStats(path).then(function (stats) {
-            if (stats && stats.isFile())
+            if (stats && stats.isFile()) {
                 return sendFile(conn, path, stats);
+            }
 
-            if (!stats || !stats.isDirectory())
+            if (!stats || !stats.isDirectory()) {
                 return conn.call(app);
+            }
 
       // Try to serve one of the index files.
             let indexPaths = index.map(function (indexPath) {
@@ -132,16 +141,20 @@ function file(app, options) {
             });
 
             return Promise.all(indexPaths.map(getFileStats)).then(function (stats) {
-                for (let i = 0, len = stats.length; i < len; ++i)
-                    if (stats[i])
+                for (let i = 0, len = stats.length; i < len; ++i) {
+                    if (stats[i]) {
                         return sendFile(conn, indexPaths[i], stats[i]);
+                    }
+                }
 
-                if (!options.autoIndex)
+                if (!options.autoIndex) {
                     return conn.call(app);
+                }
 
         // Redirect /images => /images/
-                if (!(/\/$/).test(pathname))
-                    return conn.redirect(pathname + "/");
+                if (!(/\/$/).test(pathname)) {
+                    return conn.redirect(`${pathname}/`);
+                }
 
         // Automatically generate and serve an index file.
                 return generateIndex(root, pathname, conn.basename).then(function (html) {

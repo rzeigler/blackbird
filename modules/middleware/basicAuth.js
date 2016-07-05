@@ -32,8 +32,9 @@ module.exports = (function (mach, Promise, R) {
         }
         let realm = options.realm || "Authorization Required";
         return function (conn) {
-            if (conn.remoteUser)
+            if (conn.remoteUser) {
                 return conn.call(app); // Don't overwrite existing remoteUser.
+            }
 
             let credentials = conn.auth.split(":", 2);
             let username = credentials[0], password = credentials[1];
@@ -44,7 +45,7 @@ module.exports = (function (mach, Promise, R) {
                     return conn.call(app);
                 }
 
-                conn.response.headers["WWW-Authenticate"] = "Basic realm=\"" + realm + "\"";
+                conn.response.headers["WWW-Authenticate"] = `Basic realm="${realm}"`;
                 conn.text(401, "Not Authorized");
             });
         };

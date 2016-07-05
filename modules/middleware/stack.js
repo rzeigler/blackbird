@@ -7,8 +7,9 @@ function mapperCreator(mappings) {
     return function (app) {
         app = createMapper(app);
 
-        for (let i = 0, len = mappings.length; i < len; ++i)
+        for (let i = 0, len = mappings.length; i < len; ++i) {
             app.map.apply(app, mappings[i]);
+        }
 
         return app;
     };
@@ -18,8 +19,9 @@ function routerCreator(routes) {
     return function (app) {
         app = createRouter(app);
 
-        for (let i = 0, len = routes.length; i < len; ++i)
+        for (let i = 0, len = routes.length; i < len; ++i) {
             app.route.apply(app, routes[i]);
+        }
 
         return app;
     };
@@ -73,16 +75,19 @@ function createStack(app) {
     let compiledApp;
 
     function compile(app) {
-        if (routes.length)
+        if (routes.length) {
             app = routerCreator(routes)(app);
+        }
 
-        if (mappings.length)
+        if (mappings.length) {
             app = mapperCreator(mappings)(app);
+        }
 
         let index = layers.length;
 
-        while (index)
+        while (index) {
             app = layers[--index].call(this, app);
+        }
 
         return app;
     }
@@ -102,11 +107,13 @@ function createStack(app) {
         use: d(function (middleware) {
             let args = Array.prototype.slice.call(arguments, 1);
 
-            if (mappings.length)
+            if (mappings.length) {
                 layers.push(mapperCreator(mappings.splice(0, mappings.length)));
+            }
 
-            if (routes.length)
+            if (routes.length) {
                 layers.push(routerCreator(routes.splice(0, routes.length)));
+            }
 
             layers.push(function (app) {
                 return middleware.apply(this, [app].concat(args));

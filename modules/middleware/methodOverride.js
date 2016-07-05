@@ -1,5 +1,5 @@
 let normalizeHeaderName = require("../utils/normalizeHeaderName");
-
+const {is} = require("ramda");
 /**
  * A middleware that overrides the method of the request to a value that was
  * given either in a request parameter or a request header. Can be useful when
@@ -36,8 +36,9 @@ let normalizeHeaderName = require("../utils/normalizeHeaderName");
 function methodOverride(app, options) {
     options = options || {};
 
-    if (typeof options === "string")
+    if (is(String, options)) {
         options = {paramName: options};
+    }
 
     let paramName = options.paramName || "_method";
     let headerName = normalizeHeaderName(options.headerName || "X-Http-Method-Override");
@@ -52,12 +53,14 @@ function methodOverride(app, options) {
             method = conn.params[paramName];
 
       // If multiple _method parameters were used, use the last one.
-            if (Array.isArray(method))
+            if (Array.isArray(method)) {
                 method = method[method.length - 1];
+            }
         }
 
-        if (method)
+        if (method) {
             conn.method = method.toUpperCase();
+        }
 
         return conn.call(app);
     };

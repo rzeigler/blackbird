@@ -1,5 +1,5 @@
 let stripQuotes = require("../utils/stripQuotes");
-
+const {is} = require("ramda");
 /**
  * A middleware that automatically performs content-based HTTP caching in
  * response to requests that use the If-None-Match and/or If-Modified-Since
@@ -34,8 +34,9 @@ function modified(app) {
             let lastModified = response.headers["Last-Modified"];
 
             if (ifModifiedSince && lastModified) {
-                if (typeof lastModified === "string")
+                if (is(String, lastModified)) {
                     lastModified = Date.parse(lastModified);
+                }
 
                 if (lastModified <= Date.parse(ifModifiedSince)) {
                     conn.status = 304;

@@ -1,6 +1,6 @@
 let mach = require("../index");
 let makeToken = require("../utils/makeToken");
-
+const {is} = require("ramda");
 mach.extend(
   require("../extensions/server")
 );
@@ -58,8 +58,9 @@ let SAFE_METHODS = {
 function verifyToken(app, options) {
     options = options || {};
 
-    if (typeof options === "string")
+    if (is(String, options)) {
         options = {paramName: options};
+    }
 
     let paramName = options.paramName || "_token";
     let sessionKey = options.sessionKey || "_token";
@@ -76,17 +77,20 @@ function verifyToken(app, options) {
             let token = session[sessionKey];
 
       // Create a new session token if needed.
-            if (!token)
+            if (!token) {
                 token = session[sessionKey] = makeToken(byteLength);
+            }
 
-            if (params[paramName] && params[paramName] === token)
+            if (params[paramName] && params[paramName] === token) {
                 return conn.call(app);
+            }
         }
 
     // If the request is not a POST we assume it's not a form submission
     // and therefore not modifying anything. Pass it downstream.
-        if (SAFE_METHODS[conn.method] === true)
+        if (SAFE_METHODS[conn.method] === true) {
             return conn.call(app);
+        }
 
         conn.text(403, "Forbidden");
     };

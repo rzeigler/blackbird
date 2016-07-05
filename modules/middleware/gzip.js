@@ -8,8 +8,9 @@ mach.extend(
 let GZIP_MATCHER = /text|javascript|json/i;
 
 function shouldGzipContentType(contentType) {
-    if (!contentType || contentType === "text/event-stream")
+    if (!contentType || contentType === "text/event-stream") {
         return false;
+    }
 
     return GZIP_MATCHER.test(contentType);
 }

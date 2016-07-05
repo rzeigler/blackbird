@@ -1,9 +1,11 @@
 /* jshint -W058 */
 let strftime = require("strftime").strftime;
+const {isNil} = require("ramda");
 
 function defaultMessageHandler(message) {
-    if (typeof console !== "undefined" && console.log)
+    if (typeof console !== "undefined" && console.log) {
         console.log(message);
+    }
 }
 
 /**
@@ -21,8 +23,9 @@ function logger(app, messageHandler) {
             let elapsedTime = Date.now() - startTime;
             let contentLength = conn.response.headers["Content-Length"];
 
-            if (contentLength == null)
+            if (isNil(contentLength)) {
                 contentLength = "-";
+            }
 
             let protocol = conn.protocol || "http:";
             protocol = protocol.substr(0, protocol.length - 1).toUpperCase();
@@ -32,8 +35,8 @@ function logger(app, messageHandler) {
                 conn.remoteHost || "-",
                 "-", // RFC 1413 identity of the client
                 conn.remoteUser || "-",
-                "[" + strftime("%d/%b/%Y %H:%M:%S", new Date) + "]",
-                "\"" + conn.method + " " + conn.basename + conn.path + " " + protocol + "/" + conn.version + "\"",
+                `[${strftime("%d/%b/%Y %H:%M:%S", new Date)}]`,
+                `"${conn.method} ${conn.basename}${conn.path} ${protocol}/${conn.version}"`,
                 conn.status,
                 contentLength,
                 elapsedTime / 1000
