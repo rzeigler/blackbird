@@ -2,9 +2,9 @@
 // I've tested it with node 0.11.2 like this:
 //   node --harmony examples/generators.js
 
-let mach = require("../modules");
-let app = mach.stack();
-let Q = require("q");
+const mach = require("../modules");
+const app = mach.stack();
+const Q = require("q");
 
 function sleep(millis, answer) {
     const deferredResult = Q.defer();
@@ -17,7 +17,7 @@ function sleep(millis, answer) {
 app.use(mach.logger);
 
 app.run(Q.async(function* (request) {
-    let body = yield request.parseContent();
+    const body = yield request.parseContent();
 
     console.log("Sleeping");
     yield sleep(200);

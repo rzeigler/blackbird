@@ -1,5 +1,5 @@
-let d = require("describe-property");
-let Promise = require("../../utils/Promise");
+const d = require("describe-property");
+const Promise = require("../../utils/Promise");
 
 /**
  * Client-side storage for sessions using HTTP cookies.

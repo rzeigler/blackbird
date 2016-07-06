@@ -4,17 +4,17 @@
 // streaming data is probably using curl or netcat, e.g.
 // curl http://localhost:5000
 
-let Stream = require("bufferedstream");
-let mach = require("../modules");
+const Stream = require("bufferedstream");
+const mach = require("../modules");
 
 mach.serve(function (conn) {
   // Set conn.response.content to the stream you want to send.
   // In this example, the stream is an infinite stream of
   // timestamps. Typically you'd use one of node's readables
   // (e.g. fs.createReadStream).
-    let content = conn.response.content = new Stream;
+    const content = conn.response.content = new Stream;
 
-    let timer = setInterval(function () {
+    const timer = setInterval(function () {
         content.write(`${new Date}\n`);
     }, 1000);
 

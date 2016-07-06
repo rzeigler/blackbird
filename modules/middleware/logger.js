@@ -1,5 +1,5 @@
 /* jshint -W058 */
-let strftime = require("strftime").strftime;
+const strftime = require("strftime").strftime;
 const {isNil} = require("ramda");
 
 function defaultMessageHandler(message) {
@@ -17,10 +17,10 @@ function logger(app, messageHandler) {
     messageHandler = messageHandler || defaultMessageHandler;
 
     return function (conn) {
-        let startTime = Date.now();
+        const startTime = Date.now();
 
         return conn.call(app).then(function () {
-            let elapsedTime = Date.now() - startTime;
+            const elapsedTime = Date.now() - startTime;
             let contentLength = conn.response.headers["Content-Length"];
 
             if (isNil(contentLength)) {

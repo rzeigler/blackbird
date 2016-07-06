@@ -1,5 +1,5 @@
-let fs = require("fs");
-let Promise = require("./Promise");
+const fs = require("fs");
+const Promise = require("./Promise");
 
 /**
  * Returns stats for the given file or null if it doesn't exist.

@@ -1,6 +1,6 @@
 /* jshint -W058 */
-let expect = require("expect");
-let Location = require("../Location");
+const expect = require("expect");
+const Location = require("../Location");
 
 describe("an empty Location", function () {
     let location;
@@ -14,7 +14,6 @@ describe("an empty Location", function () {
 });
 
 describe("a fully-specified Location", function () {
-
     let location;
     beforeEach(function () {
         location = new Location("http://user:pass@example.com:5000/the/path?the=query");
@@ -66,28 +65,28 @@ describe("a fully-specified Location", function () {
 
     describe("with http: protocol on the standard port", function () {
         it("leaves the port # out of host", function () {
-            let location = new Location("http://example.com:80/the/path");
+            const location = new Location("http://example.com:80/the/path");
             expect(location.host).toEqual("example.com");
         });
     });
 
     describe("with http: protocol on a non-standard port", function () {
         it("includes the port # in host", function () {
-            let location = new Location("http://example.com:8080/the/path");
+            const location = new Location("http://example.com:8080/the/path");
             expect(location.host).toEqual("example.com:8080");
         });
     });
 
     describe("with https: protocol on the standard port", function () {
         it("leaves the port # out of host", function () {
-            let location = new Location("https://example.com:443/the/path");
+            const location = new Location("https://example.com:443/the/path");
             expect(location.host).toEqual("example.com");
         });
     });
 
     describe("with https: protocol on a non-standard port", function () {
         it("includes the port # in host", function () {
-            let location = new Location("https://example.com:5000/the/path");
+            const location = new Location("https://example.com:5000/the/path");
             expect(location.host).toEqual("example.com:5000");
         });
     });
@@ -201,11 +200,9 @@ describe("a fully-specified Location", function () {
             expect(location.query).toEqual({the: "query", more: "query"});
         });
     });
-
 });
 
 describe("a Location with only a path", function () {
-
     let location;
     beforeEach(function () {
         location = new Location("/the/path?the=query");
@@ -234,11 +231,9 @@ describe("a Location with only a path", function () {
     it("has the correct query", function () {
         expect(location.query).toEqual({the: "query"});
     });
-
 });
 
 describe("a Location with no search", function () {
-
     let location;
     beforeEach(function () {
         location = new Location("/the/path");
@@ -255,5 +250,4 @@ describe("a Location with no search", function () {
     it("has an empty query", function () {
         expect(location.query).toEqual({});
     });
-
 });

@@ -1,12 +1,10 @@
-let assert = require("assert");
-let expect = require("expect");
-let callApp = require("../../utils/callApp");
-let logger = require("../logger");
+const assert = require("assert");
+const expect = require("expect");
+const callApp = require("../../utils/callApp");
+const logger = require("../logger");
 
 function zeroLength() {
-    return {
-        headers: {"Content-Length": 0}
-    };
+    return {headers: {"Content-Length": 0}};
 }
 
 describe("middleware/logger", function () {
@@ -23,10 +21,10 @@ describe("middleware/logger", function () {
             return callApp(logger(zeroLength, messageHandler)).then(function () {
                 assert(messages[0]);
 
-                let match = messages[0].match(/\b(\d+) ([0-9\.]+)\b$/);
+                const match = messages[0].match(/\b(\d+) ([0-9\.]+)\b$/);
                 assert(match);
 
-                let contentLength = match[1];
+                const contentLength = match[1];
                 expect(contentLength).toEqual("0");
             });
         });

@@ -1,5 +1,5 @@
-let d = require("describe-property");
-let AcceptLanguage = require("../headers/AcceptLanguage");
+const d = require("describe-property");
+const AcceptLanguage = require("../headers/AcceptLanguage");
 
 module.exports = function (mach) {
     Object.defineProperties(mach.Connection.prototype, {

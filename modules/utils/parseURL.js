@@ -1,7 +1,7 @@
-let urlParse = require("url").parse;
+const urlParse = require("url").parse;
 
 function parseURL(url) {
-    let parsed = urlParse(url);
+    const parsed = urlParse(url);
 
     return {
         protocol: parsed.protocol,

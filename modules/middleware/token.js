@@ -1,5 +1,5 @@
-let mach = require("../index");
-let makeToken = require("../utils/makeToken");
+const mach = require("../index");
+const makeToken = require("../utils/makeToken");
 const {is} = require("ramda");
 mach.extend(
   require("../extensions/server")
@@ -9,7 +9,7 @@ mach.extend(
  * The set of HTTP request methods that are considered safe because they
  * do not alter server data.
  */
-let SAFE_METHODS = {
+const SAFE_METHODS = {
     GET: true,
     HEAD: true,
     OPTIONS: true,
@@ -62,9 +62,9 @@ function verifyToken(app, options) {
         options = {paramName: options};
     }
 
-    let paramName = options.paramName || "_token";
-    let sessionKey = options.sessionKey || "_token";
-    let byteLength = options.byteLength || 32;
+    const paramName = options.paramName || "_token";
+    const sessionKey = options.sessionKey || "_token";
+    const byteLength = options.byteLength || 32;
 
     return function (conn) {
         let session = conn.session, params = conn.params;

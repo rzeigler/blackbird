@@ -1,19 +1,17 @@
-let expect = require("expect");
-let callApp = require("../../utils/callApp");
-let methodOverride = require("../methodOverride");
-let params = require("../params");
+const expect = require("expect");
+const callApp = require("../../utils/callApp");
+const methodOverride = require("../methodOverride");
+const params = require("../params");
 
 describe("middleware/methodOverride", function () {
-    let app = methodOverride(function (conn) {
+    const app = methodOverride(function (conn) {
         return conn.method;
     });
 
     describe("when the request method is given in a request parameter", function () {
         describe("and the params middleware is in front", function () {
             it("sets the request method", function () {
-                return callApp(params(app), {
-                    params: {_method: "PUT"}
-                }).then(function (conn) {
+                return callApp(params(app), {params: {_method: "PUT"}}).then(function (conn) {
                     expect(conn.responseText).toEqual("PUT");
                 });
             });
@@ -44,9 +42,7 @@ describe("middleware/methodOverride", function () {
     describe("when the request method is given in a request parameter with multiple values", function () {
         describe("and the params middleware is in front", function () {
             it("sets the request method to the last given value", function () {
-                return callApp(params(app), {
-                    params: {_method: ["PUT", "DELETE"]}
-                }).then(function (conn) {
+                return callApp(params(app), {params: {_method: ["PUT", "DELETE"]}}).then(function (conn) {
                     expect(conn.responseText).toEqual("DELETE");
                 });
             });
@@ -55,9 +51,7 @@ describe("middleware/methodOverride", function () {
 
     describe("when the request method is given in an HTTP header", function () {
         it("sets the request method", function () {
-            return callApp(app, {
-                headers: {"X-Http-Method-Override": "PUT"}
-            }).then(function (conn) {
+            return callApp(app, {headers: {"X-Http-Method-Override": "PUT"}}).then(function (conn) {
                 expect(conn.responseText).toEqual("PUT");
             });
         });

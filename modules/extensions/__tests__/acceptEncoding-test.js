@@ -1,8 +1,7 @@
-let expect = require("expect");
-let mach = require("../../index");
+const expect = require("expect");
+const mach = require("../../index");
 
 describe("extensions/acceptEncoding", function () {
-
     beforeEach(function () {
         mach.extend(require("../acceptEncoding"));
     });
@@ -10,9 +9,7 @@ describe("extensions/acceptEncoding", function () {
     describe("a message with an Accept-Encoding header", function () {
         let message;
         beforeEach(function () {
-            message = new mach.Message(null, {
-                "Accept-Encoding": "gzip"
-            });
+            message = new mach.Message(null, {"Accept-Encoding": "gzip"});
         });
 
         it("accepts acceptable encodings", function () {
@@ -23,5 +20,4 @@ describe("extensions/acceptEncoding", function () {
             expect(message.acceptsEncoding("compress")).toBe(false);
         });
     });
-
 });

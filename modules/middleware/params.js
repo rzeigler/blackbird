@@ -1,6 +1,6 @@
-let objectAssign = require("object-assign");
-let mach = require("../index");
-let MaxLengthExceededError = require("../utils/MaxLengthExceededError");
+const objectAssign = require("object-assign");
+const mach = require("../index");
+const MaxLengthExceededError = require("../utils/MaxLengthExceededError");
 const {is} = require("ramda");
 mach.extend(
   require("../extensions/server")
@@ -29,7 +29,7 @@ function parseParams(app, options) {
         options = {maxLength: options};
     }
 
-    let maxLength = options.maxLength;
+    const maxLength = options.maxLength;
 
     return function (conn) {
         return conn.getParams(maxLength).then(function (params) {

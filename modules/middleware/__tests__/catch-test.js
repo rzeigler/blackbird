@@ -1,7 +1,7 @@
-let assert = require("assert");
-let expect = require("expect");
-let callApp = require("../../utils/callApp");
-let catchMiddleware = require("../catch");
+const assert = require("assert");
+const expect = require("expect");
+const callApp = require("../../utils/callApp");
+const catchMiddleware = require("../catch");
 
 describe("middleware/catch", function () {
     describe("when an Error is thrown from downstream", function () {

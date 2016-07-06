@@ -1,8 +1,8 @@
-let expect = require("expect");
-let callApp = require("../../utils/callApp");
-let router = require("../router");
+const expect = require("expect");
+const callApp = require("../../utils/callApp");
+const router = require("../router");
 
-let UNDEF = "__UNDEFINED__"; // So we can test for undefined.
+const UNDEF = "__UNDEFINED__"; // So we can test for undefined.
 
 function stringifyParams(conn) {
     return JSON.stringify(conn.params, function (key, value) {
@@ -11,8 +11,7 @@ function stringifyParams(conn) {
 }
 
 describe("middleware/router", function () {
-
-    let app = router();
+    const app = router();
 
     app.route("/posts/:id", "GET", stringifyParams);
     app.route("/posts/:id", ["POST", "DELETE"], stringifyParams);
@@ -121,5 +120,4 @@ describe("middleware/router", function () {
             });
         });
     });
-
 });

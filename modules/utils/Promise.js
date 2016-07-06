@@ -1,3 +1,3 @@
-let Promise = require("bluebird");
+const Promise = require("bluebird");
 
 module.exports = Promise;

@@ -1,14 +1,14 @@
-let d = require("describe-property");
-let mergeQuery = require("./utils/mergeQuery");
-let stringifyQuery = require("./utils/stringifyQuery");
-let parseQuery = require("./utils/parseQuery");
-let parseURL = require("./utils/parseURL");
+const d = require("describe-property");
+const mergeQuery = require("./utils/mergeQuery");
+const stringifyQuery = require("./utils/stringifyQuery");
+const parseQuery = require("./utils/parseQuery");
+const parseURL = require("./utils/parseURL");
 const R = require("ramda");
 
 /**
  * Standard ports for HTTP protocols.
  */
-let STANDARD_PORTS = {
+const STANDARD_PORTS = {
     "http:": "80",
     "https:": "443"
 };
@@ -22,7 +22,7 @@ function propertyAlias(propertyName, defaultValue) {
 }
 
 // Order is important here. Later properties take priority.
-let PROPERTY_NAMES = ["protocol", "auth", "hostname", "port", "host", "pathname", "search", "queryString", "query", "path"];
+const PROPERTY_NAMES = ["protocol", "auth", "hostname", "port", "host", "pathname", "search", "queryString", "query", "path"];
 
 function setProperties(location, properties) {
     let propertyName;
@@ -75,21 +75,21 @@ Object.defineProperties(Location.prototype, {
         }
 
         let pathname = this.pathname;
-        let extraPathname = location.pathname;
+        const extraPathname = location.pathname;
 
         if (extraPathname !== "/") {
             pathname = pathname.replace(/\/*$/, "/") + extraPathname.replace(/^\/*/, "");
         }
 
-        let query = mergeQuery(this.query, location.query);
+        const query = mergeQuery(this.query, location.query);
 
         return new Location({
             protocol: location.protocol || this.protocol,
             auth: location.auth || this.auth,
             hostname: location.hostname || this.hostname,
             port: location.port || this.port,
-            pathname: pathname,
-            query: query
+            pathname,
+            query
         });
     }),
 
@@ -97,13 +97,13 @@ Object.defineProperties(Location.prototype, {
    * The full URL.
    */
     href: d.gs(function () {
-        let auth = this.auth;
-        let host = this.host;
-        let path = this.path;
+        const auth = this.auth;
+        const host = this.host;
+        const path = this.path;
 
         return host ? `${this.protocol}//${(auth ? `${auth}@` : "") + host + path}` : path;
     }, function (value) {
-        let parsed = parseURL(value);
+        const parsed = parseURL(value);
 
         setProperties(this, {
             protocol: parsed.protocol,
@@ -131,9 +131,9 @@ Object.defineProperties(Location.prototype, {
    * a non-standard port.
    */
     host: d.gs(function () {
-        let protocol = this.protocol;
+        const protocol = this.protocol;
         let host = this.hostname;
-        let port = this.port;
+        const port = this.port;
 
         if (!R.isNil(port) && port !== STANDARD_PORTS[protocol]) {
             host += `:${port}`;

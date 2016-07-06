@@ -2,8 +2,8 @@
 // You'll get random "hello world"s and "internal server error"s, but
 // the server won't crash.
 
-let Promise = require("when").Promise;
-let mach = require("../modules");
+const Promise = require("when").Promise;
+const mach = require("../modules");
 
 mach.serve(function () {
     if (Math.random() > 0.75) {

@@ -1,8 +1,7 @@
-let expect = require("expect");
-let mach = require("../../index");
+const expect = require("expect");
+const mach = require("../../index");
 
 describe("extensions/accept", function () {
-
     beforeEach(function () {
         mach.extend(require("../accept"));
     });
@@ -10,9 +9,7 @@ describe("extensions/accept", function () {
     describe("a message with an Accept header", function () {
         let message;
         beforeEach(function () {
-            message = new mach.Message(null, {
-                Accept: "application/json"
-            });
+            message = new mach.Message(null, {Accept: "application/json"});
         });
 
         it("accepts acceptable media types", function () {
@@ -23,5 +20,4 @@ describe("extensions/accept", function () {
             expect(message.accepts("text/html")).toBe(false);
         });
     });
-
 });

@@ -1,6 +1,6 @@
 function makeParams(keys, values) {
     return keys.reduce(function (params, key, index) {
-        let value = values[index];
+        const value = values[index];
 
         if (key === "splat") {
             if (Array.isArray(params.splat)) {

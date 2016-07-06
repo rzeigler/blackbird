@@ -1,10 +1,9 @@
-let expect = require("expect");
-let mach = require("../../index");
+const expect = require("expect");
+const mach = require("../../index");
 
-let getFixture = require("../../multipart/__tests__/getFixture");
+const getFixture = require("../../multipart/__tests__/getFixture");
 
 describe("extensions/multipart", function () {
-
     beforeEach(function () {
         mach.extend(require("../multipart"));
     });
@@ -15,9 +14,7 @@ describe("extensions/multipart", function () {
         beforeEach(function () {
             message = new mach.Message(
         getFixture("content_type_no_filename"),
-                {
-                    "Content-Type": "multipart/form-data; boundary=AaB03x"
-                }
+                {"Content-Type": "multipart/form-data; boundary=AaB03x"}
       );
         });
 
@@ -36,9 +33,7 @@ describe("extensions/multipart", function () {
         beforeEach(function () {
             message = new mach.Message(
         "contents",
-                {
-                    "Content-Disposition": "form-data; name=\"files\"; filename=\"escape \\\"quotes\""
-                }
+                {"Content-Disposition": "form-data; name=\"files\"; filename=\"escape \\\"quotes\""}
       );
         });
 
@@ -50,5 +45,4 @@ describe("extensions/multipart", function () {
             expect(message.filename).toEqual("escape \"quotes");
         });
     });
-
 });

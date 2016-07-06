@@ -1,8 +1,8 @@
-let Stream = require("bufferedstream");
-let MaxLengthExceededError = require("../utils/MaxLengthExceededError");
-let resolveProperties = require("../utils/resolveProperties");
-let Promise = require("../utils/Promise");
-let Parser = require("./Parser");
+const Stream = require("bufferedstream");
+const MaxLengthExceededError = require("../utils/MaxLengthExceededError");
+const resolveProperties = require("../utils/resolveProperties");
+const Promise = require("../utils/Promise");
+const Parser = require("./Parser");
 const R = require("ramda");
 
 function defaultPartHandler(part) {
@@ -29,23 +29,23 @@ function parseContent(content, boundary, maxLength, partHandler) {
             content = new Stream(content);
         }
 
-        let parts = {};
+        const parts = {};
         let contentLength = 0;
 
-        let parser = new Parser(boundary, function (part) {
+        const parser = new Parser(boundary, function (part) {
             parts[part.name] = partHandler(part);
         });
 
         content.on("error", reject);
 
         content.on("data", function (chunk) {
-            let length = chunk.length;
+            const length = chunk.length;
             contentLength += length;
 
             if (maxLength && contentLength > maxLength) {
                 reject(new MaxLengthExceededError(maxLength));
             } else {
-                let parsedLength = parser.execute(chunk);
+                const parsedLength = parser.execute(chunk);
 
                 if (parsedLength !== length) {
                     reject(new Error(`Error parsing multipart body: ${parsedLength} of ${length} bytes parsed`));

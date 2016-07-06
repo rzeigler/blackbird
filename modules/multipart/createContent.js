@@ -1,8 +1,8 @@
 /* jshint -W058 */
-let Stream = require("bufferedstream");
-let Promise = require("../utils/Promise");
-let readFile = require("../utils/readFile");
-let File = require("../utils/File");
+const Stream = require("bufferedstream");
+const Promise = require("../utils/Promise");
+const readFile = require("../utils/readFile");
+const File = require("../utils/File");
 
 function createHeaders(name, filename, type) {
     let header = `Content-Disposition: form-data; name="${name}"`;
@@ -24,7 +24,7 @@ function createHeaders(name, filename, type) {
  * object, or an array of any of those types.
  */
 function createContent(params, boundary) {
-    let content = new Stream;
+    const content = new Stream;
 
   // Use a promise chain to write all fields to the content
   // stream in the same order they appear in params.
@@ -32,7 +32,7 @@ function createContent(params, boundary) {
 
     function appendContent(name, value) {
         if (value instanceof File) {
-            let p = readFile(value);
+            const p = readFile(value);
 
             promise = promise.then(function () {
                 content.write(`--${boundary}\r\n${createHeaders(name, value.name, value.type)}`);
@@ -52,7 +52,7 @@ function createContent(params, boundary) {
     }
 
     let param;
-    for (let name in params) {
+    for (const name in params) {
         if (params.hasOwnProperty(name)) {
             param = params[name];
 

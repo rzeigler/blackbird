@@ -1,4 +1,4 @@
-let crypto = require("crypto");
+const crypto = require("crypto");
 
 /**
  * Returns a SHA1 hash of the given string.

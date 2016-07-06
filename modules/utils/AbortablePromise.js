@@ -1,11 +1,11 @@
-let Promise = require("bluebird");
+const Promise = require("bluebird");
 const R = require("ramda");
 
 function makeAbortable(promise, abort) {
     promise.abort = abort;
 
   // Hijack promise.then so it returns an abortable promise.
-    let _then = promise.then;
+    const _then = promise.then;
     promise.then = function () {
         return makeAbortable(_then.apply(promise, arguments), abort);
     };
@@ -46,7 +46,7 @@ function AbortablePromise(resolver) {
     }
 
     let abort;
-    let promise = new Promise(function (resolve, reject) {
+    const promise = new Promise(function (resolve, reject) {
         let aborter;
 
         abort = function () {
@@ -54,7 +54,7 @@ function AbortablePromise(resolver) {
                 return;
             }
 
-            let fn = aborter;
+            const fn = aborter;
             aborter = null;
 
             try {

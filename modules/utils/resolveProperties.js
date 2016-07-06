@@ -1,7 +1,7 @@
-let Promise = require("bluebird");
+const Promise = require("bluebird");
 
 function resolveProperties(object) {
-    let keys = Object.keys(object);
+    const keys = Object.keys(object);
 
     return Promise.all(
     keys.map(function (key) {

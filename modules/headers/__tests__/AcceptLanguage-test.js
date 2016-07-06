@@ -1,7 +1,7 @@
 /* jshint -W058 */
-let assert = require("assert");
-let expect = require("expect");
-let AcceptLanguage = require("../AcceptLanguage");
+const assert = require("assert");
+const expect = require("expect");
+const AcceptLanguage = require("../AcceptLanguage");
 
 describe("AcceptLanguage", function () {
     let header;

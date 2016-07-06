@@ -1,11 +1,11 @@
 /* jshint -W058 */
-let createConnection = require("./createConnection");
+const createConnection = require("./createConnection");
 const R = require("ramda");
 
 /**
  * HTTP status codes that don't have entities.
  */
-let STATUS_WITHOUT_CONTENT = {
+const STATUS_WITHOUT_CONTENT = {
     100: true,
     101: true,
     204: true,
@@ -20,13 +20,13 @@ let STATUS_WITHOUT_CONTENT = {
  */
 function createRequestHandler(app) {
     return function (nodeRequest, nodeResponse) {
-        let conn = createConnection(nodeRequest);
+        const conn = createConnection(nodeRequest);
 
         conn.call(app).then(function () {
-            let isHead = conn.method === "HEAD";
-            let isEmpty = isHead || STATUS_WITHOUT_CONTENT[conn.status] === true;
-            let headers = conn.response.headers;
-            let content = conn.response.content;
+            const isHead = conn.method === "HEAD";
+            const isEmpty = isHead || STATUS_WITHOUT_CONTENT[conn.status] === true;
+            const headers = conn.response.headers;
+            const content = conn.response.content;
 
             if (isEmpty && !isHead) {
                 headers["Content-Length"] = 0;

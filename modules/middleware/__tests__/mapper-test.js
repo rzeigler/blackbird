@@ -1,9 +1,8 @@
-let expect = require("expect");
-let callApp = require("../../utils/callApp");
-let createMapper = require("../mapper");
+const expect = require("expect");
+const callApp = require("../../utils/callApp");
+const createMapper = require("../mapper");
 
 describe("middleware/mapper", function () {
-
     function showInfo(conn) {
         return {
             status: 200,
@@ -90,5 +89,4 @@ describe("middleware/mapper", function () {
             });
         });
     });
-
 });

@@ -1,9 +1,9 @@
 /* jshint -W058 */
-let assert = require("assert");
-let expect = require("expect");
-let bodec = require("bodec");
-let MaxLengthExceededError = require("../utils/MaxLengthExceededError");
-let Message = require("../Message");
+const assert = require("assert");
+const expect = require("expect");
+const bodec = require("bodec");
+const MaxLengthExceededError = require("../utils/MaxLengthExceededError");
+const Message = require("../Message");
 
 describe("a Message with \"Content-Type: text/plain\"", function () {
     let message;
@@ -115,7 +115,6 @@ describe("Message#bufferContent", function () {
 });
 
 describe("Message#parseContent", function () {
-
     let message;
     beforeEach(function () {
         message = new Message;
@@ -216,5 +215,4 @@ describe("Message#parseContent", function () {
             });
         });
     }); // application/x-www-form-urlencoded
-
 });

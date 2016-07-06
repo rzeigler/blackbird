@@ -1,12 +1,11 @@
-let assert = require("assert");
-let parseContent = require("../parseContent");
-let Parser = require("../Parser");
-let getFixture = require("./getFixture");
+const assert = require("assert");
+const parseContent = require("../parseContent");
+const Parser = require("../Parser");
+const getFixture = require("./getFixture");
 
 describe("Parser", function () {
-
     describe("with a boundary of \"abc\"", function () {
-        let parser = new Parser("abc", function () {});
+        const parser = new Parser("abc", function () {});
 
         it("has the correct boundary", function () {
             assert.deepEqual(Array.prototype.slice.call(parser.boundary), [13, 10, 45, 45, 97, 98, 99]);
@@ -19,7 +18,7 @@ describe("Parser", function () {
     function beforeEachParseFixture(fixtureName, boundary) {
         boundary = boundary || "AaB03x";
         beforeEach(function () {
-            let message = getFixture(fixtureName);
+            const message = getFixture(fixtureName);
             return parseContent(message, boundary, partHandler).then(function (object) {
                 parts = object;
             });
@@ -237,5 +236,4 @@ describe("Parser", function () {
             assert.equal(parts.files.buffer, "contents");
         });
     });
-
 });

@@ -1,6 +1,6 @@
-let expect = require("expect");
-let callApp = require("../../utils/callApp");
-let favicon = require("../favicon");
+const expect = require("expect");
+const callApp = require("../../utils/callApp");
+const favicon = require("../favicon");
 
 function ok() {
     return 200;

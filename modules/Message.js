@@ -1,24 +1,24 @@
-let bodec = require("bodec");
-let d = require("describe-property");
-let Stream = require("bufferedstream");
-let bufferStream = require("./utils/bufferStream");
-let normalizeHeaderName = require("./utils/normalizeHeaderName");
-let parseCookie = require("./utils/parseCookie");
-let parseQuery = require("./utils/parseQuery");
+const bodec = require("bodec");
+const d = require("describe-property");
+const Stream = require("bufferedstream");
+const bufferStream = require("./utils/bufferStream");
+const normalizeHeaderName = require("./utils/normalizeHeaderName");
+const parseCookie = require("./utils/parseCookie");
+const parseQuery = require("./utils/parseQuery");
 const R = require("ramda");
 
 /**
  * The default content to use for new messages.
  */
-let DEFAULT_CONTENT = bodec.fromString("");
+const DEFAULT_CONTENT = bodec.fromString("");
 
 /**
  * The default maximum length (in bytes) to use in Message#parseContent.
  */
-let DEFAULT_MAX_CONTENT_LENGTH = Math.pow(2, 20); // 1M
+const DEFAULT_MAX_CONTENT_LENGTH = Math.pow(2, 20); // 1M
 
-let HEADERS_LINE_SEPARATOR = /\r?\n/;
-let HEADER_SEPARATOR = ": ";
+const HEADERS_LINE_SEPARATOR = /\r?\n/;
+const HEADER_SEPARATOR = ": ";
 
 function defaultParser(message, maxLength) {
     return message.stringifyContent(maxLength);
@@ -37,10 +37,10 @@ Object.defineProperties(Message, {
     PARSERS: d({
         enumerable: true,
         value: {
-            "application/json": function (message, maxLength) {
+            "application/json"(message, maxLength) {
                 return message.stringifyContent(maxLength).then(JSON.parse);
             },
-            "application/x-www-form-urlencoded": function (message, maxLength) {
+            "application/x-www-form-urlencoded"(message, maxLength) {
                 return message.stringifyContent(maxLength).then(parseQuery);
             }
         }
@@ -60,7 +60,7 @@ Object.defineProperties(Message.prototype, {
 
         if (typeof value === "string") {
             value.split(HEADERS_LINE_SEPARATOR).forEach(function (line) {
-                let index = line.indexOf(HEADER_SEPARATOR);
+                const index = line.indexOf(HEADER_SEPARATOR);
 
                 if (index === -1) {
                     this.addHeader(line, true);
@@ -69,7 +69,7 @@ Object.defineProperties(Message.prototype, {
                 }
             }, this);
         } else if (!R.isNil(value)) {
-            for (let headerName in value) {
+            for (const headerName in value) {
                 if (value.hasOwnProperty(headerName)) {
                     this.addHeader(headerName, value[headerName]);
                 }
@@ -97,7 +97,7 @@ Object.defineProperties(Message.prototype, {
     addHeader: d(function (headerName, value) {
         headerName = normalizeHeaderName(headerName);
 
-        let headers = this.headers;
+        const headers = this.headers;
         if (headerName in headers) {
             if (Array.isArray(headers[headerName])) {
                 headers[headerName].push(value);
@@ -114,17 +114,17 @@ Object.defineProperties(Message.prototype, {
    */
     cookies: d.gs(function () {
         if (!this._cookies) {
-            let header = this.headers.Cookie;
+            const header = this.headers.Cookie;
 
             if (header) {
-                let cookies = parseCookie(header);
+                const cookies = parseCookie(header);
 
         // From RFC 2109:
         // If multiple cookies satisfy the criteria above, they are ordered in
         // the Cookie header such that those with more specific Path attributes
         // precede those with less specific. Ordering with respect to other
         // attributes (e.g., Domain) is unspecified.
-                for (let cookieName in cookies) {
+                for (const cookieName in cookies) {
                     if (Array.isArray(cookies[cookieName])) {
                         cookies[cookieName] = cookies[cookieName][0] || "";
                     }
@@ -255,7 +255,7 @@ Object.defineProperties(Message.prototype, {
             maxLength = DEFAULT_MAX_CONTENT_LENGTH;
         }
 
-        let parser = Message.PARSERS[this.mediaType] || defaultParser;
+        const parser = Message.PARSERS[this.mediaType] || defaultParser;
         this._parsedContent = parser(this, maxLength);
 
         return this._parsedContent;

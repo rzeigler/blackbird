@@ -1,9 +1,9 @@
-let mach = require("../index");
-let Promise = require("../utils/Promise");
-let decodeBase64 = require("../utils/decodeBase64");
-let encodeBase64 = require("../utils/encodeBase64");
-let makeHash = require("../utils/makeHash");
-let CookieStore = require("./session/CookieStore");
+const mach = require("../index");
+const Promise = require("../utils/Promise");
+const decodeBase64 = require("../utils/decodeBase64");
+const encodeBase64 = require("../utils/encodeBase64");
+const makeHash = require("../utils/makeHash");
+const CookieStore = require("./session/CookieStore");
 const {is} = require("ramda");
 mach.extend(
   require("../extensions/server")
@@ -12,7 +12,7 @@ mach.extend(
 /**
  * The maximum size of an HTTP cookie.
  */
-let MAX_COOKIE_SIZE = 4096;
+const MAX_COOKIE_SIZE = 4096;
 
 /**
  * Stores the given session and returns a promise for a value that should be stored
@@ -20,7 +20,7 @@ let MAX_COOKIE_SIZE = 4096;
  */
 function encodeSession(session, store, secret) {
     return store.save(session).then(function (data) {
-        let cookie = encodeBase64(`${data}--${makeHashWithSecret(data, secret)}`);
+        const cookie = encodeBase64(`${data}--${makeHashWithSecret(data, secret)}`);
 
         if (cookie.length > MAX_COOKIE_SIZE) {
             throw new Error("Cookie data size exceeds 4kb; content dropped");
@@ -36,10 +36,10 @@ function encodeSession(session, store, secret) {
  * tampered with. If it has, returns null.
  */
 function decodeCookie(cookie, store, secret) {
-    let value = decodeBase64(cookie);
-    let index = value.lastIndexOf("--");
-    let data = value.substring(0, index);
-    let hash = value.substring(index + 2);
+    const value = decodeBase64(cookie);
+    const index = value.lastIndexOf("--");
+    const data = value.substring(0, index);
+    const hash = value.substring(index + 2);
 
   // Verify the cookie has not been tampered with.
     if (hash === makeHashWithSecret(data, secret)) {
@@ -93,14 +93,14 @@ function session(app, options) {
         options = {secret: options};
     }
 
-    let secret = options.secret;
-    let name = options.name || "_session";
-    let path = options.path || "/";
-    let domain = options.domain;
-    let expireAfter = options.expireAfter || 0;
-    let httpOnly = "httpOnly" in options ? options.httpOnly || false : true;
-    let secure = options.secure || false;
-    let store = options.store || new CookieStore(options);
+    const secret = options.secret;
+    const name = options.name || "_session";
+    const path = options.path || "/";
+    const domain = options.domain;
+    const expireAfter = options.expireAfter || 0;
+    const httpOnly = "httpOnly" in options ? options.httpOnly || false : true;
+    const secure = options.secure || false;
+    const store = options.store || new CookieStore(options);
 
     if (!secret) {
         console.warn([
@@ -117,14 +117,14 @@ function session(app, options) {
             return conn.call(app); // Don't overwrite the existing session.
         }
 
-        let cookie = conn.request.cookies[name];
+        const cookie = conn.request.cookies[name];
 
         return Promise.resolve(cookie && decodeCookie(cookie, store, secret)).then(function (object) {
             conn.session = object || {};
 
             return conn.call(app).then(function () {
                 return Promise.resolve(conn.session && encodeSession(conn.session, store, secret)).then(function (newCookie) {
-                    let expires = expireAfter && new Date(Date.now() + expireAfter * 1000);
+                    const expires = expireAfter && new Date(Date.now() + expireAfter * 1000);
 
           // Don't bother setting the cookie if its value
           // hasn't changed and there is no expires date.
@@ -134,11 +134,11 @@ function session(app, options) {
 
                     conn.response.setCookie(name, {
                         value: newCookie,
-                        path: path,
-                        domain: domain,
-                        expires: expires,
-                        httpOnly: httpOnly,
-                        secure: secure
+                        path,
+                        domain,
+                        expires,
+                        httpOnly,
+                        secure
                     });
                 }, conn.onError);
             });

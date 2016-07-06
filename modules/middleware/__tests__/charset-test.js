@@ -1,6 +1,6 @@
-let expect = require("expect");
-let callApp = require("../../utils/callApp");
-let charset = require("../charset");
+const expect = require("expect");
+const callApp = require("../../utils/callApp");
+const charset = require("../charset");
 
 function ok() {
     return 200;

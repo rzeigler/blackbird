@@ -1,6 +1,6 @@
-let expect = require("expect");
-let callApp = require("../callApp");
-let createProxy = require("../createProxy");
+const expect = require("expect");
+const callApp = require("../callApp");
+const createProxy = require("../createProxy");
 
 describe("a proxy", function () {
     let proxy;
@@ -13,7 +13,7 @@ describe("a proxy", function () {
         this.timeout(3000);
 
         return callApp(proxy, "https://example.org:5000/more/path?more=query").then(function (conn) {
-            let location = conn.proxyLocation;
+            const location = conn.proxyLocation;
 
             expect(location.protocol).toEqual("http:");
             expect(location.host).toEqual("www.example.com");

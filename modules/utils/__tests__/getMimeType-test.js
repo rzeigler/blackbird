@@ -1,9 +1,8 @@
-let expect = require("expect");
-let MimeTypes = require("../../MimeTypes");
-let getMimeType = require("../getMimeType");
+const expect = require("expect");
+const MimeTypes = require("../../MimeTypes");
+const getMimeType = require("../getMimeType");
 
 describe("getMimeType", function () {
-
     Object.keys(MimeTypes).forEach(function (type) {
         MimeTypes[type].forEach(function (ext) {
             describe(`when given a file with a "${ext}" extension`, function () {
@@ -27,5 +26,4 @@ describe("getMimeType", function () {
             });
         });
     });
-
 });

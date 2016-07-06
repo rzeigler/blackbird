@@ -1,4 +1,4 @@
-let d = require("describe-property");
+const d = require("describe-property");
 
 /**
  * An error indicating that some maximum length has been exceeded.
@@ -11,10 +11,6 @@ function MaxLengthExceededError(maxLength) {
     this.maxLength = maxLength;
 }
 
-MaxLengthExceededError.prototype = Object.create(Error.prototype, {
-
-    constructor: d(MaxLengthExceededError)
-
-});
+MaxLengthExceededError.prototype = Object.create(Error.prototype, {constructor: d(MaxLengthExceededError)});
 
 module.exports = MaxLengthExceededError;

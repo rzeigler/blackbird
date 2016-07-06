@@ -22,9 +22,9 @@ function stringifyMediaValue(value, typeSeparator) {
     }
 
     if (value.params) {
-        let params = value.params;
+        const params = value.params;
 
-        for (let paramName in params) {
+        for (const paramName in params) {
             if (params.hasOwnProperty(paramName)) {
                 string += `;${paramName}`;
 

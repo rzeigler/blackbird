@@ -1,5 +1,5 @@
-let d = require("describe-property");
-let escapeRegExp = require("../utils/escapeRegExp");
+const d = require("describe-property");
+const escapeRegExp = require("../utils/escapeRegExp");
 
 const {is} = require("ramda");
 
@@ -57,11 +57,11 @@ function createMapper(app, map) {
         app = null;
     }
 
-    let mappings = [];
+    const mappings = [];
 
     function mapper(conn) {
-        let hostname = conn.hostname;
-        let pathname = conn.pathname;
+        const hostname = conn.hostname;
+        const pathname = conn.pathname;
 
         let mapping, match, remainingPath;
         for (let i = 0, len = mappings.length; i < len; ++i) {
@@ -102,7 +102,7 @@ function createMapper(app, map) {
             let hostname, path;
 
       // If the location is a fully qualified URL use the host as well.
-            let match = location.match(/^https?:\/\/(.*?)(\/.*)/);
+            const match = location.match(/^https?:\/\/(.*?)(\/.*)/);
             if (match) {
                 hostname = match[1].replace(/:\d+$/, ""); // Strip the port.
                 path = match[2];
@@ -116,13 +116,13 @@ function createMapper(app, map) {
 
             path = path.replace(/\/$/, "");
 
-            let pattern = new RegExp(`^${escapeRegExp(path).replace(/\/+/g, "/+")}(.*)`);
+            const pattern = new RegExp(`^${escapeRegExp(path).replace(/\/+/g, "/+")}(.*)`);
 
             mappings.push({
-                hostname: hostname,
-                path: path,
-                pattern: pattern,
-                app: app
+                hostname,
+                path,
+                pattern,
+                app
             });
 
             mappings.sort(byMostSpecific);
@@ -139,7 +139,7 @@ function createMapper(app, map) {
 
   // Allow app.use(mach.mapper, map)
     if (is(Object, map)) {
-        for (let location in map) {
+        for (const location in map) {
             if (map.hasOwnProperty(location)) {
                 mapper.map(location, map[location]);
             }

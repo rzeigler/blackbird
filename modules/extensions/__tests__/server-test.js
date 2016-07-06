@@ -1,15 +1,13 @@
 /* jshint -W058 */
-let expect = require("expect");
-let mach = require("../../index");
+const expect = require("expect");
+const mach = require("../../index");
 
 describe("extensions/server", function () {
-
     beforeEach(function () {
         mach.extend(require("../server"));
     });
 
     describe("Message#setCookie", function () {
-
         let message;
         beforeEach(function () {
             message = new mach.Message;
@@ -32,11 +30,9 @@ describe("extensions/server", function () {
 
                 expect(message.headers["Set-Cookie"]).toEqual([
                     "previousOne=previousOneValue",
-                    "cookieName=cookieValue",
+                    "cookieName=cookieValue"
                 ]);
             });
         });
-
     });
-
 });

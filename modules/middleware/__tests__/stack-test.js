@@ -1,7 +1,7 @@
-let assert = require("assert");
-let expect = require("expect");
-let callApp = require("../../utils/callApp");
-let stack = require("../stack");
+const assert = require("assert");
+const expect = require("expect");
+const callApp = require("../../utils/callApp");
+const stack = require("../stack");
 const R = require("ramda");
 
 function addHeader(app, headerName) {
@@ -13,8 +13,7 @@ function addHeader(app, headerName) {
 }
 
 describe("middleware/stack", function () {
-
-    let app = stack();
+    const app = stack();
 
     app.use(addHeader, "One");
     app.use(addHeader, "Two");
@@ -84,5 +83,4 @@ describe("middleware/stack", function () {
             });
         });
     });
-
 });
