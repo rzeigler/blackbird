@@ -1,9 +1,9 @@
-let parseMediaValue = require("../utils/parseMediaValue");
-let parseMediaValues = require("../utils/parseMediaValues");
-let qualityFactorForMediaValue = require("../utils/qualityFactorForMediaValue");
-let stringifyMediaValues = require("../utils/stringifyMediaValues");
-let stringifyMediaValueWithoutQualityFactor = require("../utils/stringifyMediaValueWithoutQualityFactor");
-let Header = require("../Header");
+const parseMediaValue = require("../utils/parseMediaValue");
+const parseMediaValues = require("../utils/parseMediaValues");
+const qualityFactorForMediaValue = require("../utils/qualityFactorForMediaValue");
+const stringifyMediaValues = require("../utils/stringifyMediaValues");
+const stringifyMediaValueWithoutQualityFactor = require("../utils/stringifyMediaValueWithoutQualityFactor");
+const Header = require("../Header");
 const R = require("ramda");
 
 function byHighestPrecedence(a, b) {
@@ -49,14 +49,14 @@ class AcceptLanguage extends Header {
    * Returns the quality factor for the given language.
    */
     qualityFactorForLanguage(language) {
-        let values = this._mediaValues;
+        const values = this._mediaValues;
 
         if (R.isEmpty(values)) {
             return 1;
         }
 
-        let givenValue = parseMediaValue(language, "-");
-        let matchingValues = values.filter(function (value) {
+        const givenValue = parseMediaValue(language, "-");
+        const matchingValues = values.filter(function (value) {
             if (value.type === "*") {
                 return true;
             }

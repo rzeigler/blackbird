@@ -1,8 +1,8 @@
-let d = require("describe-property");
-let parseContent = require("../multipart/parseContent");
+const d = require("describe-property");
+const parseContent = require("../multipart/parseContent");
 
-let BOUNDARY_MATCHER = /^multipart\/.*boundary=(?:"([^"]+)"|([^;]+))/im;
-let NAME_MATCHER = /\bname="([^"]+)"/i;
+const BOUNDARY_MATCHER = /^multipart\/.*boundary=(?:"([^"]+)"|([^;]+))/im;
+const NAME_MATCHER = /\bname="([^"]+)"/i;
 
 module.exports = function (mach) {
     mach.Message.PARSERS["multipart/form-data"] = function (message, maxLength) {
@@ -51,7 +51,7 @@ module.exports = function (mach) {
      * message and that originate from a file upload.
      */
         filename: d.gs(function () {
-            let contentDisposition = this.headers["Content-Disposition"];
+            const contentDisposition = this.headers["Content-Disposition"];
 
             if (contentDisposition) {
         // Match quoted filenames.

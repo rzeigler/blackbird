@@ -1,8 +1,8 @@
-let d = require("describe-property");
-let redis = require("redis");
-let makeToken = require("../../utils/makeToken");
-let Promise = require("../../utils/Promise");
-let parseURL = require("../../utils/parseURL");
+const d = require("describe-property");
+const redis = require("redis");
+const makeToken = require("../../utils/makeToken");
+const Promise = require("../../utils/Promise");
+const parseURL = require("../../utils/parseURL");
 
 function sendCommand(client, command, args) {
     args = args || [];
@@ -19,7 +19,7 @@ function sendCommand(client, command, args) {
 }
 
 function makeUniqueKey(client, keyLength) {
-    let key = makeToken(keyLength);
+    const key = makeToken(keyLength);
 
   // Try to set an empty string to reserve the key.
     return sendCommand(client, "setnx", [key, ""]).then(function (result) {
@@ -72,11 +72,11 @@ Object.defineProperties(RedisStore.prototype, {
 
     getClient: d(function () {
         if (!this._client) {
-            let options = this.options;
+            const options = this.options;
 
             let hostname, port;
             if (typeof options.url === "string") {
-                let parsedURL = parseURL(options.url);
+                const parsedURL = parseURL(options.url);
                 hostname = parsedURL.hostname;
                 port = parsedURL.port;
             }
@@ -94,14 +94,14 @@ Object.defineProperties(RedisStore.prototype, {
     }),
 
     save: d(function (session) {
-        let client = this.getClient();
-        let keyLength = this.keyLength;
-        let ttl = this.ttl;
+        const client = this.getClient();
+        const keyLength = this.keyLength;
+        const ttl = this.ttl;
 
         return Promise.resolve(session._id || makeUniqueKey(client, keyLength)).then(function (key) {
             session._id = key;
 
-            let json = JSON.stringify(session);
+            const json = JSON.stringify(session);
 
             let promise;
             if (ttl) {

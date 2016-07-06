@@ -1,4 +1,4 @@
-let paramMatcher = /:([a-zA-Z_$][a-zA-Z0-9_$]*)|[*.()\[\]\\+|{}^$]/g;
+const paramMatcher = /:([a-zA-Z_$][a-zA-Z0-9_$]*)|[*.()\[\]\\+|{}^$]/g;
 
 /**
  * Compiles the given route string into a RegExp that can be used to
@@ -12,7 +12,7 @@ let paramMatcher = /:([a-zA-Z_$][a-zA-Z0-9_$]*)|[*.()\[\]\\+|{}^$]/g;
  * order they appear in the route string.
  */
 function compileRoute(route, keys) {
-    let source = route.replace(paramMatcher, function (match, key) {
+    const source = route.replace(paramMatcher, function (match, key) {
         if (key) {
             keys.push(key);
             return "([^./?#]+)";

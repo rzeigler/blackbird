@@ -1,6 +1,6 @@
-let d = require("describe-property");
+const d = require("describe-property");
 
-let RoutingMethods = {
+const RoutingMethods = {
     delete: "DELETE",
     get: ["GET", "HEAD"],
     head: "HEAD",
@@ -10,7 +10,7 @@ let RoutingMethods = {
     trace: "TRACE"
 };
 
-let RoutingProperties = Object.keys(RoutingMethods).reduce(function (memo, method) {
+const RoutingProperties = Object.keys(RoutingMethods).reduce(function (memo, method) {
     memo[method] = d(function (pattern, app) {
         return this.route(pattern, RoutingMethods[method], app);
     });

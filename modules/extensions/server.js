@@ -1,10 +1,10 @@
-let fs = require("fs");
-let d = require("describe-property");
-let objectAssign = require("object-assign");
-let getMimeType = require("../utils/getMimeType");
-let filterProperties = require("../utils/filterProperties");
-let stringifyCookie = require("../utils/stringifyCookie");
-let saveToDisk = require("../utils/saveToDisk");
+const fs = require("fs");
+const d = require("describe-property");
+const objectAssign = require("object-assign");
+const getMimeType = require("../utils/getMimeType");
+const filterProperties = require("../utils/filterProperties");
+const stringifyCookie = require("../utils/stringifyCookie");
+const saveToDisk = require("../utils/saveToDisk");
 const R = require("ramda");
 
 module.exports = function (mach) {
@@ -71,12 +71,12 @@ module.exports = function (mach) {
                 paramTypes = pt;
             }
 
-            let request = this.request;
-            let queryParams = objectAssign({}, this.query);
+            const request = this.request;
+            const queryParams = objectAssign({}, this.query);
 
             return request.parseContent(maxLength).then(function (contentParams) {
         // Content params take precedence over query params.
-                let params = objectAssign(queryParams, contentParams);
+                const params = objectAssign(queryParams, contentParams);
                 return paramTypes ? filterProperties(params, paramTypes) : params;
             });
         }),
@@ -190,7 +190,7 @@ module.exports = function (mach) {
                 options = status;
             }
 
-            let response = this.response;
+            const response = this.response;
 
             if (R.is(String, options)) {
                 options = {path: options};
@@ -219,7 +219,7 @@ module.exports = function (mach) {
 
     mach.extend(require("./multipart"));
 
-    let _handlePart = mach.Message.prototype.handlePart;
+    const _handlePart = mach.Message.prototype.handlePart;
 
     Object.defineProperties(mach.Message.prototype, {
 

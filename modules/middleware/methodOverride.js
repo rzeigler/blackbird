@@ -1,4 +1,4 @@
-let normalizeHeaderName = require("../utils/normalizeHeaderName");
+const normalizeHeaderName = require("../utils/normalizeHeaderName");
 const {is} = require("ramda");
 /**
  * A middleware that overrides the method of the request to a value that was
@@ -40,8 +40,8 @@ function methodOverride(app, options) {
         options = {paramName: options};
     }
 
-    let paramName = options.paramName || "_method";
-    let headerName = normalizeHeaderName(options.headerName || "X-Http-Method-Override");
+    const paramName = options.paramName || "_method";
+    const headerName = normalizeHeaderName(options.headerName || "X-Http-Method-Override");
 
     return function (conn) {
         let method;

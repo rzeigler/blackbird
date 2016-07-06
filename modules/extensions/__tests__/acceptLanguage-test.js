@@ -1,8 +1,7 @@
-let expect = require("expect");
-let mach = require("../../index");
+const expect = require("expect");
+const mach = require("../../index");
 
 describe("extensions/acceptLanguage", function () {
-
     beforeEach(function () {
         mach.extend(require("../acceptLanguage"));
     });
@@ -10,9 +9,7 @@ describe("extensions/acceptLanguage", function () {
     describe("a message with an Accept-Language header", function () {
         let message;
         beforeEach(function () {
-            message = new mach.Message(null, {
-                "Accept-Language": "jp"
-            });
+            message = new mach.Message(null, {"Accept-Language": "jp"});
         });
 
         it("accepts acceptable languages", function () {

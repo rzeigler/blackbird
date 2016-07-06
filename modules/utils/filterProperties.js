@@ -4,7 +4,7 @@
  */
  const {forEach, keys} = require("ramda");
  function filterProperties(object, propertyTypes) {
-     let properties = {};
+     const properties = {};
 
      let type, value;
      forEach(function (property) {

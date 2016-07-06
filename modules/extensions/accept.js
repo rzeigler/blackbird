@@ -1,5 +1,5 @@
-let d = require("describe-property");
-let Accept = require("../headers/Accept");
+const d = require("describe-property");
+const Accept = require("../headers/Accept");
 
 module.exports = function (mach) {
     Object.defineProperties(mach.Connection.prototype, {

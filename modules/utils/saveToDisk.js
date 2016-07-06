@@ -1,14 +1,14 @@
-let fs = require("fs");
-let File = require("./File");
-let Promise = require("./Promise");
-let makeTemporaryPath = require("./makeTemporaryPath");
+const fs = require("fs");
+const File = require("./File");
+const Promise = require("./Promise");
+const makeTemporaryPath = require("./makeTemporaryPath");
 const R = require("ramda");
 
 function saveToDisk(message, filePrefix) {
     return new Promise(function (resolve, reject) {
-        let content = message.content;
-        let path = makeTemporaryPath(filePrefix);
-        let stream = fs.createWriteStream(path);
+        const content = message.content;
+        const path = makeTemporaryPath(filePrefix);
+        const stream = fs.createWriteStream(path);
         let size = 0;
 
         content.on("error", reject);
@@ -22,10 +22,10 @@ function saveToDisk(message, filePrefix) {
             stream.end(function () {
                 resolve(
           new File({
-              path: path,
+              path,
               name: message.filename,
               type: message.mediaType,
-              size: size
+              size
           })
         );
             });

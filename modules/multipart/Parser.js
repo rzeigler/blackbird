@@ -1,14 +1,14 @@
 /* jshint -W058 */
-let bodec = require("bodec");
-let Stream = require("bufferedstream");
-let Message = require("../Message");
+const bodec = require("bodec");
+const Stream = require("bufferedstream");
+const Message = require("../Message");
 const R = require("ramda");
 
 // This parser is modified from the one in the node-formidable
 // project, written by Felix Geisendörfer. MIT licensed.
 
 let s = 0;
-let S = {
+const S = {
     START: s++,
     START_BOUNDARY: s++,
     HEADER_FIELD_START: s++,
@@ -24,16 +24,16 @@ let S = {
 };
 
 let f = 1;
-let F = {
+const F = {
     PART_BOUNDARY: f,
     LAST_BOUNDARY: f *= 2
 };
 
-let LF = 10;
-let CR = 13;
-let SPACE = 32;
-let HYPHEN = 45;
-let COLON = 58;
+const LF = 10;
+const CR = 13;
+const SPACE = 32;
+const HYPHEN = 45;
+const COLON = 58;
 
 function Parser(boundary, partHandler) {
     this.boundary = bodec.fromRaw(`\r\n--${boundary}`);
@@ -274,7 +274,7 @@ Parser.prototype._callback = function (name, chunk, start, end) {
         return;
     }
 
-    let prop = `on${name.substr(0, 1).toUpperCase()}${name.substr(1)}`;
+    const prop = `on${name.substr(0, 1).toUpperCase()}${name.substr(1)}`;
 
     if (prop in this) {
         this[prop](chunk, start, end);
@@ -282,7 +282,7 @@ Parser.prototype._callback = function (name, chunk, start, end) {
 };
 
 Parser.prototype._dataCallback = function (name, chunk, clear, i) {
-    let prop = `${name}Mark`;
+    const prop = `${name}Mark`;
 
     if (prop in this) {
         if (!clear) {

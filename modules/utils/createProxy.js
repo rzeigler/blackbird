@@ -1,5 +1,5 @@
-let Location = require("../Location");
-let sendRequest = require("./sendRequest");
+const Location = require("../Location");
+const sendRequest = require("./sendRequest");
 const R = require("ramda");
 
 /**

@@ -1,10 +1,10 @@
-let fs = require("fs");
-let mach = require("../index");
-let Promise = require("../utils/Promise");
-let getFileStats = require("../utils/getFileStats");
-let generateETag = require("../utils/generateETag");
-let generateIndex = require("../utils/generateIndex");
-let joinPaths = require("../utils/joinPaths");
+const fs = require("fs");
+const mach = require("../index");
+const Promise = require("../utils/Promise");
+const getFileStats = require("../utils/getFileStats");
+const generateETag = require("../utils/generateETag");
+const generateIndex = require("../utils/generateIndex");
+const joinPaths = require("../utils/joinPaths");
 
 const {is, contains} = require("ramda");
 
@@ -78,7 +78,7 @@ function file(app, options) {
         options = {root: options};
     }
 
-    let root = options.root;
+    const root = options.root;
     if (!is(String, root) || !fs.existsSync(root) || !fs.statSync(root).isDirectory()) {
         throw new Error(`Invalid root directory: ${root}`);
     }
@@ -92,12 +92,12 @@ function file(app, options) {
         }
     }
 
-    let useLastModified = "useLastModified" in options ? Boolean(options.useLastModified) : true;
-    let useETag = Boolean(options.useETag);
+    const useLastModified = "useLastModified" in options ? Boolean(options.useLastModified) : true;
+    const useETag = Boolean(options.useETag);
 
     function sendFile(conn, path, stats) {
         conn.file({
-            path: path,
+            path,
             size: stats.size
         });
 
@@ -117,14 +117,14 @@ function file(app, options) {
             return conn.call(app);
         }
 
-        let pathname = conn.pathname;
+        const pathname = conn.pathname;
 
     // Reject paths that contain "..".
         if (contains("..", pathname)) {
             return conn.text(403, "Forbidden");
         }
 
-        let path = joinPaths(root, pathname);
+        const path = joinPaths(root, pathname);
 
         return getFileStats(path).then(function (stats) {
             if (stats && stats.isFile()) {
@@ -136,7 +136,7 @@ function file(app, options) {
             }
 
       // Try to serve one of the index files.
-            let indexPaths = index.map(function (indexPath) {
+            const indexPaths = index.map(function (indexPath) {
                 return joinPaths(path, indexPath);
             });
 

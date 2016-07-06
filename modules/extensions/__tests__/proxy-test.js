@@ -1,8 +1,7 @@
-let expect = require("expect");
-let mach = require("../../index");
+const expect = require("expect");
+const mach = require("../../index");
 
 describe("extensions/proxy", function () {
-
     beforeEach(function () {
         mach.extend(require("../proxy"));
     });
@@ -12,5 +11,4 @@ describe("extensions/proxy", function () {
             expect(mach.createProxy).toBeA("function");
         });
     });
-
 });

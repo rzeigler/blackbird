@@ -1,5 +1,5 @@
-let Connection = require("../Connection");
-let Promise = require("bluebird");
+const Connection = require("../Connection");
+const Promise = require("bluebird");
 const R = require("ramda");
 
 /**
@@ -26,7 +26,7 @@ const R = require("ramda");
 function callApp(app, options, modifier) {
     options = options || {};
 
-    let c = new Connection(options);
+    const c = new Connection(options);
 
     return Promise.resolve(modifier ? modifier(c) : c).then(function (conn) {
         if (R.isNil(conn) || !R.is(Connection, conn)) {

@@ -1,4 +1,4 @@
-let parseQuery = require("./parseQuery");
+const parseQuery = require("./parseQuery");
 
 function parseCookie(cookie) {
     return parseQuery(cookie, {delimiter: /[;,] */});

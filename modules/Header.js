@@ -1,4 +1,4 @@
-let normalizeHeaderName = require("./utils/normalizeHeaderName");
+const normalizeHeaderName = require("./utils/normalizeHeaderName");
 
 class Header {
 

@@ -1,12 +1,12 @@
 /* jshint -W058 */
-let d = require("describe-property");
-let isBinary = require("bodec").isBinary;
-let decodeBase64 = require("./utils/decodeBase64");
-let encodeBase64 = require("./utils/encodeBase64");
-let stringifyQuery = require("./utils/stringifyQuery");
-let Promise = require("./utils/Promise");
-let Location = require("./Location");
-let Message = require("./Message");
+const d = require("describe-property");
+const isBinary = require("bodec").isBinary;
+const decodeBase64 = require("./utils/decodeBase64");
+const encodeBase64 = require("./utils/encodeBase64");
+const stringifyQuery = require("./utils/stringifyQuery");
+const Promise = require("./utils/Promise");
+const Location = require("./Location");
+const Message = require("./Message");
 const R = require("ramda"),
     {is} = R;
 
@@ -76,7 +76,7 @@ function defaultApp(conn) {
  * The options may also be a URL string to specify the URL.
  */
 function Connection(opts) {
-    let options = opts || {};
+    const options = opts || {};
 
     let location;
     if (typeof options === "string") {
@@ -154,11 +154,11 @@ Object.defineProperties(Connection.prototype, {
    * if no auth was provided.
    */
     auth: d.gs(function () {
-        let header = this.request.headers.Authorization;
+        const header = this.request.headers.Authorization;
 
         if (header) {
-            let parts = header.split(" ", 2);
-            let scheme = parts[0];
+            const parts = header.split(" ", 2);
+            const scheme = parts[0];
 
             if (scheme.toLowerCase() === "basic") {
                 return decodeBase64(parts[1]);
@@ -169,7 +169,7 @@ Object.defineProperties(Connection.prototype, {
 
         return this.location.auth;
     }, function (value) {
-        let headers = this.request.headers;
+        const headers = this.request.headers;
 
         if (value && typeof value === "string") {
             headers.Authorization = `Basic ${encodeBase64(value)}`;
@@ -202,9 +202,9 @@ Object.defineProperties(Connection.prototype, {
    * as the first argument and returns a promise for a Response.
    */
     call: d(function (a) {
-        let app = a || defaultApp;
+        const app = a || defaultApp;
 
-        let conn = this;
+        const conn = this;
 
         try {
             return Promise.resolve(app(conn)).then(function (value) {

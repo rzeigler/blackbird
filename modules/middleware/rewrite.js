@@ -1,5 +1,5 @@
-let escapeRegExp = require("../utils/escapeRegExp");
-let isRegExp = require("../utils/isRegExp");
+const escapeRegExp = require("../utils/escapeRegExp");
+const isRegExp = require("../utils/isRegExp");
 const {is} = require("ramda");
 /**
  * A middleware that provides URL rewriting behavior similar to Apache's
@@ -18,7 +18,7 @@ function rewrite(app, pattern, replacement) {
     replacement = replacement || "";
 
     return function (conn) {
-        let pathname = conn.pathname;
+        const pathname = conn.pathname;
 
     // Modify the pathname if the pattern matches.
         if (pattern.test(pathname)) {

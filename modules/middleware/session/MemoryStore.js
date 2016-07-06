@@ -1,6 +1,6 @@
-let d = require("describe-property");
-let makeToken = require("../../utils/makeToken");
-let Promise = require("../../utils/Promise");
+const d = require("describe-property");
+const makeToken = require("../../utils/makeToken");
+const Promise = require("../../utils/Promise");
 
 const {forEach, keys} = require("ramda");
 
@@ -14,8 +14,8 @@ function makeUniqueKey(sessions, keyLength) {
 }
 
 function pruneStore(store, interval) {
-    let timer = setInterval(function () {
-        let now = Date.now();
+    const timer = setInterval(function () {
+        const now = Date.now();
 
         let session;
         forEach(function (key) {
@@ -61,7 +61,7 @@ function MemoryStore(options) {
 Object.defineProperties(MemoryStore.prototype, {
 
     load: d(function (value) {
-        let session = this.sessions[value];
+        const session = this.sessions[value];
 
         if (!session) {
             return Promise.resolve({});

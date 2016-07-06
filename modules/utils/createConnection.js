@@ -1,11 +1,11 @@
-let Connection = require("../Connection");
-let Location = require("../Location");
+const Connection = require("../Connection");
+const Location = require("../Location");
 const R = require("ramda");
 
 /**
  * Standard ports for HTTP protocols.
  */
-let STANDARD_PORTS = {
+const STANDARD_PORTS = {
     "http:": "80",
     "https:": "443"
 };
@@ -18,7 +18,7 @@ function ensureTrailingColon(string) {
  * Creates a new Location object that is reverse-proxy aware.
  */
 function createLocation(nodeRequest) {
-    let headers = nodeRequest.headers;
+    const headers = nodeRequest.headers;
 
     let protocol;
     if (process.env.HTTPS === "on" || headers["x-forwarded-ssl"] === "on" || headers["font-end-https"] === "on") {
@@ -35,7 +35,7 @@ function createLocation(nodeRequest) {
 
     let host;
     if (headers["x-forwarded-host"]) {
-        let hosts = headers["x-forwarded-host"].split(/,\s?/);
+        const hosts = headers["x-forwarded-host"].split(/,\s?/);
         host = hosts[hosts.length - 1];
     } else if (headers.host) {
         host = headers.host;
@@ -43,8 +43,8 @@ function createLocation(nodeRequest) {
         host = process.env.SERVER_NAME;
     }
 
-    let hostParts = host.split(":", 2);
-    let hostname = hostParts[0];
+    const hostParts = host.split(":", 2);
+    const hostname = hostParts[0];
     let port = hostParts[1] || headers["x-forwarded-port"];
 
     if (R.isNil(port)) {
@@ -55,13 +55,13 @@ function createLocation(nodeRequest) {
         }
     }
 
-    let path = nodeRequest.url;
+    const path = nodeRequest.url;
 
     return new Location({
-        protocol: protocol,
-        hostname: hostname,
-        port: port,
-        path: path
+        protocol,
+        hostname,
+        port,
+        path
     });
 }
 
@@ -71,7 +71,7 @@ function createLocation(nodeRequest) {
  * generally needed by application-level code.
  */
 function createConnection(nodeRequest) {
-    let conn = new Connection({
+    const conn = new Connection({
         version: nodeRequest.httpVersion,
         method: nodeRequest.method,
         location: createLocation(nodeRequest),

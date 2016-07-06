@@ -1,4 +1,4 @@
-let stripQuotes = require("../utils/stripQuotes");
+const stripQuotes = require("../utils/stripQuotes");
 const {is} = require("ramda");
 /**
  * A middleware that automatically performs content-based HTTP caching in
@@ -21,8 +21,8 @@ function modified(app) {
         return conn.call(app).then(function () {
             let request = conn.request, response = conn.response;
 
-            let ifNoneMatch = request.headers["If-None-Match"];
-            let etag = response.headers.ETag;
+            const ifNoneMatch = request.headers["If-None-Match"];
+            const etag = response.headers.ETag;
 
             if (ifNoneMatch && etag && etag === stripQuotes(ifNoneMatch)) {
                 conn.status = 304;
@@ -30,7 +30,7 @@ function modified(app) {
                 return;
             }
 
-            let ifModifiedSince = request.headers["If-Modified-Since"];
+            const ifModifiedSince = request.headers["If-Modified-Since"];
             let lastModified = response.headers["Last-Modified"];
 
             if (ifModifiedSince && lastModified) {

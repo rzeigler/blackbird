@@ -1,15 +1,15 @@
-let fs = require("fs");
-let Promise = require("./Promise");
-let getFileStats = require("./getFileStats");
-let getMimeType = require("./getMimeType");
-let formatByteSize = require("./formatByteSize");
-let formatString = require("util").format;
-let joinPaths = require("./joinPaths");
+const fs = require("fs");
+const Promise = require("./Promise");
+const getFileStats = require("./getFileStats");
+const getMimeType = require("./getMimeType");
+const formatByteSize = require("./formatByteSize");
+const formatString = require("util").format;
+const joinPaths = require("./joinPaths");
 
-let MACH_VERSION = require("../version");
+const MACH_VERSION = require("../version");
 const R = require("ramda");
 
-let PAGE_TEMPLATE = [
+const PAGE_TEMPLATE = [
     "<html>",
     "<head>",
     "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />",
@@ -41,7 +41,7 @@ let PAGE_TEMPLATE = [
     "</html>"
 ].join("\n");
 
-let ROW_TEMPLATE = [
+const ROW_TEMPLATE = [
     "<tr class=\"%s\">",
     "  <td class=\"name\"><a href=\"%s\">%s</a></td>",
     "  <td class=\"size\">%s</td>",
@@ -52,14 +52,14 @@ let ROW_TEMPLATE = [
 
 function generateIndex(root, pathname, basename) {
     return new Promise(function (resolve, reject) {
-        let path = joinPaths(root, pathname);
+        const path = joinPaths(root, pathname);
 
         fs.readdir(path, function (error, files) {
             if (error) {
                 return reject(error);
             }
 
-            let promises = files.map(function (file) {
+            const promises = files.map(function (file) {
                 return getFileStats(joinPaths(path, file));
             });
 
@@ -74,7 +74,7 @@ function generateIndex(root, pathname, basename) {
 
                     let file = files[index];
                     let url = basename + pathname + file;
-                    let mtime = stats.mtime;
+                    const mtime = stats.mtime;
 
                     let size, type;
                     if (stats.isDirectory()) {
@@ -92,8 +92,8 @@ function generateIndex(root, pathname, basename) {
                     className = className === "even" ? "odd" : "even";
                 });
 
-                let title = `Index of ${basename}${pathname}`;
-                let content = formatString(PAGE_TEMPLATE, title, title, rows, "mach", MACH_VERSION);
+                const title = `Index of ${basename}${pathname}`;
+                const content = formatString(PAGE_TEMPLATE, title, title, rows, "mach", MACH_VERSION);
 
                 resolve(content);
             }, reject);

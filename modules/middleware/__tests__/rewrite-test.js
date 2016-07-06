@@ -1,6 +1,6 @@
-let expect = require("expect");
-let callApp = require("../../utils/callApp");
-let rewrite = require("../rewrite");
+const expect = require("expect");
+const callApp = require("../../utils/callApp");
+const rewrite = require("../rewrite");
 
 function echoPathname(conn) {
     return conn.pathname;

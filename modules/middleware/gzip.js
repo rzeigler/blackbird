@@ -1,11 +1,11 @@
-let zlib = require("zlib");
-let mach = require("../index");
+const zlib = require("zlib");
+const mach = require("../index");
 
 mach.extend(
   require("../extensions/acceptEncoding")
 );
 
-let GZIP_MATCHER = /text|javascript|json/i;
+const GZIP_MATCHER = /text|javascript|json/i;
 
 function shouldGzipContentType(contentType) {
     if (!contentType || contentType === "text/event-stream") {
@@ -22,8 +22,8 @@ function shouldGzipContentType(contentType) {
 function gzip(app, options) {
     return function (conn) {
         return conn.call(app).then(function () {
-            let response = conn.response;
-            let headers = response.headers;
+            const response = conn.response;
+            const headers = response.headers;
 
             if (shouldGzipContentType(headers["Content-Type"]) && conn.acceptsEncoding("gzip")) {
                 response.content = response.content.pipe(zlib.createGzip(options));

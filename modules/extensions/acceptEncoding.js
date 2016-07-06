@@ -1,5 +1,5 @@
-let d = require("describe-property");
-let AcceptEncoding = require("../headers/AcceptEncoding");
+const d = require("describe-property");
+const AcceptEncoding = require("../headers/AcceptEncoding");
 
 module.exports = function (mach) {
     Object.defineProperties(mach.Connection.prototype, {

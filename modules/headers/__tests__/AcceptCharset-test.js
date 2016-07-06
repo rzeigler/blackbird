@@ -1,7 +1,7 @@
 /* jshint -W058 */
-let assert = require("assert");
-let expect = require("expect");
-let AcceptCharset = require("../AcceptCharset");
+const assert = require("assert");
+const expect = require("expect");
+const AcceptCharset = require("../AcceptCharset");
 
 describe("AcceptCharset", function () {
     let header;

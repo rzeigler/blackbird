@@ -1,16 +1,14 @@
 /* jshint -W058 */
-let expect = require("expect");
-let mach = require("../../index");
-let StatusCodes = require("../../StatusCodes");
+const expect = require("expect");
+const mach = require("../../index");
+const StatusCodes = require("../../StatusCodes");
 
 describe("extensions/statusText", function () {
-
     beforeEach(function () {
         mach.extend(require("../statusText"));
     });
 
     describe("Connection#statusText", function () {
-
         let conn;
         beforeEach(function () {
             conn = new mach.Connection;
@@ -27,7 +25,5 @@ describe("extensions/statusText", function () {
                 });
             });
         });
-
     });
-
 });

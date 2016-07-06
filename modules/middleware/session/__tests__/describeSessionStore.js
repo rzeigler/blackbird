@@ -1,6 +1,6 @@
-let assert = require("assert");
-let expect = require("expect");
-let delay = require("when/delay");
+const assert = require("assert");
+const expect = require("expect");
+const delay = require("when/delay");
 
 const {is} = require("ramda");
 
@@ -19,7 +19,7 @@ function describeSessionStore(store, skip) {
         });
     }
 
-    let desc = skip ? describe.skip : describe;
+    const desc = skip ? describe.skip : describe;
 
     desc("when there is no session with a given value", function () {
         let session;
@@ -37,7 +37,7 @@ function describeSessionStore(store, skip) {
     desc("when a session is saved", function () {
         let value;
         beforeEach(function () {
-            let session = {count: 1};
+            const session = {count: 1};
             return store.save(session).then(function (newValue) {
                 value = newValue;
             });
@@ -63,7 +63,7 @@ function describeSessionStore(store, skip) {
         describe("and a session is not expired", function () {
             let value;
             beforeEach(function () {
-                let session = {count: 1};
+                const session = {count: 1};
                 return store.save(session).then(function (newValue) {
                     value = newValue;
                 });
@@ -80,7 +80,7 @@ function describeSessionStore(store, skip) {
         describe("and a session is expired", function () {
             let value;
             beforeEach(function () {
-                let session = {count: 1};
+                const session = {count: 1};
                 return store.save(session).then(function (newValue) {
                     value = newValue;
                     return delay(store.ttl + 10);
@@ -98,7 +98,7 @@ function describeSessionStore(store, skip) {
         describe("and a session is saved before it expires", function () {
             let value;
             beforeEach(function () {
-                let session = {count: 1};
+                const session = {count: 1};
                 return store.save(session).then(function () {
                     return delay(store.ttl / 2).then(function () {
                         return store.save(session).then(function (newValue) {

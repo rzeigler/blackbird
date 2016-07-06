@@ -1,9 +1,8 @@
-let expect = require("expect");
-let mach = require("../../index");
-let middleware = require("../../middleware");
+const expect = require("expect");
+const mach = require("../../index");
+const middleware = require("../../middleware");
 
 describe("extensions/middleware", function () {
-
     beforeEach(function () {
         mach.extend(require("../middleware"));
     });
@@ -15,5 +14,4 @@ describe("extensions/middleware", function () {
             });
         });
     });
-
 });

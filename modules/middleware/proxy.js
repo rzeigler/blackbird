@@ -1,6 +1,6 @@
-let Location = require("../Location");
-let createProxy = require("../utils/createProxy");
-let isRegExp = require("../utils/isRegExp");
+const Location = require("../Location");
+const createProxy = require("../utils/createProxy");
+const isRegExp = require("../utils/isRegExp");
 
 function returnTrue() {
     return true;
@@ -28,7 +28,7 @@ function proxy(app, target, test) {
     test = test || returnTrue;
 
     if (isRegExp(test)) {
-        let pattern = test;
+        const pattern = test;
         test = function (conn) {
             return pattern.test(conn.href);
         };

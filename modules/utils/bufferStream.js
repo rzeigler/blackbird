@@ -1,6 +1,6 @@
-let bodec = require("bodec");
-let Promise = require("./Promise");
-let MaxLengthExceededError = require("./MaxLengthExceededError");
+const bodec = require("bodec");
+const Promise = require("./Promise");
+const MaxLengthExceededError = require("./MaxLengthExceededError");
 const R = require("ramda");
 
 /**
@@ -15,7 +15,7 @@ function bufferStream(stream, maxLength) {
     }
 
     return new Promise(function (resolve, reject) {
-        let chunks = [];
+        const chunks = [];
         let length = 0;
 
         stream.on("error", reject);

@@ -1,4 +1,4 @@
-let webpack = require("webpack");
+const webpack = require("webpack");
 
 module.exports = function (config) {
     config.set({
@@ -11,9 +11,7 @@ module.exports = function (config) {
             "tests.webpack.js"
         ],
 
-        preprocessors: {
-            "tests.webpack.js": ["webpack", "sourcemap"]
-        },
+        preprocessors: {"tests.webpack.js": ["webpack", "sourcemap"]},
 
         webpack: {
             devtool: "inline-source-map",
@@ -23,15 +21,11 @@ module.exports = function (config) {
                 ]
             },
             plugins: [
-                new webpack.DefinePlugin({
-                    "process.env.NODE_ENV": JSON.stringify("test")
-                })
+                new webpack.DefinePlugin({"process.env.NODE_ENV": JSON.stringify("test")})
             ]
         },
 
-        webpackServer: {
-            noInfo: true
-        }
+        webpackServer: {noInfo: true}
 
     });
 };

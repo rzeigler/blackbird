@@ -3,15 +3,17 @@
     "use strict";
     function extensionManager(mach) {
         const XS = new Map();
-        return _.assign(mach, {extend: function (...args) {
-            R.forEach(function (ex) {
-                XS[ex] = XS[ex] || R.once(ex);
-                XS[ex](mach);
-            }, args);
-        }});
+        return _.assign(mach, {
+            extend(...args) {
+                R.forEach(function (ex) {
+                    XS[ex] = XS[ex] || R.once(ex);
+                    XS[ex](mach);
+                }, args);
+            }
+        });
     }
 
-    let mach = R.mergeAll(R.map((e) => R.objOf(e, requireLocal(e)),
+    const mach = R.mergeAll(R.map((e) => R.objOf(e, requireLocal(e)),
         ["version", "Connection", "Header", "Location", "Message"]));
     module.exports = extensionManager(mach);
     mach.extend(require("./extensions/default"));

@@ -1,7 +1,7 @@
 /* jshint -W058 */
-let assert = require("assert");
-let expect = require("expect");
-let Accept = require("../Accept");
+const assert = require("assert");
+const expect = require("expect");
+const Accept = require("../Accept");
 
 describe("Accept", function () {
     let header;

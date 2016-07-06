@@ -1,6 +1,6 @@
-let expect = require("expect");
-let callApp = require("../../utils/callApp");
-let basicAuth = require("../basicAuth");
+const expect = require("expect");
+const callApp = require("../../utils/callApp");
+const basicAuth = require("../basicAuth");
 
 function ok() {
     return 200;

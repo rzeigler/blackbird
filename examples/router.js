@@ -1,5 +1,5 @@
-let mach = require("../modules");
-let app = mach.stack();
+const mach = require("../modules");
+const app = mach.stack();
 
 app.use(mach.logger);
 app.use(mach.file, `${__dirname}/..`);

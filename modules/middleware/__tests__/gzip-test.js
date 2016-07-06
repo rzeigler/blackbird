@@ -1,12 +1,12 @@
-let expect = require("expect");
-let gzip = require("../gzip");
-let callApp = require("../../utils/callApp");
-let getFixture = require("./getFixture");
+const expect = require("expect");
+const gzip = require("../gzip");
+const callApp = require("../../utils/callApp");
+const getFixture = require("./getFixture");
 
 describe("middleware/gzip", function () {
-    let contents = getFixture("test.txt");
-    let gzippedContents = getFixture("test.txt.gz");
-    let app = gzip(function () {
+    const contents = getFixture("test.txt");
+    const gzippedContents = getFixture("test.txt.gz");
+    const app = gzip(function () {
         return {
             headers: {"Content-Type": "text/plain"},
             content: contents
@@ -30,9 +30,7 @@ describe("middleware/gzip", function () {
 
     describe("when the client does not accept gzip encoding", function () {
         it("does not encode the content", function () {
-            return callApp(app, {
-                binary: true
-            }).then(function (conn) {
+            return callApp(app, {binary: true}).then(function (conn) {
                 return conn.response.bufferContent().then(function (buffer) {
                     expect(buffer).toEqual(contents);
                 });
@@ -41,7 +39,7 @@ describe("middleware/gzip", function () {
     });
 
     describe("when the response is a text/event-stream", function () {
-        let app = gzip(function () {
+        const app = gzip(function () {
             return {
                 headers: {"Content-Type": "text/event-stream"},
                 content: contents
@@ -49,9 +47,7 @@ describe("middleware/gzip", function () {
         });
 
         it("does not encode the content", function () {
-            return callApp(app, {
-                binary: true
-            }).then(function (conn) {
+            return callApp(app, {binary: true}).then(function (conn) {
                 return conn.response.bufferContent().then(function (buffer) {
                     expect(buffer).toEqual(contents);
                 });

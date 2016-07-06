@@ -1,12 +1,12 @@
-let expect = require("expect");
-let file = require("../file");
-let callApp = require("../../utils/callApp");
-let getFixture = require("./getFixture");
+const expect = require("expect");
+const file = require("../file");
+const callApp = require("../../utils/callApp");
+const getFixture = require("./getFixture");
 
 describe("middleware/file", function () {
     describe("with a single index file", function () {
-        let contents = getFixture("jquery-1.8.3.js", "utf8");
-        let app = file({
+        const contents = getFixture("jquery-1.8.3.js", "utf8");
+        const app = file({
             root: `${__dirname}/fixtures`,
             index: "jquery-1.8.3.js"
         });
@@ -50,8 +50,8 @@ describe("middleware/file", function () {
     });
 
     describe("with multiple index files", function () {
-        let contents = getFixture("jquery-1.8.3.js", "utf8");
-        let app = file({
+        const contents = getFixture("jquery-1.8.3.js", "utf8");
+        const app = file({
             root: `${__dirname}/fixtures`,
             index: ["not-found1.html", "jquery-1.8.3.js", "not-found2.txt"]
         });
@@ -68,7 +68,7 @@ describe("middleware/file", function () {
     });
 
     describe("with useLastModified=false and useETag=true", function () {
-        let app = file({
+        const app = file({
             root: `${__dirname}/fixtures`,
             index: "jquery-1.8.3.js",
             useLastModified: false,

@@ -1,7 +1,7 @@
-let d = require("describe-property");
-let RoutingProperties = require("../utils/RoutingProperties");
-let createMapper = require("./mapper");
-let createRouter = require("./router");
+const d = require("describe-property");
+const RoutingProperties = require("../utils/RoutingProperties");
+const createMapper = require("./mapper");
+const createRouter = require("./router");
 
 function mapperCreator(mappings) {
     return function (app) {
@@ -105,7 +105,7 @@ function createStack(app) {
      * stack is compiled.
      */
         use: d(function (middleware) {
-            let args = Array.prototype.slice.call(arguments, 1);
+            const args = Array.prototype.slice.call(arguments, 1);
 
             if (mappings.length) {
                 layers.push(mapperCreator(mappings.splice(0, mappings.length)));

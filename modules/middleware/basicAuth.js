@@ -30,13 +30,13 @@ module.exports = (function (mach, Promise, R) {
         if (R.is(Function, options)) {
             options = {validate: options};
         }
-        let realm = options.realm || "Authorization Required";
+        const realm = options.realm || "Authorization Required";
         return function (conn) {
             if (conn.remoteUser) {
                 return conn.call(app); // Don't overwrite existing remoteUser.
             }
 
-            let credentials = conn.auth.split(":", 2);
+            const credentials = conn.auth.split(":", 2);
             let username = credentials[0], password = credentials[1];
 
             return Promise.resolve(options.validate(username, password)).then(function (user) {

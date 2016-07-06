@@ -8,7 +8,7 @@ function charset(app, defaultCharset) {
 
     return function (conn) {
         return conn.call(app).then(function () {
-            let response = conn.response;
+            const response = conn.response;
 
             if (response.contentType && isNil(response.charset)) {
                 response.charset = defaultCharset;

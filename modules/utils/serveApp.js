@@ -1,11 +1,11 @@
-let http = require("http");
-let https = require("https");
-let bindApp = require("./bindApp");
+const http = require("http");
+const https = require("https");
+const bindApp = require("./bindApp");
 
 /**
  * The default port that node servers bind to.
  */
-let DEFAULT_PORT = 5000;
+const DEFAULT_PORT = 5000;
 
 /**
  * Creates and starts a node HTTP server that serves the given app.
@@ -55,7 +55,7 @@ function serveApp(app, options) {
 
     // Force the process to exit if the server doesn't
     // close all connections within the given timeout.
-        let timer = setTimeout(function () {
+        const timer = setTimeout(function () {
             if (!options.quiet) {
                 console.log(">> Exiting");
             }
@@ -76,7 +76,7 @@ function serveApp(app, options) {
         process.once("SIGTERM", shutdown);
 
         if (!options.quiet) {
-            let address = nodeServer.address();
+            const address = nodeServer.address();
             let message = `>> mach web server started on node ${process.versions.node}\n"`;
 
             if (typeof address === "string") {

@@ -1,12 +1,12 @@
 /* jshint -W084 */
-let d = require("describe-property");
-let objectAssign = require("object-assign");
-let compileRoute = require("../utils/compileRoute");
-let isRegExp = require("../utils/isRegExp");
-let makeParams = require("../utils/makeParams");
-let RoutingProperties = require("../utils/RoutingProperties");
+const d = require("describe-property");
+const objectAssign = require("object-assign");
+const compileRoute = require("../utils/compileRoute");
+const isRegExp = require("../utils/isRegExp");
+const makeParams = require("../utils/makeParams");
+const RoutingProperties = require("../utils/RoutingProperties");
 
-let LEADING_HTTP_METHOD_MATCHER = /^(DELETE|GET|HEAD|OPTIONS|POST|PUT|TRACE)\s+(.+)$/;
+const LEADING_HTTP_METHOD_MATCHER = /^(DELETE|GET|HEAD|OPTIONS|POST|PUT|TRACE)\s+(.+)$/;
 const {is, not, isEmpty, compose} = require("ramda"),
     isnt = compose(not, is);
 /**
@@ -70,11 +70,11 @@ function createRouter(app, map) {
         app = null;
     }
 
-    let routes = {};
+    const routes = {};
 
     function router(conn) {
-        let method = conn.method;
-        let routesToTry = (routes[method] || []).concat(routes.ANY || []);
+        const method = conn.method;
+        const routesToTry = (routes[method] || []).concat(routes.ANY || []);
 
         let route, match;
         for (let i = 0, len = routesToTry.length; i < len; ++i) {
@@ -83,7 +83,7 @@ function createRouter(app, map) {
       // Try to match the route.
             match = route.pattern.exec(conn.pathname);
             if (match) {
-                let params = makeParams(route.keys, Array.prototype.slice.call(match, 1));
+                const params = makeParams(route.keys, Array.prototype.slice.call(match, 1));
 
                 if (conn.params) {
           // Route params take precedence above all others.
@@ -127,7 +127,7 @@ function createRouter(app, map) {
                 methods = [];
             }
 
-            let keys = [];
+            const keys = [];
 
             if (is(String, pattern)) {
                 let match;
@@ -145,14 +145,14 @@ function createRouter(app, map) {
                 throw new Error("Route pattern must be a RegExp");
             }
 
-            let route = {pattern: pattern, keys: keys, app: app};
+            const route = {pattern, keys, app};
 
             if (isEmpty(methods)) {
                 methods.push("ANY");
             }
 
             methods.forEach(function (method) {
-                let upperMethod = method.toUpperCase();
+                const upperMethod = method.toUpperCase();
 
                 if (routes[upperMethod]) {
                     routes[upperMethod].push(route);
@@ -173,7 +173,7 @@ function createRouter(app, map) {
 
   // Allow app.use(mach.router, map)
     if (is(Object, map)) {
-        for (let route in map) {
+        for (const route in map) {
             if (map.hasOwnProperty(route)) {
                 router.route(route, map[route]);
             }
