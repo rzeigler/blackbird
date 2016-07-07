@@ -1,10 +1,9 @@
 /*jslint node: true, es6: true*/
-module.exports = (function (_, middleware) {
+module.exports = (function (middleware) {
     "use strict";
     return (mach) => {
-        _.assign(mach, middleware);
+        Object.assign(mach, middleware);
     };
 }(
-    require("lodash"),
     require("../middleware")
 ));
