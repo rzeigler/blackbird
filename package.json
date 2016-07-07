@@ -15,7 +15,6 @@
     "describe-property": "^1.0.0",
     "fantasy-eithers": "0.0.2",
     "fantasy-options": "0.0.1",
-    "lodash": "^4.13.1",
     "object-assign": "^2.0.0",
     "parsimmon": "^0.8.1",
     "qs": "^2.3.3",

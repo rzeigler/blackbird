@@ -1,9 +1,8 @@
 /*jslint node:true, es6: true, this: true*/
-(function (_, R, requireLocal) {
-    "use strict";
+(function (R, requireLocal) {
     function extensionManager(mach) {
         const XS = new Map();
-        return _.assign(mach, {
+        return Object.assign(mach, {
             extend(...args) {
                 R.forEach(function (ex) {
                     XS[ex] = XS[ex] || R.once(ex);
@@ -18,7 +17,6 @@
     module.exports = extensionManager(mach);
     mach.extend(require("./extensions/default"));
 }(
-    require("lodash"),
     require("ramda"),
     require("./core/loading").locally(require)
 ));
