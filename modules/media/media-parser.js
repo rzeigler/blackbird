@@ -3,10 +3,10 @@ const R = require("ramda");
 const P = require("parsimmon");
 const Either = require("fantasy-eithers");
 
-const u = require("./util");
-const media =  require("./media");
+const {array, either} = require("./utilities");
+const media = require("./media");
 
-const concatStrs = u.join("");
+const concatStrs = array.join("");
 
 // Parser
 function lexeme(p) {
@@ -45,11 +45,11 @@ const untilDelimeter = P.regex(/[^;, ]+/); // Allow matching parameter values.
 const name = P.regex(/[a-zA-Z0-9\-_]+/);
 const suffix = P.seq(plus, name).map(concatStrs);
 // A subtype is a sequence of names separated by periods followed by an optional suffix
-const subtype = P.seq(P.sepBy1(name, period).map(u.join(".")),
+const subtype = P.seq(P.sepBy1(name, period).map(array.join(".")),
                     suffix.atMost(1)
                     .map(R.cond([
-                        [R.compose(R.equals(0), u.length), R.always("")],
-                        [R.always(true),                   R.head]
+                        [R.compose(R.equals(0), array.length), R.always("")],
+                        [R.always(true), R.head]
                     ]))
                 ).map(concatStrs);
 
@@ -64,7 +64,7 @@ const accept = P.sepBy1(mediaType, lexeme(comma));
 
 const parseWith = R.curry((parser, text) => {
     const result = parser.parse(text);
-    return result.status ? Either.Right(result.value) : Either.Left(result);
+    return result.status ? either.right(result.value) : either.left(result);
 });
 
 const parseMediaType = parseWith(mediaType);
