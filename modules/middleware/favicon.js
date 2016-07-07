@@ -1,3 +1,4 @@
+/* eslint prefer-reflect: off*/
 /**
  * A middleware that returns the given response to requests for "/favicon.ico".
  * Defaults to returning an empty 404.

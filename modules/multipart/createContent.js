@@ -24,7 +24,7 @@ function createHeaders(name, filename, type) {
  * object, or an array of any of those types.
  */
 function createContent(params, boundary) {
-    const content = new Stream;
+    const content = new Stream();
 
   // Use a promise chain to write all fields to the content
   // stream in the same order they appear in params.

@@ -1,12 +1,13 @@
 const expect = require("expect");
 const callApp = require("../../utils/callApp");
 const router = require("../router");
+const {isNil} = require("ramda");
 
 const UNDEF = "__UNDEFINED__"; // So we can test for undefined.
 
 function stringifyParams(conn) {
     return JSON.stringify(conn.params, function (key, value) {
-        return value === undefined ? UNDEF : value;
+        return isNil(value) ? UNDEF : value;
     });
 }
 

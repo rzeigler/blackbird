@@ -1,6 +1,7 @@
+/*eslint prefer-reflect: off*/
 const mach = require("../index");
 const makeToken = require("../utils/makeToken");
-const {is} = require("ramda");
+const {is, not, isNil} = require("ramda");
 mach.extend(
   require("../extensions/server")
 );
@@ -67,11 +68,11 @@ function verifyToken(app, options) {
     const byteLength = options.byteLength || 32;
 
     return function (conn) {
-        let session = conn.session, params = conn.params;
+        const session = conn.session, params = conn.params;
 
-        if (!session) {
+        if (isNil(session)) {
             conn.onError(new Error("No session! Use mach.session in front of mach.token"));
-        } else if (!params) {
+        } else if (isNil(params)) {
             conn.onError(new Error("No params! Use mach.params in front of mach.token"));
         } else {
             let token = session[sessionKey];

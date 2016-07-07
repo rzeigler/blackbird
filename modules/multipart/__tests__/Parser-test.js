@@ -8,12 +8,19 @@ describe("Parser", function () {
         const parser = new Parser("abc", function () {});
 
         it("has the correct boundary", function () {
-            assert.deepEqual(Array.prototype.slice.call(parser.boundary), [13, 10, 45, 45, 97, 98, 99]);
+            assert.deepEqual(Reflect.apply(Array.prototype.slice, parser.boundary, []), [13, 10, 45, 45, 97, 98, 99]);
             assert.deepEqual(parser.boundaryChars, {10: true, 13: true, 45: true, 97: true, 98: true, 99: true});
         });
     });
 
     let parts;
+
+    function partHandler(part) {
+        return part.bufferContent().then(function (chunk) {
+            part.buffer = chunk;
+            return part;
+        });
+    }
 
     function beforeEachParseFixture(fixtureName, boundary) {
         boundary = boundary || "AaB03x";
@@ -22,13 +29,6 @@ describe("Parser", function () {
             return parseContent(message, boundary, partHandler).then(function (object) {
                 parts = object;
             });
-        });
-    }
-
-    function partHandler(part) {
-        return part.bufferContent().then(function (chunk) {
-            part.buffer = chunk;
-            return part;
         });
     }
 

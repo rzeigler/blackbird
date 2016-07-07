@@ -1,3 +1,4 @@
+/* eslint prefer-reflect: off */
 /**
  * A middleware that sets a default character set in the Content-Type
  * header of the response if none is already specified.

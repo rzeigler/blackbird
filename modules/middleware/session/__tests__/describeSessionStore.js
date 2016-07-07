@@ -57,7 +57,7 @@ function describeSessionStore(store, skip) {
         });
 
         afterEach(function () {
-            delete store.ttl;
+            Reflect.deleteProperty(store, "ttl");
         });
 
         describe("and a session is not expired", function () {

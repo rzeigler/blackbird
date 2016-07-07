@@ -1,3 +1,4 @@
+/*eslint prefer-reflect: off*/
 const zlib = require("zlib");
 const mach = require("../index");
 
@@ -28,7 +29,7 @@ function gzip(app, options) {
             if (shouldGzipContentType(headers["Content-Type"]) && conn.acceptsEncoding("gzip")) {
                 response.content = response.content.pipe(zlib.createGzip(options));
 
-                delete headers["Content-Length"];
+                Reflect.deleteProperty(headers, "Content-Length");
                 headers["Content-Encoding"] = "gzip";
                 headers.Vary = "Accept-Encoding";
             }

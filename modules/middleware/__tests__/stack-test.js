@@ -1,3 +1,4 @@
+/* eslint prefer-reflect: off */
 const assert = require("assert");
 const expect = require("expect");
 const callApp = require("../../utils/callApp");

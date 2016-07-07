@@ -53,9 +53,7 @@ function MemoryStore(options) {
     this.sessions = {};
     this.timer = pruneStore(this, options.purgeInterval || 5000);
     this.keyLength = options.keyLength || 32;
-    this.ttl = options.expireAfter
-    ? 1000 * options.expireAfter // expireAfter is given in seconds
-    : 0;
+    this.ttl = options.expireAfter ? 1000 * options.expireAfter : 0;
 }
 
 Object.defineProperties(MemoryStore.prototype, {
@@ -92,18 +90,18 @@ Object.defineProperties(MemoryStore.prototype, {
 
     purge: d(function (key) {
         if (key) {
-            delete this.sessions[key];
+            Reflect.deleteProperty(this.sessions, key);
         } else {
             this.sessions = {};
         }
     }),
 
     destroy: d(function () {
-        delete this.sessions;
+        Reflect.deleteProperty(this, "sessions");
 
         if (this.timer) {
             clearInterval(this.timer);
-            delete this.timer;
+            Reflect.deleteProperty(this, "timer");
         }
     })
 

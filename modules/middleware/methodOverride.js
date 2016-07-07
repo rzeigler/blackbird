@@ -1,3 +1,4 @@
+/*eslint prefer-reflect: off*/
 const normalizeHeaderName = require("../utils/normalizeHeaderName");
 const {is} = require("ramda");
 /**

@@ -1,3 +1,4 @@
+/* eslint prefer-reflect: off */
 /**
  * A middleware that performs basic auth on the incoming request before passing
  * it downstream.
@@ -37,7 +38,7 @@ module.exports = (function (mach, Promise, R) {
             }
 
             const credentials = conn.auth.split(":", 2);
-            let username = credentials[0], password = credentials[1];
+            const username = credentials[0], password = credentials[1];
 
             return Promise.resolve(options.validate(username, password)).then(function (user) {
                 if (user) {

@@ -1,3 +1,4 @@
+/* eslint prefer-reflect: off */
 /**
  * A middleware that "catches" non-Errors that are thrown from the downstream
  * app and returns them instead. This can be useful for breaking out of a
@@ -12,7 +13,7 @@
 const {is} = require("ramda");
 function catchError(app) {
     return function (conn) {
-        return conn.call(app).then(undefined, function (reason) {
+        return conn.call(app).then(null, function (reason) {
             if (is(Error, reason)) {
                 throw reason;
             }

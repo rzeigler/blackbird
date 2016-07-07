@@ -1,3 +1,4 @@
+/*eslint prefer-reflect: off*/
 const d = require("describe-property");
 const escapeRegExp = require("../utils/escapeRegExp");
 
