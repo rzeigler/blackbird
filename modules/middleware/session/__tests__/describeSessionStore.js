@@ -1,6 +1,6 @@
 const assert = require("assert");
 const expect = require("expect");
-const delay = require("when/delay");
+const delay = require("bluebird").delay;
 
 const {is} = require("ramda");
 
