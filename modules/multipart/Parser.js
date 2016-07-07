@@ -1,4 +1,4 @@
-/* jshint -W058 */
+/* eslint no-bitwise: off */
 const bodec = require("bodec");
 const Stream = require("bufferedstream");
 const Message = require("../Message");
@@ -57,18 +57,18 @@ function Parser(boundary, partHandler) {
 }
 
 Parser.prototype.execute = function (chunk) {
-    let chunkLength = chunk.length,
-        prevIndex = this.index,
-        index = this.index,
-        state = this.state,
-        flags = this.flags,
+    const chunkLength = chunk.length,
         lookBehind = this.lookBehind,
         boundary = this.boundary,
         boundaryChars = this.boundaryChars,
         boundaryLength = boundary.length,
-        boundaryEnd = boundaryLength - 1,
+        boundaryEnd = boundaryLength - 1;
+    let prevIndex = this.index,
+        index = this.index,
+        state = this.state,
         c,
-        cl;
+        cl,
+        flags;
 
     for (let i = 0; i < chunkLength; ++i) {
         c = chunk[i];
@@ -266,11 +266,11 @@ Parser.prototype._mark = function (name, i) {
 };
 
 Parser.prototype._clear = function (name) {
-    delete this[`${name}Mark`];
+    Reflect.deleteProperty(this, `${name}Mark`);
 };
 
 Parser.prototype._callback = function (name, chunk, start, end) {
-    if (start !== undefined && start === end) {
+    if (!R.isNil(start) && start === end) {
         return;
     }
 
@@ -285,18 +285,18 @@ Parser.prototype._dataCallback = function (name, chunk, clear, i) {
     const prop = `${name}Mark`;
 
     if (prop in this) {
-        if (!clear) {
+        if (clear) {
+            this._callback(name, chunk, this[prop], i);
+            Reflect.deleteProperty(this, prop);
+        } else {
             this._callback(name, chunk, this[prop], chunk.length);
             this[prop] = 0;
-        } else {
-            this._callback(name, chunk, this[prop], i);
-            delete this[prop];
         }
     }
 };
 
 Parser.prototype.onPartBegin = function () {
-    this._stream = new Stream;
+    this._stream = new Stream();
     this._part = new Message(this._stream);
     this._headerName = "";
     this._headerValue = "";

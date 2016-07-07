@@ -63,12 +63,12 @@ module.exports = function (mach) {
      */
         getParams: d(function (pt, ml) {
             let maxLength, paramTypes;
-            if (typeof pt !== "object") {
-                maxLength = pt;
-                paramTypes = null;
-            } else {
+            if (R.is(Object, pt)) {
                 maxLength = ml;
                 paramTypes = pt;
+            } else {
+                maxLength = pt;
+                paramTypes = null;
             }
 
             const request = this.request;
@@ -87,12 +87,12 @@ module.exports = function (mach) {
      */
         redirect: d(function (st, loc) {
             let status, location;
-            if (typeof status !== "number") {
-                location = st;
-                status = 302;
-            } else {
+            if (R.is(Number, status)) {
                 location = loc;
                 status = st;
+            } else {
+                location = st;
+                status = 302;
             }
 
             this.status = status;
@@ -234,8 +234,11 @@ module.exports = function (mach) {
      * Override the multipart extension's Message#handlePart to enable
      * streaming file uploads to disk when parsing multipart messages.
      */
-        handlePart: d(function (part) {
-            return part.filename ? saveToDisk(part, "MachUpload-") : _handlePart.apply(this, arguments);
+        handlePart: d(function (...args) {
+            const [part] = args;
+            return part.filename ?
+                saveToDisk(part, "MachUpload-") :
+                Reflect.apply(_handlePart, this, args);
         })
 
     });

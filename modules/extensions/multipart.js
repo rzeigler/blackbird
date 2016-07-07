@@ -27,9 +27,11 @@ module.exports = function (mach) {
      * is present only in multipart messages.
      */
         multipartBoundary: d.gs(function () {
-            let contentType = this.contentType, match;
-            if (!contentType) { return null; }
-            match = contentType.match(BOUNDARY_MATCHER);
+            const contentType = this.contentType;
+            if (!contentType) {
+                return null;
+            }
+            const match = contentType.match(BOUNDARY_MATCHER);
             return match ? match[1] || match[2] : null;
         }),
 
@@ -39,9 +41,11 @@ module.exports = function (mach) {
      * multipart message.
      */
         name: d.gs(function () {
-            let contentDisposition = this.headers["Content-Disposition"], match;
-            if (!contentDisposition) { return null; }
-            match = contentDisposition.match(NAME_MATCHER);
+            const contentDisposition = this.headers["Content-Disposition"];
+            if (!contentDisposition) {
+                return null;
+            }
+            const match = contentDisposition.match(NAME_MATCHER);
             return match ? match[1] : this.headers["Content-ID"];
         }),
 

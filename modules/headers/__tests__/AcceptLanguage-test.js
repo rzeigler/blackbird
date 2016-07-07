@@ -8,7 +8,7 @@ describe("AcceptLanguage", function () {
 
     describe("with no value", function () {
         beforeEach(function () {
-            header = new AcceptLanguage;
+            header = new AcceptLanguage();
         });
 
         it("has the correct toString representation", function () {

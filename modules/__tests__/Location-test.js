@@ -5,7 +5,7 @@ const Location = require("../Location");
 describe("an empty Location", function () {
     let location;
     beforeEach(function () {
-        location = new Location;
+        location = new Location();
     });
 
     it("has the correct href", function () {

@@ -156,9 +156,11 @@ Object.defineProperties(Message.prototype, {
    * See http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7
    */
     mediaType: d.gs(function () {
-        let contentType = this.contentType, match;
-        if (!contentType) { return null; }
-        match = contentType.match(/^([^;,]+)/);
+        const contentType = this.contentType;
+        if (!contentType) {
+            return null;
+        }
+        const match = contentType.match(/^([^;,]+)/);
         return match ? match[1].toLowerCase() : null;
     }, function (value) {
         this.contentType = value + (this.charset ? `;charset=${this.charset}` : "");
@@ -171,9 +173,11 @@ Object.defineProperties(Message.prototype, {
    * See http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.4
    */
     charset: d.gs(function () {
-        let contentType = this.contentType, match;
-        if (!contentType) { return null; }
-        match = contentType.match(/\bcharset=([\w-]+)/);
+        const contentType = this.contentType;
+        if (!contentType) {
+            return null;
+        }
+        const match = contentType.match(/\bcharset=([\w-]+)/);
         return match ? match[1] : null;
     }, function (value) {
         this.contentType = this.mediaType + (value ? `;charset=${value}` : "");
@@ -196,7 +200,7 @@ Object.defineProperties(Message.prototype, {
             this._content = new Stream(value);
         }
 
-        delete this._bufferedContent;
+        Reflect.deleteProperty(this, "_bufferedContent");
     }),
 
   /**

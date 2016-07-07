@@ -1,7 +1,7 @@
 const R = require("ramda");
 
 function isRegExp(object) {
-    return !R.isNil(object) && Object.prototype.toString.call(object) === "[object RegExp]";
+    return R.is(RegExp, object);
 }
 
 module.exports = isRegExp;

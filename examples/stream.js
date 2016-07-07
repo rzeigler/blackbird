@@ -12,10 +12,10 @@ mach.serve(function (conn) {
   // In this example, the stream is an infinite stream of
   // timestamps. Typically you'd use one of node's readables
   // (e.g. fs.createReadStream).
-    const content = conn.response.content = new Stream;
+    const content = conn.response.content = new Stream();
 
     const timer = setInterval(function () {
-        content.write(`${new Date}\n`);
+        content.write(`${new Date()}\n`);
     }, 1000);
 
     conn.onClose = function () {

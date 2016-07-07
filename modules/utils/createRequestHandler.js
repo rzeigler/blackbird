@@ -22,7 +22,7 @@ function createRequestHandler(app) {
     return function (nodeRequest, nodeResponse) {
         const conn = createConnection(nodeRequest);
 
-        conn.call(app).then(function () {
+        Reflect.apply(conn, app, []).then(function () {
             const isHead = conn.method === "HEAD";
             const isEmpty = isHead || STATUS_WITHOUT_CONTENT[conn.status] === true;
             const headers = conn.response.headers;
@@ -33,7 +33,7 @@ function createRequestHandler(app) {
             }
 
             if (!headers.Date) {
-                headers.Date = (new Date).toUTCString();
+                headers.Date = (new Date()).toUTCString();
             }
 
             nodeResponse.writeHead(conn.status, headers);

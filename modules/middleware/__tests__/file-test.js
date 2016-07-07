@@ -2,6 +2,7 @@ const expect = require("expect");
 const file = require("../file");
 const callApp = require("../../utils/callApp");
 const getFixture = require("./getFixture");
+const {isNil} = require("ramda");
 
 describe("middleware/file", function () {
     describe("with a single index file", function () {
@@ -78,7 +79,7 @@ describe("middleware/file", function () {
         describe("when a file is requested", function () {
             it("does not set the Last-Modified header", function () {
                 return callApp(app, "/jquery-1.8.3.js").then(function (conn) {
-                    expect(conn.response.headers["Last-Modified"]).toBe(undefined);
+                    expect(isNil(conn.response.headers["Last-Modified"])).toBe(true);
                 });
             });
 

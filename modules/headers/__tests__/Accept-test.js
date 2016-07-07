@@ -8,7 +8,7 @@ describe("Accept", function () {
 
     describe("with no value", function () {
         beforeEach(function () {
-            header = new Accept;
+            header = new Accept();
         });
 
         it("has the correct toString representation", function () {
@@ -43,18 +43,21 @@ describe("Accept", function () {
         });
     });
 
-    describe("with a value of \"text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, */*;q=0.5\"", function () {
-        beforeEach(function () {
-            header = new Accept("text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, */*;q=0.5");
-        });
+    describe("with a value of \"text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, */*;q=0.5\"",
+        function () {
+            beforeEach(function () {
+                header = new Accept(
+                    "text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, */*;q=0.5"
+                );
+            });
 
-        it("has the correct quality factors", function () {
-            expect(header.qualityFactorForMediaType("text/html;level=1")).toEqual(1);
-            expect(header.qualityFactorForMediaType("text/html")).toEqual(0.7);
-            expect(header.qualityFactorForMediaType("text/plain")).toEqual(0.3);
-            expect(header.qualityFactorForMediaType("image/jpeg")).toEqual(0.5);
-            expect(header.qualityFactorForMediaType("text/html;level=2")).toEqual(0.4);
-            expect(header.qualityFactorForMediaType("text/html;level=3")).toEqual(0.7);
+            it("has the correct quality factors", function () {
+                expect(header.qualityFactorForMediaType("text/html;level=1")).toEqual(1);
+                expect(header.qualityFactorForMediaType("text/html")).toEqual(0.7);
+                expect(header.qualityFactorForMediaType("text/plain")).toEqual(0.3);
+                expect(header.qualityFactorForMediaType("image/jpeg")).toEqual(0.5);
+                expect(header.qualityFactorForMediaType("text/html;level=2")).toEqual(0.4);
+                expect(header.qualityFactorForMediaType("text/html;level=3")).toEqual(0.7);
+            });
         });
-    });
 });

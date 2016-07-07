@@ -92,7 +92,7 @@ function Connection(opts) {
     this.onError = (options.onError || defaultErrorHandler).bind(this);
     this.onClose = (options.onClose || defaultCloseHandler).bind(this);
     this.request = new Message(options.content, options.headers);
-    this.response = new Message;
+    this.response = new Message();
 
   // Params may be given as an object.
     if (options.params) {
@@ -174,7 +174,7 @@ Object.defineProperties(Connection.prototype, {
         if (value && typeof value === "string") {
             headers.Authorization = `Basic ${encodeBase64(value)}`;
         } else {
-            delete headers.Authorization;
+            Reflect.deleteProperty(headers, "Authorization");
         }
     }),
 

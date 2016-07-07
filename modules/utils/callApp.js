@@ -1,3 +1,4 @@
+/*eslint prefer-reflect: off*/
 const Connection = require("../Connection");
 const Promise = require("bluebird");
 const R = require("ramda");
