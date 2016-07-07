@@ -11,7 +11,7 @@ describe("extensions/statusText", function () {
     describe("Connection#statusText", function () {
         let conn;
         beforeEach(function () {
-            conn = new mach.Connection;
+            conn = new mach.Connection();
         });
 
         Object.keys(StatusCodes).forEach(function (status) {

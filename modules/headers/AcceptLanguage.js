@@ -6,13 +6,21 @@ const stringifyMediaValueWithoutQualityFactor = require("../utils/stringifyMedia
 const Header = require("../Header");
 const R = require("ramda");
 
-function byHighestPrecedence(a, b) {
-  // "*" gets least precedence, all others are compared by specificity
-    return a === "*" ? -1 : b === "*" ? 1 : byMostSpecific(a, b);
-}
-
 function byMostSpecific(a, b) {
     return stringifyMediaValueWithoutQualityFactor(b).length - stringifyMediaValueWithoutQualityFactor(a).length;
+}
+
+function byHighestPrecedence(a, b) {
+  // "*" gets least precedence, all others are equal
+    let precedence;
+    if (a === "*") {
+        precedence = -1;
+    } else if (b === "*") {
+        precedence = 1;
+    } else {
+        precedence = byMostSpecific(a, b);
+    }
+    return precedence;
 }
 
 /**

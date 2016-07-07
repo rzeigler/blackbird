@@ -186,7 +186,7 @@ module.exports = {
         "one-var-declaration-per-line": "off",
         "one-var": ["error", {var: "always"}],
         "operator-assignment": "error",
-        "operator-linebreak": "error",
+        "operator-linebreak": ["error", "after"],
         "padded-blocks": ["error", "never"],
         "quote-props": ["error", "as-needed"],
         quotes: ["error", "double"],

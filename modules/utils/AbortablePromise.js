@@ -6,8 +6,8 @@ function makeAbortable(promise, abort) {
 
   // Hijack promise.then so it returns an abortable promise.
     const _then = promise.then;
-    promise.then = function () {
-        return makeAbortable(_then.apply(promise, arguments), abort);
+    promise.then = function (...args) {
+        return makeAbortable(Reflect.apply(_then, promise, args), abort);
     };
 
     return promise;
@@ -49,7 +49,7 @@ function AbortablePromise(resolver) {
     const promise = new Promise(function (resolve, reject) {
         let aborter;
 
-        abort = function () {
+        abort = function (...args) {
             if (R.isNil(aborter)) {
                 return;
             }
@@ -58,23 +58,24 @@ function AbortablePromise(resolver) {
             aborter = null;
 
             try {
-                return fn.apply(this, arguments);
+                return Reflect.apply(fn, this, args);
             } catch (error) {
                 reject(error);
             }
         };
 
-        resolver(function (child) {
+        resolver(function (...args) {
+            const [child] = args;
             if (child && R.is(Function, child.abort)) {
                 aborter = child.abort;
             } else {
                 aborter = null;
             }
 
-            resolve.apply(this, arguments);
-        }, function () {
+            Reflect.apply(resolve, this, args);
+        }, function (...args) {
             aborter = null;
-            reject.apply(this, arguments);
+            Reflect.apply(reject, this, args);
         }, function (fn) {
             if (!R.is(Function, fn)) {
                 throw new Error("onAbort needs a function");

@@ -2,7 +2,7 @@
  * Returns a shallow copy of the properties of the given object,
  * filtered by the functions in propertyTypes.
  */
- const {forEach, keys} = require("ramda");
+ const {forEach, keys, isNil} = require("ramda");
  function filterProperties(object, propertyTypes) {
      const properties = {};
 
@@ -13,7 +13,7 @@
          if (typeof type === "function" && object.hasOwnProperty(property)) {
              value = type(object[property]);
 
-             if (value !== undefined) {
+             if (!isNil(value)) {
                  properties[property] = value;
              }
          }

@@ -10,7 +10,7 @@ describe("extensions/server", function () {
     describe("Message#setCookie", function () {
         let message;
         beforeEach(function () {
-            message = new mach.Message;
+            message = new mach.Message();
         });
 
         describe("when no cookies have been previously set", function () {

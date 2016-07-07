@@ -62,7 +62,7 @@ describe("a Message with \"Content-Type: text/html; charset=utf-8\"", function (
 describe("Message#addHeader", function () {
     let message;
     beforeEach(function () {
-        message = new Message;
+        message = new Message();
     });
 
     it("normalizes header names", function () {
@@ -95,7 +95,7 @@ describe("Message#addHeader", function () {
 describe("Message#bufferContent", function () {
     let message;
     beforeEach(function () {
-        message = new Message;
+        message = new Message();
     });
 
     it("responds to the message content being set", function () {
@@ -117,7 +117,7 @@ describe("Message#bufferContent", function () {
 describe("Message#parseContent", function () {
     let message;
     beforeEach(function () {
-        message = new Message;
+        message = new Message();
     });
 
     describe("when using an unknown Content-Type", function () {

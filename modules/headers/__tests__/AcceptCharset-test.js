@@ -8,7 +8,7 @@ describe("AcceptCharset", function () {
 
     describe("with no value", function () {
         beforeEach(function () {
-            header = new AcceptCharset;
+            header = new AcceptCharset();
         });
 
         it("has the correct toString representation", function () {

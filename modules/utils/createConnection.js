@@ -1,6 +1,7 @@
 const Connection = require("../Connection");
 const Location = require("../Location");
 const R = require("ramda");
+const config = require("../../config");
 
 /**
  * Standard ports for HTTP protocols.
@@ -21,7 +22,7 @@ function createLocation(nodeRequest) {
     const headers = nodeRequest.headers;
 
     let protocol;
-    if (process.env.HTTPS === "on" || headers["x-forwarded-ssl"] === "on" || headers["font-end-https"] === "on") {
+    if (config.https === "on" || headers["x-forwarded-ssl"] === "on" || headers["font-end-https"] === "on") {
         protocol = "https:";
     } else if (headers["x-url-scheme"]) {
         protocol = ensureTrailingColon(headers["x-url-scheme"]);
@@ -39,8 +40,8 @@ function createLocation(nodeRequest) {
         host = hosts[hosts.length - 1];
     } else if (headers.host) {
         host = headers.host;
-    } else if (process.env.SERVER_NAME) {
-        host = process.env.SERVER_NAME;
+    } else if (config.serverName) {
+        host = config.serverName;
     }
 
     const hostParts = host.split(":", 2);
