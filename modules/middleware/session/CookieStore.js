@@ -18,9 +18,7 @@ const Promise = require("../../utils/Promise");
 function CookieStore(options) {
     options = options || {};
 
-    this.ttl = options.expireAfter
-    ? 1000 * options.expireAfter // expireAfter is given in seconds
-    : 0;
+    this.ttl = options.expireAfter ? 1000 * options.expireAfter : 0;
 }
 
 Object.defineProperties(CookieStore.prototype, {

@@ -1,3 +1,4 @@
+/*eslint prefer-reflect: off*/
 const objectAssign = require("object-assign");
 const mach = require("../index");
 const MaxLengthExceededError = require("../utils/MaxLengthExceededError");

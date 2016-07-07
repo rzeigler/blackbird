@@ -1,3 +1,4 @@
+/*eslint prefer-reflect: off*/
 const mach = require("../index");
 const Promise = require("../utils/Promise");
 const decodeBase64 = require("../utils/decodeBase64");
@@ -13,6 +14,10 @@ mach.extend(
  * The maximum size of an HTTP cookie.
  */
 const MAX_COOKIE_SIZE = 4096;
+
+function makeHashWithSecret(data, secret) {
+    return makeHash(secret ? data + secret : data);
+}
 
 /**
  * Stores the given session and returns a promise for a value that should be stored
@@ -47,10 +52,6 @@ function decodeCookie(cookie, store, secret) {
     }
 
     return null;
-}
-
-function makeHashWithSecret(data, secret) {
-    return makeHash(secret ? data + secret : data);
 }
 
 /**
@@ -123,24 +124,25 @@ function session(app, options) {
             conn.session = object || {};
 
             return conn.call(app).then(function () {
-                return Promise.resolve(conn.session && encodeSession(conn.session, store, secret)).then(function (newCookie) {
-                    const expires = expireAfter && new Date(Date.now() + expireAfter * 1000);
+                return Promise.resolve(conn.session && encodeSession(conn.session, store, secret))
+                    .then(function (newCookie) {
+                        const expires = expireAfter && new Date(Date.now() + expireAfter * 1000);
 
-          // Don't bother setting the cookie if its value
-          // hasn't changed and there is no expires date.
-                    if (newCookie === cookie && !expires) {
-                        return;
-                    }
+                          // Don't bother setting the cookie if its value
+                          // hasn't changed and there is no expires date.
+                        if (newCookie === cookie && !expires) {
+                            return;
+                        }
 
-                    conn.response.setCookie(name, {
-                        value: newCookie,
-                        path,
-                        domain,
-                        expires,
-                        httpOnly,
-                        secure
-                    });
-                }, conn.onError);
+                        conn.response.setCookie(name, {
+                            value: newCookie,
+                            path,
+                            domain,
+                            expires,
+                            httpOnly,
+                            secure
+                        });
+                    }, conn.onError);
             });
         }, conn.onError);
     };

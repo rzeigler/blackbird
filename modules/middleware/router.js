@@ -1,4 +1,4 @@
-/* jshint -W084 */
+/* eslint prefer-reflect: off */
 const d = require("describe-property");
 const objectAssign = require("object-assign");
 const compileRoute = require("../utils/compileRoute");
@@ -83,7 +83,7 @@ function createRouter(app, map) {
       // Try to match the route.
             match = route.pattern.exec(conn.pathname);
             if (match) {
-                const params = makeParams(route.keys, Array.prototype.slice.call(match, 1));
+                const params = makeParams(route.keys, Reflect.apply(Array.prototype.slice, match, [1]));
 
                 if (conn.params) {
           // Route params take precedence above all others.
@@ -130,9 +130,7 @@ function createRouter(app, map) {
             const keys = [];
 
             if (is(String, pattern)) {
-                let match;
-
-                match = pattern.match(LEADING_HTTP_METHOD_MATCHER);
+                const match = pattern.match(LEADING_HTTP_METHOD_MATCHER);
                 if (match) {
                     methods.push(match[1]);
                     pattern = match[2];

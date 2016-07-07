@@ -1,3 +1,4 @@
+/* eslint prefer-reflect: off */
 /**
  * A middleware that sets a default Content-Type header in case one hasn't
  * already been set in a downstream app.

@@ -1,3 +1,4 @@
+/* eslint prefer-reflect: off */
 const fs = require("fs");
 const mach = require("../index");
 const Promise = require("../utils/Promise");

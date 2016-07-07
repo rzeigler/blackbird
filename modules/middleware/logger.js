@@ -1,4 +1,4 @@
-/* jshint -W058 */
+/* eslint prefer-reflect: off */
 const strftime = require("strftime").strftime;
 const {isNil} = require("ramda");
 
@@ -35,7 +35,7 @@ function logger(app, messageHandler) {
                 conn.remoteHost || "-",
                 "-", // RFC 1413 identity of the client
                 conn.remoteUser || "-",
-                `[${strftime("%d/%b/%Y %H:%M:%S", new Date)}]`,
+                `[${strftime("%d/%b/%Y %H:%M:%S", new Date())}]`,
                 `"${conn.method} ${conn.basename}${conn.path} ${protocol}/${conn.version}"`,
                 conn.status,
                 contentLength,

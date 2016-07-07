@@ -1,3 +1,4 @@
+/* eslint prefer-reflect: off */
 const escapeRegExp = require("../utils/escapeRegExp");
 const isRegExp = require("../utils/isRegExp");
 const {is} = require("ramda");

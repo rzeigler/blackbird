@@ -1,9 +1,10 @@
 const RedisStore = require("../RedisStore");
 const describeSessionStore = require("./describeSessionStore");
+const config = require("../../../../config");
 
 describe("RedisStore", function () {
     describeSessionStore(
     new RedisStore({secret: "secret"}),
-    process.env.WITH_REDIS !== "1"
+    config.withRedis !== "1"
   );
 });

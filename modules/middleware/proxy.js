@@ -1,3 +1,4 @@
+/*eslint prefer-reflect: off*/
 const Location = require("../Location");
 const createProxy = require("../utils/createProxy");
 const isRegExp = require("../utils/isRegExp");

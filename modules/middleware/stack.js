@@ -8,7 +8,7 @@ function mapperCreator(mappings) {
         app = createMapper(app);
 
         for (let i = 0, len = mappings.length; i < len; ++i) {
-            app.map.apply(app, mappings[i]);
+            Reflect.apply(app.map, app, mappings[i]);
         }
 
         return app;
@@ -20,7 +20,7 @@ function routerCreator(routes) {
         app = createRouter(app);
 
         for (let i = 0, len = routes.length; i < len; ++i) {
-            app.route.apply(app, routes[i]);
+            Reflect.apply(app.route, app, routes[i]);
         }
 
         return app;
@@ -71,7 +71,9 @@ function routerCreator(routes) {
  * the stack doesn't change between requests, this happens only once.
  */
 function createStack(app) {
-    let layers = [], mappings = [], routes = [];
+    const layers = [],
+        mappings = [],
+        routes = [];
     let compiledApp;
 
     function compile(app) {
@@ -86,12 +88,14 @@ function createStack(app) {
         let index = layers.length;
 
         while (index) {
-            app = layers[--index].call(this, app);
+            app = Reflect.apply(layers[--index], this, [app]);
         }
 
         return app;
     }
 
+
+    /* eslint prefer-reflect: off*/
     function stack(conn) {
         return conn.call(compiledApp || (compiledApp = compile(app)));
     }
@@ -104,9 +108,7 @@ function createStack(app) {
      * to the middleware with the downstream app as the first argument when the
      * stack is compiled.
      */
-        use: d(function (middleware) {
-            const args = Array.prototype.slice.call(arguments, 1);
-
+        use: d(function (middleware, ...args) {
             if (mappings.length) {
                 layers.push(mapperCreator(mappings.splice(0, mappings.length)));
             }
@@ -116,7 +118,7 @@ function createStack(app) {
             }
 
             layers.push(function (app) {
-                return middleware.apply(this, [app].concat(args));
+                return Reflect.apply(middleware, this, [app].concat(args));
             });
 
             compiledApp = null;
