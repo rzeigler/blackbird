@@ -1,7 +1,6 @@
 // A parser for media types
 const R = require("ramda");
 const P = require("parsimmon");
-const Either = require("fantasy-eithers");
 
 const {array, either} = require("../data");
 const media = require("./media");
