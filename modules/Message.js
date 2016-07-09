@@ -4,7 +4,7 @@ const Stream = require("bufferedstream");
 const bufferStream = require("./utils/bufferStream");
 const normalizeHeaderName = require("./utils/normalizeHeaderName");
 const parseCookie = require("./utils/parseCookie");
-const parseQuery = require("./utils/parseQuery");
+const {parse: parseQuery} = require("qs");
 const R = require("ramda");
 
 /**

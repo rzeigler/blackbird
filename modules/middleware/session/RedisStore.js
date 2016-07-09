@@ -2,7 +2,7 @@ const d = require("describe-property");
 const redis = require("redis");
 const makeToken = require("../../utils/makeToken");
 const Promise = require("../../utils/Promise");
-const parseURL = require("../../utils/parseURL");
+const {parse: parseURL} = require("url").parse;
 
 function sendCommand(client, command, args) {
     args = args || [];
