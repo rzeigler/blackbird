@@ -1,4 +1,4 @@
-const expect = require("expect");
+const {expect} = require("chai");
 const mach = require("../../index");
 
 const getFixture = require("../../multipart/__tests__/getFixture");
@@ -19,12 +19,12 @@ describe("extensions/multipart", function () {
         });
 
         it("knows its multipart boundary", function () {
-            expect(message.multipartBoundary).toEqual("AaB03x");
+            expect(message.multipartBoundary).to.equal("AaB03x");
         });
 
         it("parses its content correctly", function () {
             return message.parseContent().then(function (params) {
-                expect(params.text).toEqual("contents");
+                expect(params.text).to.equal("contents");
             });
         });
     });
@@ -38,11 +38,11 @@ describe("extensions/multipart", function () {
         });
 
         it("knows its name", function () {
-            expect(message.name).toEqual("files");
+            expect(message.name).to.equal("files");
         });
 
         it("knows its filename", function () {
-            expect(message.filename).toEqual("escape \"quotes");
+            expect(message.filename).to.equal("escape \"quotes");
         });
     });
 });
