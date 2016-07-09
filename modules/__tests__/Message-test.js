@@ -186,9 +186,7 @@ describe("Message#parseContent", function () {
     describe("when using Content-Type: application/x-www-form-urlencoded", function () {
         describe("when the content is URL-encoded", function () {
             beforeEach(function () {
-                message = new Message(
-          "a=1&b=some+value", {"Content-Type": "application/x-www-form-urlencoded"}
-        );
+                message = new Message("a=1&b=some+value", {"Content-Type": "application/x-www-form-urlencoded"});
             });
 
             it("parses the content", function () {
