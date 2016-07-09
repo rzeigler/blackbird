@@ -1,4 +1,4 @@
-/* */
+/* eslint no-confusing-arrow: off */
 const Connection = require("../Connection");
 const Promise = require("bluebird");
 const R = require("ramda");
@@ -24,27 +24,26 @@ const R = require("ramda");
  * If a modifier function is provided, it will have a chance to modify
  * the Connection object immediately before the request is made.
  */
-function callApp(app, options, modifier) {
-    options = options || {};
+const binary = R.lensPath(["binary"]),
+    maxLength = R.lensPath(["maxLength"]),
+    encoding = R.lensPath(["encoding"]);
+module.exports = function callApp(app, options, mod) {
+    const c = new Connection(options || {}),
+        modifier = mod || R.identity;
 
-    const c = new Connection(options);
+    return Promise.resolve(modifier(c))
+        .then(function (maybeConn) {
+            const conn = R.is(Connection, maybeConn) ? maybeConn : c,
+                setResponseText = (content) => {
+                    conn.responseText = content;
+                    return conn;
+                },
+                checkBinary = () => R.view(binary, options) ?
+                    conn :
+                    conn.response
+                        .stringifyContent(R.view(maxLength, options), R.view(encoding, options))
+                        .then(setResponseText);
 
-    return Promise.resolve(modifier ? modifier(c) : c).then(function (conn) {
-        if (R.isNil(conn) || !R.is(Connection, conn)) {
-            conn = c;
-        }
-
-        return conn.run(app).then(function () {
-            if (options.binary) {
-                return conn;
-            }
-
-            return conn.response.stringifyContent(options.maxLength, options.encoding).then(function (content) {
-                conn.responseText = content;
-                return conn;
-            });
+            return conn.run(app).then(checkBinary);
         });
-    });
-}
-
-module.exports = callApp;
+};
