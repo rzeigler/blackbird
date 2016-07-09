@@ -1,5 +1,4 @@
 /*eslint no-unused-expressions: off */
-/*eslint max-statements: off */
 const {expect} = require("chai");
 const Location = require("../Location");
 
@@ -151,11 +150,23 @@ describe("a fully-specified Location", function () {
     });
 
     describe("when appending another location", function () {
-        it("uses the new attributes", function () {
+        beforeEach(function () {
             location = location.concat("https://example.org/more/path?more=query");
+        });
+
+        it("uses the new protocol", function () {
             expect(location.protocol).to.equal("https:");
+        });
+
+        it("uses the new host", function () {
             expect(location.host).to.equal("example.org");
+        });
+
+        it("has the correct pathname", function () {
             expect(location.pathname).to.equal("/the/path/more/path");
+        });
+
+        it("has the correct query", function () {
             expect(location.query).to.eql({the: "query", more: "query"});
         });
     });
@@ -167,21 +178,46 @@ describe("a Location with only a path", function () {
         location = new Location("/the/path?the=query");
     });
 
-    it("has nothing else", function () {
+    it("has no protocol", function () {
         expect(location.protocol).to.equal(null);
+    });
+
+    it("has no hostname", function () {
         expect(location.hostname).to.equal(null);
+    });
+
+    it("has no port", function () {
         expect(location.port).to.equal(null);
+    });
+
+    it("has no host", function () {
         expect(location.host).to.be.empty;
+    });
+
+    it("has the correct pathname", function () {
         expect(location.pathname).to.equal("/the/path");
+    });
+
+    it("has the correct query", function () {
         expect(location.query).to.eql({the: "query"});
     });
 });
 
 describe("a Location with no search", function () {
+    let location;
+    beforeEach(function () {
+        location = new Location("/the/path");
+    });
+
     it("has an empty search", function () {
-        const location = new Location("/the/path");
         expect(location.search).to.equal("");
+    });
+
+    it("has an empty queryString", function () {
         expect(location.queryString).to.equal("");
+    });
+
+    it("has an empty query", function () {
         expect(location.query).to.eql({});
     });
 });
