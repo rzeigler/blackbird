@@ -95,9 +95,9 @@ function createStack(app) {
     }
 
 
-    /* eslint prefer-reflect: off*/
+    /*  */
     function stack(conn) {
-        return conn.call(compiledApp || (compiledApp = compile(app)));
+        return conn.run(compiledApp || (compiledApp = compile(app)));
     }
 
     Object.defineProperties(stack, {

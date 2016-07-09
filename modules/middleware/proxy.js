@@ -1,4 +1,4 @@
-/*eslint prefer-reflect: off*/
+/* */
 const Location = require("../Location");
 const createProxy = require("../utils/createProxy");
 const isRegExp = require("../utils/isRegExp");
@@ -47,7 +47,7 @@ function proxy(app, target, test) {
     }
 
     return function (conn) {
-        return conn.call(test(conn) ? targetApp : app);
+        return conn.run(test(conn) ? targetApp : app);
     };
 }
 

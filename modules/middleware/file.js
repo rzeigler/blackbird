@@ -1,4 +1,4 @@
-/* eslint prefer-reflect: off */
+/*   */
 const fs = require("fs");
 const mach = require("../index");
 const Promise = require("../utils/Promise");
@@ -115,7 +115,7 @@ function file(app, options) {
 
     return function (conn) {
         if (conn.method !== "GET" && conn.method !== "HEAD") {
-            return conn.call(app);
+            return conn.run(app);
         }
 
         const pathname = conn.pathname;
@@ -133,7 +133,7 @@ function file(app, options) {
             }
 
             if (!stats || !stats.isDirectory()) {
-                return conn.call(app);
+                return conn.run(app);
             }
 
       // Try to serve one of the index files.
@@ -149,7 +149,7 @@ function file(app, options) {
                 }
 
                 if (!options.autoIndex) {
-                    return conn.call(app);
+                    return conn.run(app);
                 }
 
         // Redirect /images => /images/

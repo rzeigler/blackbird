@@ -1,4 +1,4 @@
-/*eslint prefer-reflect: off*/
+/* */
 const d = require("describe-property");
 const escapeRegExp = require("../utils/escapeRegExp");
 
@@ -87,10 +87,10 @@ function createMapper(app, map) {
 
             conn.basename += mapping.path;
 
-            return conn.call(mapping.app);
+            return conn.run(mapping.app);
         }
 
-        return conn.call(app);
+        return conn.run(app);
     }
 
     Object.defineProperties(mapper, {

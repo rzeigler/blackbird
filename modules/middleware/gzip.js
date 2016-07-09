@@ -1,4 +1,4 @@
-/*eslint prefer-reflect: off*/
+/* */
 const zlib = require("zlib");
 const mach = require("../index");
 
@@ -22,7 +22,7 @@ function shouldGzipContentType(contentType) {
  */
 function gzip(app, options) {
     return function (conn) {
-        return conn.call(app).then(function () {
+        return conn.run(app).then(function () {
             const response = conn.response;
             const headers = response.headers;
 

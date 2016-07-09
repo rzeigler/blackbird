@@ -1,4 +1,4 @@
-/*eslint prefer-reflect: off*/
+/* */
 const mach = require("../index");
 const Promise = require("../utils/Promise");
 const decodeBase64 = require("../utils/decodeBase64");
@@ -115,7 +115,7 @@ function session(app, options) {
 
     return function (conn) {
         if (conn.session) {
-            return conn.call(app); // Don't overwrite the existing session.
+            return conn.run(app); // Don't overwrite the existing session.
         }
 
         const cookie = conn.request.cookies[name];
@@ -123,7 +123,7 @@ function session(app, options) {
         return Promise.resolve(cookie && decodeCookie(cookie, store, secret)).then(function (object) {
             conn.session = object || {};
 
-            return conn.call(app).then(function () {
+            return conn.run(app).then(function () {
                 return Promise.resolve(conn.session && encodeSession(conn.session, store, secret))
                     .then(function (newCookie) {
                         const expires = expireAfter && new Date(Date.now() + expireAfter * 1000);

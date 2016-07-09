@@ -1,4 +1,4 @@
-/* eslint prefer-reflect: off */
+/*   */
 const assert = require("assert");
 const expect = require("expect");
 const callApp = require("../../utils/callApp");
@@ -7,7 +7,7 @@ const R = require("ramda");
 
 function addHeader(app, headerName) {
     return function (conn) {
-        return conn.call(app).then(function () {
+        return conn.run(app).then(function () {
             conn.response.headers[headerName] = "1";
         });
     };

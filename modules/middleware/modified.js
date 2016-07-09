@@ -1,4 +1,4 @@
-/*eslint prefer-reflect: off*/
+/* */
 const stripQuotes = require("../utils/stripQuotes");
 const {is} = require("ramda");
 /**
@@ -19,7 +19,7 @@ const {is} = require("ramda");
  */
 function modified(app) {
     return function (conn) {
-        return conn.call(app).then(function () {
+        return conn.run(app).then(function () {
             const request = conn.request, response = conn.response;
 
             const ifNoneMatch = request.headers["If-None-Match"];

@@ -1,4 +1,4 @@
-/* eslint prefer-reflect: off */
+/*   */
 const escapeRegExp = require("../utils/escapeRegExp");
 const isRegExp = require("../utils/isRegExp");
 const {is} = require("ramda");
@@ -26,7 +26,7 @@ function rewrite(app, pattern, replacement) {
             conn.location.properties.pathname = conn.basename + pathname.replace(pattern, replacement);
         }
 
-        return conn.call(app);
+        return conn.run(app);
     };
 }
 

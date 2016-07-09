@@ -1,4 +1,4 @@
-/*eslint prefer-reflect: off*/
+/* */
 const objectAssign = require("object-assign");
 const mach = require("../index");
 const MaxLengthExceededError = require("../utils/MaxLengthExceededError");
@@ -41,7 +41,7 @@ function parseParams(app, options) {
                 conn.params = params;
             }
 
-            return conn.call(app);
+            return conn.run(app);
         }, function (error) {
             if (is(MaxLengthExceededError, error)) {
                 return conn.text(413, "Request Entity Too Large");
