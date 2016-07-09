@@ -1,64 +1,45 @@
-const d = require("describe-property");
 const mergeQuery = require("./utils/mergeQuery");
 const stringifyQuery = require("./utils/stringifyQuery");
 const parseQuery = require("qs").parse;
 const parseURL = require("url").parse;
 const R = require("ramda");
 
-/**
- * Standard ports for HTTP protocols.
- */
-const STANDARD_PORTS = {
-    "http:": "80",
-    "https:": "443"
-};
+module.exports = class Location {
+    static get PROPERTY_NAMES() {
+        return [
+            "protocol",
+            "auth",
+            "hostname",
+            "port",
+            "host",
+            "pathname",
+            "search",
+            "queryString",
+            "query",
+            "path"
+        ];
+    }
+    static get STANDARD_PORTS() {
+        return {
+            "http:": "80",
+            "https:": "443"
+        };
+    }
+    static setProperties(location, properties) {
+        R.forEach(function (propertyName) {
+            if (properties.hasOwnProperty(propertyName)) {
+                location[propertyName] = properties[propertyName];
+            }
+        }, Location.PROPERTY_NAMES);
+    }
 
-function propertyAlias(propertyName, defaultValue) {
-    return d.gs(function () {
-        return this.properties[propertyName] || (R.isNil(defaultValue) ? null : defaultValue);
-    }, function (value) {
-        this.properties[propertyName] = value;
-    });
-}
+    constructor(options) {
+        this.properties = {};
+        const transform = R.is(String, options) ? parseURL : R.identity;
+        Location.setProperties(this, transform(options || {}));
+    }
 
-// Order is important here. Later properties take priority.
-const PROPERTY_NAMES = [
-    "protocol",
-    "auth",
-    "hostname",
-    "port",
-    "host",
-    "pathname",
-    "search",
-    "queryString",
-    "query",
-    "path"
-];
-
-function setProperties(location, properties) {
-    R.forEach(function (propertyName) {
-        if (properties.hasOwnProperty(propertyName) && propertyName in location) {
-            location[propertyName] = properties[propertyName];
-        }
-    }, PROPERTY_NAMES);
-}
-
-function Location(options) {
-    this.properties = {};
-    const transform = R.is(String, options) ? parseURL : R.identity;
-    setProperties(this, transform(options || {}));
-}
-
-function hrefGetter() {
-    const auth = this.auth;
-    const host = this.host;
-    const path = this.path;
-
-    return host ? `${this.protocol}//${(auth ? `${auth}@` : "") + host + path}` : path;
-}
-
-Object.defineProperties(Location.prototype, {
-    concat: d(function (location) {
+    concat(location) {
         if (!R.is(Location, location)) {
             location = new Location(location);
         }
@@ -80,41 +61,80 @@ Object.defineProperties(Location.prototype, {
             pathname,
             query
         });
-    }),
+    }
 
-    href: d.gs(hrefGetter, function (value) {
-        setProperties(this, parseURL(value));
-    }),
+    get href() {
+        const auth = this.auth;
+        const host = this.host;
+        const path = this.path;
 
-    protocol: propertyAlias("protocol"),
-    auth: propertyAlias("auth", ""),
+        return host ? `${this.protocol}//${(auth ? `${auth}@` : "") + host + path}` : path;
+    }
 
-    host: d.gs(function () {
+    set href(value) {
+        Location.setProperties(this, parseURL(value));
+    }
+
+    get protocol() {
+        return this.properties.protocol;
+    }
+
+    set protocol(p) {
+        this.properties.protocol = p;
+    }
+
+    get auth() {
+        return this.properties.auth || "";
+    }
+
+    set auth(a) {
+        this.properties.auth = a;
+    }
+
+    get host() {
         const protocol = this.protocol || "";
         const port = this.port;
-        const portAddition = !R.isNil(port) && port !== STANDARD_PORTS[protocol] ? `:${port}` : "";
+        const portAddition = !R.isNil(port) && port !== Location.STANDARD_PORTS[protocol] ? `:${port}` : "";
         const host = this.hostname || "";
 
         return host + portAddition;
-    }, function (value) {
+    }
+
+    set host(value) {
         const [hostname, port] = (value || "").split(":");
-        this.hostname = hostname;
+        this.hostname = hostname || null;
         this.port = port || null;
-    }),
+    }
 
-    hostname: propertyAlias("hostname"),
+    get hostname() {
+        return this.properties.hostname;
+    }
 
-    port: d.gs(function () {
-        return this.properties.port || (this.protocol ? STANDARD_PORTS[this.protocol] : null);
-    }, function (value) {
+    set hostname(h) {
+        this.properties.hostname = h;
+    }
+
+    get port() {
+        return this.properties.port || (this.protocol ? Location.STANDARD_PORTS[this.protocol] : null);
+    }
+
+    set port(value) {
         this.properties.port = value ? String(value) : null;
-    }),
+    }
 
-    pathname: propertyAlias("pathname", "/"),
+    get pathname() {
+        return this.properties.pathname || "/";
+    }
 
-    path: d.gs(function () {
+    set pathname(p) {
+        this.properties.pathname = p;
+    }
+
+    get path() {
         return this.pathname + this.search;
-    }, function (value) {
+    }
+
+    set path(value) {
         let index;
 
         if (typeof value === "string" && R.contains("?", value)) {
@@ -125,25 +145,37 @@ Object.defineProperties(Location.prototype, {
             this.pathname = value;
             this.search = null;
         }
-    }),
+    }
 
-    search: propertyAlias("search", ""),
+    get search() {
+        return this.properties.search || "";
+    }
 
-    queryString: d.gs(function () {
+    set search(s) {
+        this.properties.search = s;
+    }
+
+    get queryString() {
         return this.search.substring(1);
-    }, function (value) {
+    }
+
+    set queryString(value) {
         this.search = value && `?${value}`;
-    }),
+    }
 
-    query: d.gs(function () {
+    get query() {
         return parseQuery(this.queryString);
-    }, function (value) {
+    }
+
+    set query(value) {
         this.queryString = stringifyQuery(value);
-    }),
+    }
 
-    toJSON: d(hrefGetter),
-    toString: d(hrefGetter)
+    toJSON() {
+        return this.href;
+    }
 
-});
-
-module.exports = Location;
+    toString() {
+        return this.href;
+    }
+};
