@@ -1,4 +1,4 @@
-/*eslint prefer-reflect: off*/
+/* */
 const normalizeHeaderName = require("../utils/normalizeHeaderName");
 const {is} = require("ramda");
 /**
@@ -63,7 +63,7 @@ function methodOverride(app, options) {
             conn.method = method.toUpperCase();
         }
 
-        return conn.call(app);
+        return conn.run(app);
     };
 }
 

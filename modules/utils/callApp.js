@@ -1,4 +1,4 @@
-/*eslint prefer-reflect: off*/
+/* */
 const Connection = require("../Connection");
 const Promise = require("bluebird");
 const R = require("ramda");
@@ -34,7 +34,7 @@ function callApp(app, options, modifier) {
             conn = c;
         }
 
-        return conn.call(app).then(function () {
+        return conn.run(app).then(function () {
             if (options.binary) {
                 return conn;
             }

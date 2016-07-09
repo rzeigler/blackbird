@@ -1,4 +1,4 @@
-/* eslint prefer-reflect: off */
+/*   */
 /**
  * A middleware that performs basic auth on the incoming request before passing
  * it downstream.
@@ -34,7 +34,7 @@ module.exports = (function (mach, Promise, R) {
         const realm = options.realm || "Authorization Required";
         return function (conn) {
             if (conn.remoteUser) {
-                return conn.call(app); // Don't overwrite existing remoteUser.
+                return conn.run(app); // Don't overwrite existing remoteUser.
             }
 
             const credentials = conn.auth.split(":", 2);
@@ -43,7 +43,7 @@ module.exports = (function (mach, Promise, R) {
             return Promise.resolve(options.validate(username, password)).then(function (user) {
                 if (user) {
                     conn.remoteUser = user === true ? username : user;
-                    return conn.call(app);
+                    return conn.run(app);
                 }
 
                 conn.response.headers["WWW-Authenticate"] = `Basic realm="${realm}"`;

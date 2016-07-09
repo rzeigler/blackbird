@@ -1,4 +1,4 @@
-/* eslint prefer-reflect: off */
+/*   */
 const d = require("describe-property");
 const objectAssign = require("object-assign");
 const compileRoute = require("../utils/compileRoute");
@@ -92,11 +92,11 @@ function createRouter(app, map) {
                     conn.params = params;
                 }
 
-                return conn.call(route.app);
+                return conn.run(route.app);
             }
         }
 
-        return conn.call(app);
+        return conn.run(app);
     }
 
     Object.defineProperties(router, {

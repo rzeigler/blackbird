@@ -1,4 +1,4 @@
-/*eslint prefer-reflect: off*/
+/* */
 const mach = require("../index");
 const makeToken = require("../utils/makeToken");
 const {is, not, isNil} = require("ramda");
@@ -83,14 +83,14 @@ function verifyToken(app, options) {
             }
 
             if (params[paramName] && params[paramName] === token) {
-                return conn.call(app);
+                return conn.run(app);
             }
         }
 
     // If the request is not a POST we assume it's not a form submission
     // and therefore not modifying anything. Pass it downstream.
         if (SAFE_METHODS[conn.method] === true) {
-            return conn.call(app);
+            return conn.run(app);
         }
 
         conn.text(403, "Forbidden");

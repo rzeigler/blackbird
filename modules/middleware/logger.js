@@ -1,4 +1,4 @@
-/* eslint prefer-reflect: off */
+/*   */
 const strftime = require("strftime").strftime;
 const {isNil} = require("ramda");
 
@@ -19,7 +19,7 @@ function logger(app, messageHandler) {
     return function (conn) {
         const startTime = Date.now();
 
-        return conn.call(app).then(function () {
+        return conn.run(app).then(function () {
             const elapsedTime = Date.now() - startTime;
             let contentLength = conn.response.headers["Content-Length"];
 

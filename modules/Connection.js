@@ -79,7 +79,7 @@ function Connection(opts) {
     const options = opts || {};
 
     let location;
-    if (typeof options === "string") {
+    if (is(String, options)) {
         location = options; // options may be a URL string.
     } else if (options.location || options.url) {
         location = options.location || options.url;
@@ -121,7 +121,7 @@ Object.defineProperties(Connection.prototype, {
     method: d.gs(function () {
         return this._method;
     }, function (value) {
-        this._method = typeof value === "string" ? value.toUpperCase() : "GET";
+        this._method = is(String, value) ? value.toUpperCase() : "GET";
     }),
 
   /**
@@ -201,7 +201,7 @@ Object.defineProperties(Connection.prototype, {
    * Calls the given `app` with this connection as the only argument.
    * as the first argument and returns a promise for a Response.
    */
-    call: d(function (a) {
+    run: d(function (a) {
         const app = a || defaultApp;
 
         const conn = this;
@@ -212,9 +212,9 @@ Object.defineProperties(Connection.prototype, {
                     return;
                 }
 
-                if (typeof value === "number") {
+                if (is(Number, value)) {
                     conn.status = value;
-                } else if (typeof value === "string" || isBinary(value) || typeof value.pipe === "function") {
+                } else if (is(String, value) || isBinary(value) || is(Function, value.pipe)) {
                     conn.response.content = value;
                 } else {
                     if (!R.isNil(value.headers)) {
