@@ -1,8 +1,8 @@
 const d = require("describe-property");
 const StatusCodes = require("../StatusCodes");
 
-module.exports = function (mach) {
-    Object.defineProperties(mach.Connection.prototype, {
+module.exports = function (BB) {
+    Object.defineProperties(BB.Connection.prototype, {
 
     /**
      * The message that corresponds with the response status code.

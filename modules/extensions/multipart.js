@@ -13,14 +13,14 @@ const {invoker, prop} = require("ramda"),
     {Some: some, None: none} = require("fantasy-options"),
     liftOption = (v) => v ? some(v) : none;
 
-module.exports = function (mach) {
-    mach.Message.PARSERS["multipart/form-data"] = function (message, maxLength) {
+module.exports = function (BB) {
+    BB.Message.PARSERS["multipart/form-data"] = function (message, maxLength) {
         const partHandler = message.handlePart.bind(message);
         return message.bufferContent()
             .then((content) => parseContent(content, message.multipartBoundary, maxLength, partHandler));
     };
 
-    Object.defineProperties(mach.Message.prototype, {
+    Object.defineProperties(BB.Message.prototype, {
         multipartBoundary: {
             get() {
                 const m = some(this)
@@ -68,7 +68,7 @@ module.exports = function (mach) {
             }
         }
     });
-    mach.Message.prototype.handlePart = function (part) {
+    BB.Message.prototype.handlePart = function (part) {
         return part.filename ? part.bufferContent() : part.stringifyContent();
     };
 };

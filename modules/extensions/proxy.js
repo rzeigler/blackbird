@@ -1,3 +1,3 @@
-module.exports = function (mach) {
-    mach.createProxy = require("../utils/createProxy");
+module.exports = function (BB) {
+    BB.createProxy = require("../utils/createProxy");
 };

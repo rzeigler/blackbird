@@ -7,12 +7,12 @@ const stringifyCookie = require("../utils/stringifyCookie");
 const saveToDisk = require("../utils/saveToDisk");
 const R = require("ramda");
 
-module.exports = function (mach) {
-    mach.bind = require("../utils/bindApp");
-    mach.createConnection = require("../utils/createConnection");
-    mach.serve = require("../utils/serveApp");
+module.exports = function (BB) {
+    BB.bind = require("../utils/bindApp");
+    BB.createConnection = require("../utils/createConnection");
+    BB.serve = require("../utils/serveApp");
 
-    Object.defineProperties(mach.Connection.prototype, {
+    Object.defineProperties(BB.Connection.prototype, {
 
     /**
      * True if the request uses XMLHttpRequest, false otherwise.
@@ -217,11 +217,11 @@ module.exports = function (mach) {
 
     });
 
-    mach.extend(require("./multipart"));
+    BB.extend(require("./multipart"));
 
-    const _handlePart = mach.Message.prototype.handlePart;
+    const _handlePart = BB.Message.prototype.handlePart;
 
-    Object.defineProperties(mach.Message.prototype, {
+    Object.defineProperties(BB.Message.prototype, {
 
     /**
      * Sets a cookie with the given name and options.
@@ -237,7 +237,7 @@ module.exports = function (mach) {
         handlePart: d(function (...args) {
             const [part] = args;
             return part.filename ?
-                saveToDisk(part, "MachUpload-") :
+                saveToDisk(part, "BBUpload-") :
                 Reflect.apply(_handlePart, this, args);
         })
 

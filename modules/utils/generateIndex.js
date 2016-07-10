@@ -6,7 +6,7 @@ const formatByteSize = require("./formatByteSize");
 const formatString = require("util").format;
 const joinPaths = require("./joinPaths");
 
-const MACH_VERSION = require("../version");
+const BB_VERSION = require("../version");
 const R = require("ramda");
 
 const PAGE_TEMPLATE = [
@@ -93,7 +93,7 @@ function generateIndex(root, pathname, basename) {
                 });
 
                 const title = `Index of ${basename}${pathname}`;
-                const content = formatString(PAGE_TEMPLATE, title, title, rows, "mach", MACH_VERSION);
+                const content = formatString(PAGE_TEMPLATE, title, title, rows, "BB", BB_VERSION);
 
                 resolve(content);
             }, reject);

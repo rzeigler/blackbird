@@ -1,8 +1,8 @@
 /* */
 const zlib = require("zlib");
-const mach = require("../index");
+const BB = require("../index");
 
-mach.extend(
+BB.extend(
   require("../extensions/acceptEncoding")
 );
 

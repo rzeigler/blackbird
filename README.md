@@ -1,7 +1,7 @@
-[![build status](https://img.shields.io/travis/mjackson/mach.svg?style=flat-square)](https://travis-ci.org/mjackson/mach)
-[![npm package](https://img.shields.io/npm/v/mach.svg?style=flat-square)](https://www.npmjs.org/package/mach)
+[![build status](https://img.shields.io/travis/theqabalist/blackbird.svg?style=flat-square)](https://travis-ci.org/theqabalist/blackbird)
+[![npm package](https://img.shields.io/npm/v/BB.svg?style=flat-square)](https://www.npmjs.org/package/BB)
 
-[Mach](https://github.com/mjackson/mach) is an HTTP server and client library that runs in both node.js and the browser. It has the following goals:
+[Blackbird](https://github.com/theqabalist/blackbird) is an HTTP server and client library that runs in both node.js and the browser. It has the following goals:
 
   * Simplicity: straightforward mapping of HTTP requests to JavaScript function calls
   * Asynchronous: responses can be deferred using Promises/A+ promises
@@ -11,24 +11,24 @@
 
 ### Servers
 
-Writing a "Hello world" HTTP server in Mach is simple.
+Writing a "Hello world" HTTP server in BB is simple.
 
 ```js
-let mach = require('mach');
+let BB = require('blackbird');
 
-mach.serve(function (conn) {
+BB.serve(function (conn) {
   return "Hello world!";
 });
 ```
 
-All mach applications receive a single argument: a [Connection](https://github.com/mjackson/mach/blob/master/modules/Connection.js) object. This object contains information about both the request and the response, as well as metadata including the `method` used in the request, the [location](https://github.com/mjackson/mach/blob/master/modules/Location.js) of the request, the `status` of the response, and some helper methods.
+All Blackbird applications receive a single argument: a [Connection](https://github.com/theqabalist/blackbird/blob/master/modules/Connection.js) object. This object contains information about both the request and the response, as well as metadata including the `method` used in the request, the [location](https://github.com/theqabalist/blackbird/blob/master/modules/Location.js) of the request, the `status` of the response, and some helper methods.
 
 Applications can send responses asynchronously using JavaScript promises. Simply return a promise from your app that resolves when the response is ready.
 
 ```js
-let app = mach.stack();
+let app = BB.stack();
 
-app.use(mach.logger);
+app.use(BB.logger);
 
 app.get('/users/:id', function (conn) {
   let id = conn.params.id;
@@ -39,71 +39,43 @@ app.get('/users/:id', function (conn) {
 });
 ```
 
-The call to `app.use` above illustrates how middleware is used to compose applications. Mach ships with the following middleware:
+The call to `app.use` above illustrates how middleware is used to compose applications. BB ships with the following middleware:
 
-- [`mach.basicAuth`](https://github.com/mjackson/mach/blob/master/modules/middleware/basicAuth.js): Provides authentication using [HTTP Basic auth](http://en.wikipedia.org/wiki/Basic_access_authentication)
-- [`mach.catch`](https://github.com/mjackson/mach/blob/master/modules/middleware/catch.js): Error handling at any position in the stack
-- [`mach.charset`](https://github.com/mjackson/mach/blob/master/modules/middleware/charset.js): Provides a default [charset](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17) in responses
-- [`mach.contentType`](https://github.com/mjackson/mach/blob/master/modules/middleware/contentType.js): Provides a default [`Content-Type`](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17)
-- [`mach.favicon`](https://github.com/mjackson/mach/blob/master/modules/middleware/favicon.js): Handles requests for `/favicon.ico`
-- [`mach.file`](https://github.com/mjackson/mach/blob/master/modules/middleware/file.js): Efficiently serves static files
-- [`mach.gzip`](https://github.com/mjackson/mach/blob/master/modules/middleware/gzip.js): [Gzip](http://en.wikipedia.org/wiki/Gzip)-encodes response content for clients that `Accept: gzip`
-- [`mach.logger`](https://github.com/mjackson/mach/blob/master/modules/middleware/logger.js): Logs HTTP requests to the console
-- [`mach.mapper`](https://github.com/mjackson/mach/blob/master/modules/middleware/mapper.js): Provides virtual host mapping, similar to [Apache's Virtual Hosts](http://httpd.apache.org/docs/2.2/vhosts/) or [nginx server blocks](http://nginx.org/en/docs/http/ngx_http_core_module.html#server)
-- [`mach.methodOverride`](https://github.com/mjackson/mach/blob/master/modules/middleware/methodOverride.js): Overrides the HTTP method used in the request, for clients (like HTML forms) that don't support methods other than `GET` and `POST`
-- [`mach.modified`](https://github.com/mjackson/mach/blob/master/modules/middleware/modified.js): HTTP caching using [`Last-Modified`](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29) and [`ETag`](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19)
-- [`mach.params`](https://github.com/mjackson/mach/blob/master/modules/middleware/params.js): Multipart request parsing and handling
-- [`mach.proxy`](https://github.com/mjackson/mach/blob/master/modules/middleware/proxy.js): Proxy request through to an alternate location
-- [`mach.rewrite`](https://github.com/mjackson/mach/blob/master/modules/middleware/rewrite.js): Rewrites request URLs on the fly, similar to [Apache's mod_rewrite](http://httpd.apache.org/docs/current/mod/mod_rewrite.html)
-- [`mach.router`](https://github.com/mjackson/mach/blob/master/modules/middleware/router.js): Request routing (ala [Sinatra](http://www.sinatrarb.com/)) based on the URL pathname
-- [`mach.session`](https://github.com/mjackson/mach/blob/master/modules/middleware/session.js): HTTP sessions with pluggable storage including [memory](https://github.com/mjackson/mach/blob/master/modules/middleware/session/MemoryStore.js) (for development and testing), [cookies](https://github.com/mjackson/mach/blob/master/modules/middleware/session/CookieStore.js), and [Redis](https://github.com/mjackson/mach/blob/master/modules/middleware/session/RedisStore.js)
-- [`mach.stack`](https://github.com/mjackson/mach/blob/master/modules/middleware/stack.js): Provides a `use` mechanism for composing applications fronted by middleware
-- [`mach.token`](https://github.com/mjackson/mach/blob/master/modules/middleware/token.js): Cross-site request forgery protection
-
-Please check out the source of a middleware file for detailed documentation on how to use it.
-
-### Clients
-
-Writing an HTTP client is similarly straightforward.
-
-```js
-let mach = require('mach');
-
-mach.get('http://twitter.com').then(function (conn) {
-  console.log(conn.status, conn.response.headers, conn.responseText);
-});
-```
-
-By default client responses are buffered and stored in the `responseText` connection variable for convenience. However, if you'd like to access the raw stream of binary data in the response, you can use the `binary` flag.
-
-```js
-let fs = require('fs');
-
-mach.get({
-  url: 'http://twitter.com',
-  binary: true
-}).then(function (conn) {
-  conn.responseText; // undefined
-  conn.response.content.pipe(fs.createWriteStream('twitter.html'));
-});
-```
+- [`BB.basicAuth`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/basicAuth.js): Provides authentication using [HTTP Basic auth](http://en.wikipedia.org/wiki/Basic_access_authentication)
+- [`BB.catch`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/catch.js): Error handling at any position in the stack
+- [`BB.charset`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/charset.js): Provides a default [charset](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17) in responses
+- [`BB.contentType`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/contentType.js): Provides a default [`Content-Type`](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17)
+- [`BB.favicon`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/favicon.js): Handles requests for `/favicon.ico`
+- [`BB.file`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/file.js): Efficiently serves static files
+- [`BB.gzip`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/gzip.js): [Gzip](http://en.wikipedia.org/wiki/Gzip)-encodes response content for clients that `Accept: gzip`
+- [`BB.logger`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/logger.js): Logs HTTP requests to the console
+- [`BB.mapper`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/mapper.js): Provides virtual host mapping, similar to [Apache's Virtual Hosts](http://httpd.apache.org/docs/2.2/vhosts/) or [nginx server blocks](http://nginx.org/en/docs/http/ngx_http_core_module.html#server)
+- [`BB.methodOverride`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/methodOverride.js): Overrides the HTTP method used in the request, for clients (like HTML forms) that don't support methods other than `GET` and `POST`
+- [`BB.modified`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/modified.js): HTTP caching using [`Last-Modified`](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29) and [`ETag`](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19)
+- [`BB.params`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/params.js): Multipart request parsing and handling
+- [`BB.proxy`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/proxy.js): Proxy request through to an alternate location
+- [`BB.rewrite`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/rewrite.js): Rewrites request URLs on the fly, similar to [Apache's mod_rewrite](http://httpd.apache.org/docs/current/mod/mod_rewrite.html)
+- [`BB.router`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/router.js): Request routing (ala [Sinatra](http://www.sinatrarb.com/)) based on the URL pathname
+- [`BB.session`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/session.js): HTTP sessions with pluggable storage including [memory](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/session/MemoryStore.js) (for development and testing), [cookies](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/session/CookieStore.js), and [Redis](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/session/RedisStore.js)
+- [`BB.stack`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/stack.js): Provides a `use` mechanism for composing applications fronted by middleware
+- [`BB.token`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/token.js): Cross-site request forgery protection
 
 ### Proxies
 
-Because all Mach applications share the same signature, it's easy to combine them in interesting ways. Mach's HTTP proxy implementation illustrates this beautifully: a proxy is simply an application that forwards the request somewhere else.
+Because all BB applications share the same signature, it's easy to combine them in interesting ways. BB's HTTP proxy implementation illustrates this beautifully: a proxy is simply an application that forwards the request somewhere else.
 
 ```js
-let proxyApp = mach.createProxy('http://twitter.com');
+let proxyApp = BB.createProxy('http://twitter.com');
 
-// In a server environment we can use the mach.proxy middleware
+// In a server environment we can use the BB.proxy middleware
 // to proxy all requests to the proxy's location.
-app.use(mach.proxy, proxyApp);
+app.use(BB.proxy, proxyApp);
 
 // In a client application we can call the proxy directly to
 // send a request to the proxy's location.
-mach.post(proxyApp, {
+BB.post(proxyApp, {
   params: {
-    username: 'mjackson'
+    username: 'bkeown'
   }
 });
 ```
@@ -112,17 +84,11 @@ mach.post(proxyApp, {
 
 Using [npm](https://www.npmjs.org/):
 
-    $ npm install mach
-
-Or, include [`lib/umd/mach.min.js`](https://github.com/mjackson/mach/blob/master/lib/umd/mach.min.js) in a `<script>` tag:
-
-```html
-<script src="mach.min.js"></script>
-```
+    $ npm install blackbird
 
 ### Issues
 
-Please file issues on the [issue tracker on GitHub](https://github.com/mjackson/mach/issues).
+Please file issues on the [issue tracker on GitHub](https://github.com/theqabalist/blackbird/issues).
 
 ### Tests
 
@@ -146,6 +112,7 @@ To run the tests in Chrome:
   * [Q-HTTP](https://github.com/kriskowal/q-http)
   * [JSGI & Jack](http://jackjs.org/)
   * [node.js](http://nodejs.org/)
+  * [Mach](http:/github.com/mjackson/mach)
 
 ### License
 

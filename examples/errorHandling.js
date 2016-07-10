@@ -3,9 +3,9 @@
 // the server won't crash.
 
 const Promise = require("when").Promise;
-const mach = require("../modules");
+const BB = require("../modules");
 
-mach.serve(function () {
+BB.serve(function () {
     if (Math.random() > 0.75) {
         throw new Error("boom!");
     }

@@ -67,7 +67,7 @@ function createLocation(nodeRequest) {
 }
 
 /**
- * Creates a mach.Connection from the given node.js HTTP request and
+ * Creates a BB.Connection from the given node.js HTTP request and
  * server (optional) objects. This is a low-level method that is not
  * generally needed by application-level code.
  */

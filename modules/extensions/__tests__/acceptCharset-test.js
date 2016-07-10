@@ -1,15 +1,15 @@
 const expect = require("expect");
-const mach = require("../../index");
+const BB = require("../../index");
 
 describe("extensions/acceptCharset", function () {
     beforeEach(function () {
-        mach.extend(require("../acceptCharset"));
+        BB.extend(require("../acceptCharset"));
     });
 
     describe("a message with an Accept-Charset header", function () {
         let message;
         beforeEach(function () {
-            message = new mach.Message(null, {"Accept-Charset": "unicode-1-1"});
+            message = new BB.Message(null, {"Accept-Charset": "unicode-1-1"});
         });
 
         it("accepts acceptable charsets", function () {

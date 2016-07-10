@@ -33,7 +33,7 @@ describe("middleware/methodOverride", function () {
                 }).then(function (conn) {
                     expect(conn.responseText).toEqual("GET");
                     expect(errors.length).toEqual(1);
-                    expect(errors[0].message).toEqual("No params! Use mach.params in front of mach.methodOverride");
+                    expect(errors[0].message).toEqual("No params! Use BB.params in front of BB.methodOverride");
                 });
             });
         });

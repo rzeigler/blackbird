@@ -1,10 +1,10 @@
-const mach = require("../modules");
-const app = mach.stack();
+const BB = require("../modules");
+const app = BB.stack();
 
-app.use(mach.logger);
-app.use(mach.file, `${__dirname}/..`);
+app.use(BB.logger);
+app.use(BB.file, `${__dirname}/..`);
 app.map("/ex", function (app) {
-    app.use(mach.file, __dirname);
+    app.use(BB.file, __dirname);
 });
 
 app.get("/", function () {
@@ -15,4 +15,4 @@ app.get("/motd", function () {
     return "Do not go where the path may lead, go instead where there is no path and leave a trail.";
 });
 
-mach.serve(app);
+BB.serve(app);

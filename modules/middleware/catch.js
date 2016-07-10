@@ -6,7 +6,7 @@
  *
  * Example:
  *
- *   mach.catch(function (conn) {
+ *   BB.catch(function (conn) {
  *     throw 200;
  *   });
  */

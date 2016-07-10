@@ -1,8 +1,8 @@
-const mach = require("../modules");
-const app = mach.stack();
+const BB = require("../modules");
+const app = BB.stack();
 
-app.use(mach.gzip);
-app.use(mach.logger);
-app.use(mach.file, `${__dirname}/..`);
+app.use(BB.gzip);
+app.use(BB.logger);
+app.use(BB.file, `${__dirname}/..`);
 
-mach.serve(app, "/tmp/mach.sock");
+BB.serve(app, "/tmp/BB.sock");

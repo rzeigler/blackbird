@@ -1,8 +1,8 @@
-const mach = require("../modules");
-const app = mach.stack();
+const BB = require("../modules");
+const app = BB.stack();
 
-app.use(mach.contentType, "text/html");
-app.use(mach.params);
+app.use(BB.contentType, "text/html");
+app.use(BB.params);
 
 app.get("/", function () {
     return [
@@ -20,4 +20,4 @@ app.post("/", function (request, response) {
     response.text(JSON.stringify(request.params, null, 2));
 });
 
-mach.serve(app);
+BB.serve(app);

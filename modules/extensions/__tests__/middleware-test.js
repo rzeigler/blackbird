@@ -1,16 +1,16 @@
 const expect = require("expect");
-const mach = require("../../index");
+const BB = require("../../index");
 const middleware = require("../../middleware");
 
 describe("extensions/middleware", function () {
     beforeEach(function () {
-        mach.extend(require("../middleware"));
+        BB.extend(require("../middleware"));
     });
 
     Object.keys(middleware).forEach(function (property) {
-        describe(`mach.${property}`, function () {
+        describe(`BB.${property}`, function () {
             it("is a function", function () {
-                expect(mach[property]).toBeA("function");
+                expect(BB[property]).toBeA("function");
             });
         });
     });

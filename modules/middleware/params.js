@@ -1,9 +1,9 @@
 /* */
 const objectAssign = require("object-assign");
-const mach = require("../index");
+const BB = require("../index");
 const MaxLengthExceededError = require("../utils/MaxLengthExceededError");
 const {is} = require("ramda");
-mach.extend(
+BB.extend(
   require("../extensions/server")
 );
 

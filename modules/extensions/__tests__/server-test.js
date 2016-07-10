@@ -1,16 +1,16 @@
 /* jshint -W058 */
 const expect = require("expect");
-const mach = require("../../index");
+const BB = require("../../index");
 
 describe("extensions/server", function () {
     beforeEach(function () {
-        mach.extend(require("../server"));
+        BB.extend(require("../server"));
     });
 
     describe("Message#setCookie", function () {
         let message;
         beforeEach(function () {
-            message = new mach.Message();
+            message = new BB.Message();
         });
 
         describe("when no cookies have been previously set", function () {

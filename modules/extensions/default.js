@@ -1,7 +1,7 @@
 /*jslint node: true, es6: true*/
 module.exports = (function (R, requireLocal) {
     "use strict";
-    return function (mach) {
+    return function (BB) {
         const
             extensions = [
                 "accept",
@@ -16,7 +16,7 @@ module.exports = (function (R, requireLocal) {
             ],
             modules = extensions.map(requireLocal);
 
-        mach.extend(...modules);
+        BB.extend(...modules);
     };
 }(
     require("ramda"),

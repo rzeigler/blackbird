@@ -13,7 +13,7 @@ const Promise = require("../../utils/Promise");
  * and receiving large cookies can have a significant impact on overall server
  * response time (see http://yuiblog.com/blog/2007/03/01/performance-research-part-3/).
  * For these reasons, if you are planning on storing a lot of data in the session
- * you may want to use a server-side storage, such as mach.session.RedisStore.
+ * you may want to use a server-side storage, such as BB.session.RedisStore.
  */
 function CookieStore(options) {
     options = options || {};

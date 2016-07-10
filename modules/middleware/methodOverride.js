@@ -15,15 +15,15 @@ const {is} = require("ramda");
  *
  * with an app that uses methodOverride:
  *
- *   let app = mach.stack();
- *   app.use(mach.params);
- *   app.use(mach.methodOverride);
+ *   let app = BB.stack();
+ *   app.use(BB.params);
+ *   app.use(BB.methodOverride);
  *   app.run(function (request) {
  *     return request.method; // PUT
  *   });
  *
- * Note: When using mach.methodOverride with POST parameters you need to put
- * mach.params in front of it so that the request parameters will be available.
+ * Note: When using BB.methodOverride with POST parameters you need to put
+ * BB.params in front of it so that the request parameters will be available.
  *
  * Options may be any of the following:
  *
@@ -49,7 +49,7 @@ function methodOverride(app, options) {
         if (conn.request.headers[headerName]) {
             method = conn.request.headers[headerName];
         } else if (!conn.params) {
-            conn.onError(new Error("No params! Use mach.params in front of mach.methodOverride"));
+            conn.onError(new Error("No params! Use BB.params in front of BB.methodOverride"));
         } else if (conn.params[paramName]) {
             method = conn.params[paramName];
 
