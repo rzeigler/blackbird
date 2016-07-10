@@ -1,102 +1,74 @@
-const d = require("describe-property");
+/*eslint no-confusing-arrow: off*/
 const parseContent = require("../multipart/parseContent");
 
-const BOUNDARY_MATCHER = /^multipart\/.*boundary=(?:"([^"]+)"|([^;]+))/im;
-const NAME_MATCHER = /\bname="([^"]+)"/i;
+const BOUNDARY = /^multipart\/.*boundary=(?:"([^"]+)"|([^;]+))/im;
+const NAME = /\bname="([^"]+)"/i;
+const FILENAME = /filename=([^;]*)/i;
+
+const {invoker, prop} = require("ramda"),
+    quoteStripper = invoker(2, "replace")(/^"|"$/mg, ""),
+    quoteNormalizer = invoker(2, "replace")(/\\"/g, "\""),
+    match = invoker(1, "match"),
+    second = prop(1),
+    {Some: some, None: none} = require("fantasy-options"),
+    liftOption = (v) => v ? some(v) : none;
 
 module.exports = function (mach) {
     mach.Message.PARSERS["multipart/form-data"] = function (message, maxLength) {
-        function partHandler(part) {
-            return message.handlePart(part);
-        }
-
-    // If the content has been buffered, use the buffer.
-        if (message.isBuffered) {
-            return message.bufferContent().then(function (content) {
-                return parseContent(content, message.multipartBoundary, maxLength, partHandler);
-            });
-        }
-
-        return parseContent(message.content, message.multipartBoundary, maxLength, partHandler);
+        const partHandler = message.handlePart.bind(message);
+        return message.bufferContent()
+            .then((content) => parseContent(content, message.multipartBoundary, maxLength, partHandler));
     };
 
     Object.defineProperties(mach.Message.prototype, {
+        multipartBoundary: {
+            get() {
+                const m = some(this)
+                    .map(prop("contentType"))
+                    .map(match(BOUNDARY))
+                    .chain(liftOption);
 
-    /**
-     * The value that was used as the boundary for multipart content. This
-     * is present only in multipart messages.
-     */
-        multipartBoundary: d.gs(function () {
-            const contentType = this.contentType;
-            if (!contentType) {
-                return null;
+                return m.map(second)
+                    .chain(liftOption)
+                    .getOrElse(m.map(prop(2))
+                                .chain(liftOption)
+                                .getOrElse(null));
             }
-            const match = contentType.match(BOUNDARY_MATCHER);
-            return match ? match[1] || match[2] : null;
-        }),
+        },
 
-    /**
-     * The unique "name" or ID of this message, as given in its Content-Disposition
-     * header. This is usually present only on messages that are part of a larger,
-     * multipart message.
-     */
-        name: d.gs(function () {
-            const contentDisposition = this.headers["Content-Disposition"];
-            if (!contentDisposition) {
-                return null;
+        name: {
+            get() {
+                return some(this)
+                    .map(prop("headers"))
+                    .map(prop("Content-Disposition"))
+                    .chain(liftOption)
+                    .map(match(NAME))
+                    .map(second)
+                    .getOrElse(some(this)
+                                .map(prop("headers"))
+                                .map(prop("Content-ID"))
+                                .getOrElse(null));
             }
-            const match = contentDisposition.match(NAME_MATCHER);
-            return match ? match[1] : this.headers["Content-ID"];
-        }),
+        },
 
-    /**
-     * The filename of this message, as given in its Content-Disposition header.
-     * This is usually present only on messages that are part of a larger, multipart
-     * message and that originate from a file upload.
-     */
-        filename: d.gs(function () {
-            const contentDisposition = this.headers["Content-Disposition"];
-
-            if (contentDisposition) {
-        // Match quoted filenames.
-                let match = contentDisposition.match(/filename="([^;]*)"/i);
-
-                let filename;
-                if (match) {
-                    filename = decodeURIComponent(match[1].replace(/\\"/g, "\""));
-                } else {
-          // Match unquoted filenames.
-                    match = contentDisposition.match(/filename=([^;]+)/i);
-
-                    if (match) {
-                        filename = decodeURIComponent(match[1]);
-                    }
-                }
-
-                if (filename) {
-          // Take the last part of the filename. This handles full Windows
-          // paths given by IE (and possibly other dumb clients).
-                    return filename.substr(filename.lastIndexOf("\\") + 1);
-                }
+        filename: {
+            get() {
+                return some(this)
+                    .map(prop("headers"))
+                    .map(prop("Content-Disposition"))
+                    .chain(liftOption)
+                    .map(match(FILENAME))
+                    .chain(liftOption)
+                    .map(second)
+                    .map(quoteStripper)
+                    .map(quoteNormalizer)
+                    .map(decodeURIComponent)
+                    .map((filename) => filename.substr(filename.lastIndexOf("\\") + 1))
+                    .getOrElse(null);
             }
-
-            return null;
-        }),
-
-    /**
-     * A low-level hook responsible for handling Message objects embedded as multipart
-     * objects inside this message. It should return the value to use for the given
-     * message in the parameters hash. By default parts that originate from file uploads
-     * are buffered and all others are converted to strings.
-     *
-     * This should be overridden if you want to specify some kind of custom handling
-     * for multipart data, such as streaming it directly to a network file storage.
-     * For example, the server extension overrides this method to save uploaded files
-     * to a temporary location on disk.
-     */
-        handlePart: d(function (part) {
-            return part.filename ? part.bufferContent() : part.stringifyContent();
-        })
-
+        }
     });
+    mach.Message.prototype.handlePart = function (part) {
+        return part.filename ? part.bufferContent() : part.stringifyContent();
+    };
 };

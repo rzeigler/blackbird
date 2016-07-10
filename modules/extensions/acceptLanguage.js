@@ -1,31 +1,15 @@
-const d = require("describe-property");
 const AcceptLanguage = require("../headers/AcceptLanguage");
 
 module.exports = function (mach) {
-    Object.defineProperties(mach.Connection.prototype, {
+    mach.Connection.prototype.acceptsLanguage = function (language) {
+        return this.request.acceptsLanguage(language);
+    };
 
-    /**
-     * Returns true if the request indicates that the client accepts
-     * the given content language.
-     */
-        acceptsLanguage: d(function (language) {
-            return this.request.acceptsLanguage(language);
-        })
+    mach.Message.prototype.acceptsLanguage = function (language) {
+        if (!this._acceptLanguageHeader) {
+            this._acceptLanguageHeader = new AcceptLanguage(this.headers["Accept-Language"]);
+        }
 
-    });
-
-    Object.defineProperties(mach.Message.prototype, {
-
-    /**
-     * Returns true if the client accepts the given content language.
-     */
-        acceptsLanguage: d(function (language) {
-            if (!this._acceptLanguageHeader) {
-                this._acceptLanguageHeader = new AcceptLanguage(this.headers["Accept-Language"]);
-            }
-
-            return this._acceptLanguageHeader.accepts(language);
-        })
-
-    });
+        return this._acceptLanguageHeader.accepts(language);
+    };
 };

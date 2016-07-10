@@ -1,31 +1,15 @@
-const d = require("describe-property");
 const AcceptCharset = require("../headers/AcceptCharset");
 
 module.exports = function (mach) {
-    Object.defineProperties(mach.Connection.prototype, {
+    mach.Connection.prototype.acceptsCharset = function (charset) {
+        return this.request.acceptsCharset(charset);
+    };
 
-    /**
-     * Returns true if the request indicates that the client accepts
-     * the given character set.
-     */
-        acceptsCharset: d(function (charset) {
-            return this.request.acceptsCharset(charset);
-        })
+    mach.Message.prototype.acceptsCharset = function (charset) {
+        if (!this._acceptCharsetHeader) {
+            this._acceptCharsetHeader = new AcceptCharset(this.headers["Accept-Charset"]);
+        }
 
-    });
-
-    Object.defineProperties(mach.Message.prototype, {
-
-    /**
-     * Returns true if the client accepts the given character set.
-     */
-        acceptsCharset: d(function (charset) {
-            if (!this._acceptCharsetHeader) {
-                this._acceptCharsetHeader = new AcceptCharset(this.headers["Accept-Charset"]);
-            }
-
-            return this._acceptCharsetHeader.accepts(charset);
-        })
-
-    });
+        return this._acceptCharsetHeader.accepts(charset);
+    };
 };
