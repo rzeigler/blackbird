@@ -1,7 +1,7 @@
 [![build status](https://img.shields.io/travis/theqabalist/blackbird.svg?style=flat-square)](https://travis-ci.org/theqabalist/blackbird)
 [![npm package](https://img.shields.io/npm/v/BB.svg?style=flat-square)](https://www.npmjs.org/package/BB)
 
-[Blackbird](https://github.com/theqabalist/blackbird) is an HTTP server and client library that runs in both node.js and the browser. It has the following goals:
+[Blackbird](https://github.com/theqabalist/blackbird) is an HTTP server that runs on Node (ES6+). It has the following goals:
 
   * Simplicity: straightforward mapping of HTTP requests to JavaScript function calls
   * Asynchronous: responses can be deferred using Promises/A+ promises

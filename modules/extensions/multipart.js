@@ -5,13 +5,13 @@ const BOUNDARY = /^multipart\/.*boundary=(?:"([^"]+)"|([^;]+))/im;
 const NAME = /\bname="([^"]+)"/i;
 const FILENAME = /filename=([^;]*)/i;
 
-const {invoker, prop} = require("ramda"),
-    quoteStripper = invoker(2, "replace")(/^"|"$/mg, ""),
-    quoteNormalizer = invoker(2, "replace")(/\\"/g, "\""),
-    match = invoker(1, "match"),
-    second = prop(1),
-    {Some: some, None: none} = require("fantasy-options"),
-    {inhabit} = require("../utilities/option");
+const {prop} = require("ramda"),
+    {replace, match} = require("../data/string"),
+    quoteStripper = replace(/^"|"$/mg, ""),
+    quoteNormalizer = replace(/\\"/g, "\""),
+    {second} = require("../data/enumerable"),
+    {Some: some} = require("fantasy-options"),
+    {inhabit} = require("../data/option");
 
 module.exports = function (BB) {
     BB.Message.PARSERS["multipart/form-data"] = function (message, maxLength) {
