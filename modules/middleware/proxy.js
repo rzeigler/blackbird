@@ -2,6 +2,7 @@
 const Location = require("../Location");
 const createProxy = require("../utils/createProxy");
 const isRegExp = require("../utils/isRegExp");
+const {is} = require("ramda");
 
 function returnTrue() {
     return true;
@@ -33,14 +34,14 @@ function proxy(app, target, test) {
         test = function (conn) {
             return pattern.test(conn.href);
         };
-    } else if (typeof test !== "function") {
+    } else if (!is(Function, test)) {
         throw new Error("mach.proxy needs a test function");
     }
 
     let targetApp;
-    if (typeof target === "function") {
+    if (is(Function, target)) {
         targetApp = target;
-    } else if (typeof target === "string" || target instanceof Location) {
+    } else if (is(String, target) || is(Location, target)) {
         targetApp = createProxy(target);
     } else {
         throw new Error("mach.proxy needs a target app");

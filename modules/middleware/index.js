@@ -4,7 +4,6 @@ module.exports = (function (R, requireLocal) {
     const middlewares = [
         "basicAuth",
         "catch",
-        "charset",
         "contentType",
         "favicon",
         "file",

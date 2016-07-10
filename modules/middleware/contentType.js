@@ -1,20 +1,7 @@
-/*   */
-/**
- * A middleware that sets a default Content-Type header in case one hasn't
- * already been set in a downstream app.
- */
-function contentType(app, defaultType) {
-    defaultType = defaultType || "text/html";
-
-    return function (conn) {
-        return conn.run(app).then(function () {
-            const headers = conn.response.headers;
-
-            if (!headers["Content-Type"]) {
-                headers["Content-Type"] = defaultType;
-            }
-        });
-    };
-}
-
-module.exports = contentType;
+const {curry} = require("ramda");
+module.exports = curry(function contentType(app, defaultType, conn) {
+    return conn.run(app).then(function () {
+        const headers = conn.response.headers;
+        headers["Content-Type"] = headers["Content-Type"] || defaultType || "text/html";
+    });
+});

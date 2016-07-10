@@ -10,17 +10,15 @@
  *     throw 200;
  *   });
  */
-const {is} = require("ramda");
-function catchError(app) {
-    return function (conn) {
-        return conn.run(app).then(null, function (reason) {
-            if (is(Error, reason)) {
-                throw reason;
-            }
+const {is, curry} = require("ramda");
+function catchError(app, conn) {
+    return conn.run(app).then(null, function (reason) {
+        if (is(Error, reason)) {
+            throw reason;
+        }
 
-            return reason;
-        });
-    };
+        return reason;
+    });
 }
 
-module.exports = catchError;
+module.exports = curry(catchError);
