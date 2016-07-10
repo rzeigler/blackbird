@@ -1,5 +1,5 @@
 {
-  "name": "blackbird",
+  "name": "blackbird-server",
   "version": "0.0.1",
   "description": "HTTP for JavaScript",
   "main": "lib",
