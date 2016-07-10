@@ -14,7 +14,7 @@ const {is, not, isEmpty, compose} = require("ramda"),
  * support for restricting matches to a specific request method. Named segments
  * of the URL are added to conn.params and take precedence over all others.
  *
- *   app.use(mach.router, {
+ *   app.use(BB.router, {
  *
  *     'GET /login': function (conn) {
  *       // conn.method == 'GET'
@@ -37,7 +37,7 @@ const {is, not, isEmpty, compose} = require("ramda"),
  * This function may also be used outside the context of a middleware stack
  * to create a standalone app. Routes may be given one at a time:
  *
- *   let app = mach.router();
+ *   let app = BB.router();
  *
  *   app.get('/login', function (conn) {
  *     // ...
@@ -49,7 +49,7 @@ const {is, not, isEmpty, compose} = require("ramda"),
  *
  * Or all at once:
  *
- *   let app = mach.router({
+ *   let app = BB.router({
  *
  *     'GET /login': function (conn) {
  *       // ...
@@ -64,7 +64,7 @@ const {is, not, isEmpty, compose} = require("ramda"),
  * Note: Routes are always tried in the order they were defined.
  */
 function createRouter(app, map) {
-  // Allow mach.router(map)
+  // Allow BB.router(map)
     if (typeof app === "object") {
         map = app;
         app = null;
@@ -169,7 +169,7 @@ function createRouter(app, map) {
 
     });
 
-  // Allow app.use(mach.router, map)
+  // Allow app.use(BB.router, map)
     if (is(Object, map)) {
         for (const route in map) {
             if (map.hasOwnProperty(route)) {

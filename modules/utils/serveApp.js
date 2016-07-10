@@ -77,7 +77,7 @@ function serveApp(app, options) {
 
         if (!options.quiet) {
             const address = nodeServer.address();
-            let message = `>> mach web server started on node ${process.versions.node}\n"`;
+            let message = `>> BB web server started on node ${process.versions.node}\n"`;
 
             if (typeof address === "string") {
                 message += `>> Listening on ${address}`;

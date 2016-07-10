@@ -2,8 +2,8 @@
 // I've tested it with node 0.11.2 like this:
 //   node --harmony examples/generators.js
 
-const mach = require("../modules");
-const app = mach.stack();
+const BB = require("../modules");
+const app = BB.stack();
 const Q = require("q");
 
 function sleep(millis, answer) {
@@ -14,7 +14,7 @@ function sleep(millis, answer) {
     return deferredResult.promise;
 }
 
-app.use(mach.logger);
+app.use(BB.logger);
 
 app.run(Q.async(function* (request) {
     const body = yield request.parseContent();
@@ -25,4 +25,4 @@ app.run(Q.async(function* (request) {
     return JSON.stringify(body);
 }));
 
-mach.serve(app);
+BB.serve(app);

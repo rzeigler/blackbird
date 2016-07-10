@@ -1,6 +1,6 @@
-mach = require "../modules"
+BB = require "../modules"
 
-server = mach.serve mach.logger mach.map
+server = BB.serve BB.logger BB.map
 
     "/": -> '<a href="/foo">Foo</a>'
 

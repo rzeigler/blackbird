@@ -14,7 +14,7 @@ function byMostSpecific(a, b) {
  * the `basename` connection variable for all downstream apps such that only
  * the portion relevant for dispatch remains in `pathname`.
  *
- *   app.use(mach.mapper, {
+ *   app.use(BB.mapper, {
  *
  *     'http://example.com/images': function (conn) {
  *       // The hostname used in the request was example.com, and
@@ -32,7 +32,7 @@ function byMostSpecific(a, b) {
  * stack to create a standalone app. You can either provide mappings one
  * at a time:
  *
- *   let app = mach.mapper();
+ *   let app = BB.mapper();
  *
  *   app.map('/images', function (conn) {
  *     // ...
@@ -40,7 +40,7 @@ function byMostSpecific(a, b) {
  *
  * Or all at once:
  *
- *   let app = mach.mapper({
+ *   let app = BB.mapper({
  *
  *     '/images': function (conn) {
  *       // ...
@@ -52,7 +52,7 @@ function byMostSpecific(a, b) {
  * since they are the most specific.
  */
 function createMapper(app, map) {
-  // Allow mach.mapper(map)
+  // Allow BB.mapper(map)
     if (typeof app === "object") {
         map = app;
         app = null;
@@ -138,7 +138,7 @@ function createMapper(app, map) {
 
     });
 
-  // Allow app.use(mach.mapper, map)
+  // Allow app.use(BB.mapper, map)
     if (is(Object, map)) {
         for (const location in map) {
             if (map.hasOwnProperty(location)) {

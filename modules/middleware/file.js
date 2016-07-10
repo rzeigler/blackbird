@@ -1,6 +1,6 @@
 /*   */
 const fs = require("fs");
-const mach = require("../index");
+const BB = require("../index");
 const Promise = require("../utils/Promise");
 const getFileStats = require("../utils/getFileStats");
 const generateETag = require("../utils/generateETag");
@@ -9,7 +9,7 @@ const joinPaths = require("../utils/joinPaths");
 
 const {is, contains, converge, or} = require("ramda");
 
-mach.extend(require("../extensions/server"));
+BB.extend(require("../extensions/server"));
 
 /**
  * A middleware for serving files efficiently from the file system according
@@ -37,11 +37,11 @@ mach.extend(require("../extensions/server"));
  * Examples:
  *
  *   // Use the root directory name directly.
- *   app.use(mach.file, '/public');
+ *   app.use(BB.file, '/public');
  *
  *   // Serve static files out of /public, and automatically
  *   // serve an index.htm from any directory that has one.
- *   app.use(mach.file, {
+ *   app.use(BB.file, {
  *     root: '/public',
  *     index: 'index.htm',
  *     useETag: true
@@ -51,7 +51,7 @@ mach.extend(require("../extensions/server"));
  *   // serve an index.html from any directory that has one.
  *   // Also, automatically generate a directory listing for
  *   // any directory without an index.html file.
- *   app.use(mach.file, {
+ *   app.use(BB.file, {
  *     root: '/public',
  *     index: true,
  *     autoIndex: true
@@ -60,8 +60,8 @@ mach.extend(require("../extensions/server"));
  * This function may also be used outside of the context of a middleware
  * stack to create a standalone app.
  *
- *   let app = mach.file('/public');
- *   mach.serve(app);
+ *   let app = BB.file('/public');
+ *   BB.serve(app);
  */
 function file(app, options) {
     const objOrString = converge(or, [is(String), is(Object)]);
@@ -72,7 +72,7 @@ function file(app, options) {
 
     options = options || {};
 
-  // Allow mach.file(path) and app.use(mach.file, path)
+  // Allow BB.file(path) and app.use(BB.file, path)
     if (is(String, options)) {
         options = {root: options};
     }

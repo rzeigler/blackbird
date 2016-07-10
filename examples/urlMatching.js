@@ -1,7 +1,7 @@
-const mach = require("../modules");
-const app = mach.stack();
+const BB = require("../modules");
+const app = BB.stack();
 
-app.use(mach.logger);
+app.use(BB.logger);
 
 app.get("/", function () {
     return "<a href=\"/b\">go to b</a>";
@@ -20,4 +20,4 @@ app.get("/c/:id", function (conn) {
     }, null, 2);
 });
 
-mach.serve(app);
+BB.serve(app);

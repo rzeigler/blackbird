@@ -1,14 +1,14 @@
-const mach = require("../modules");
-const app = mach.stack();
+const BB = require("../modules");
+const app = BB.stack();
 
-app.use(mach.gzip);
-app.use(mach.logger);
-app.use(mach.modified);
-app.use(mach.file, {
+app.use(BB.gzip);
+app.use(BB.logger);
+app.use(BB.modified);
+app.use(BB.file, {
     root: `${__dirname}/..`,
     autoIndex: true,
     useLastModified: true,
     useETag: true
 });
 
-mach.serve(app);
+BB.serve(app);

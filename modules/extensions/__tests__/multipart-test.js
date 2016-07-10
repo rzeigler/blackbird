@@ -1,18 +1,18 @@
 const {expect} = require("chai");
-const mach = require("../../index");
+const BB = require("../../index");
 
 const getFixture = require("../../multipart/__tests__/getFixture");
 
 describe("extensions/multipart", function () {
     beforeEach(function () {
-        mach.extend(require("../multipart"));
+        BB.extend(require("../multipart"));
     });
 
     let message;
 
     describe("a multipart message", function () {
         beforeEach(function () {
-            message = new mach.Message(
+            message = new BB.Message(
         getFixture("content_type_no_filename"),
                 {"Content-Type": "multipart/form-data; boundary=AaB03x"}
       );
@@ -31,7 +31,7 @@ describe("extensions/multipart", function () {
 
     describe("a message that is part of a multipart message", function () {
         beforeEach(function () {
-            message = new mach.Message(
+            message = new BB.Message(
         "contents",
                 {"Content-Disposition": "form-data; name=\"files\"; filename=\"escape \\\"quotes\""}
       );

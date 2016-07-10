@@ -9,10 +9,10 @@ const {is} = require("ramda");
  *
  * Example:
  *
- *   app.use(mach.modified);
+ *   app.use(BB.modified);
  *
  *   // Send Last-Modified and ETag headers with static files.
- *   app.use(mach.file, {
+ *   app.use(BB.file, {
  *     useLastModified: true, // this is the default
  *     useETag: true
  *   });

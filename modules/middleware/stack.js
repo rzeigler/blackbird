@@ -31,7 +31,7 @@ function routerCreator(routes) {
  * A middleware that aids in building complex apps that are fronted by other
  * middleware in a "middleware stack". Also provides several other useful methods
  * for request mapping and routing that make this middleware a good choice when
- * working with mach at a high level or when getting started for the first time.
+ * working with BB at a high level or when getting started for the first time.
  *
  * Middleware are placed into the stack by calling the `use` method which passes
  * along any additional arguments that it receives directly on to the middleware
@@ -42,18 +42,18 @@ function routerCreator(routes) {
  * is received, all middleware, mappings, and routes run in the order they are
  * defined in the stack, top to bottom.
  *
- *   let app = mach.stack();
+ *   let app = BB.stack();
  *
- *   app.use(mach.gzip);
- *   app.use(mach.file, __dirname + '/public');
+ *   app.use(BB.gzip);
+ *   app.use(BB.file, __dirname + '/public');
  *
  *   // Use an image server to serve requests that begin
  *   // with /images out of /public/img.
- *   app.map('/images', mach.file('/public/img'));
+ *   app.map('/images', BB.file('/public/img'));
  *
  *   // Since this call is *after* the call to map, this middleware
  *   // will not run when requests begin with "/images".
- *   app.use(mach.params);
+ *   app.use(BB.params);
  *
  *   app.get('/', function (request) {
  *     return "The params are: " + JSON.stringify(request.params);
@@ -63,7 +63,7 @@ function routerCreator(routes) {
  *     // ...
  *   });
  *
- *   mach.serve(app);
+ *   BB.serve(app);
  *
  * Note: A stack is compiled the first time it is called. When a stack is
  * compiled, all middleware is invoked with the downstream app plus any

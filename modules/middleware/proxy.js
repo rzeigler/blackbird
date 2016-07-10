@@ -15,16 +15,16 @@ function returnTrue() {
  *
  * Example:
  *
- *   let mach = require('mach');
- *   let app = mach.stack();
+ *   let BB = require('BB');
+ *   let app = BB.stack();
  *
  *   // Forward all requests to example.com.
- *   app.use(mach.proxy, 'http://www.example.com');
+ *   app.use(BB.proxy, 'http://www.example.com');
  *
  *   // Forward all requests that match "/images/*.jpg" to S3.
- *   app.use(mach.proxy, 'http://s3.amazon.com/my-bucket', /\/images/*.jpg/);
+ *   app.use(BB.proxy, 'http://s3.amazon.com/my-bucket', /\/images/*.jpg/);
  *
- *   mach.serve(app);
+ *   BB.serve(app);
  */
 function proxy(app, target, test) {
     test = test || returnTrue;
@@ -35,7 +35,7 @@ function proxy(app, target, test) {
             return pattern.test(conn.href);
         };
     } else if (!is(Function, test)) {
-        throw new Error("mach.proxy needs a test function");
+        throw new Error("BB.proxy needs a test function");
     }
 
     let targetApp;
@@ -44,7 +44,7 @@ function proxy(app, target, test) {
     } else if (is(String, target) || is(Location, target)) {
         targetApp = createProxy(target);
     } else {
-        throw new Error("mach.proxy needs a target app");
+        throw new Error("BB.proxy needs a target app");
     }
 
     return function (conn) {

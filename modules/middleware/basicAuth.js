@@ -1,6 +1,6 @@
-module.exports = (function (mach, Promise, R) {
+module.exports = (function (BB, Promise, R) {
     "use strict";
-    mach.extend(require("../extensions/server"));
+    BB.extend(require("../extensions/server"));
     function basicAuth(app, options) {
         if (R.is(Function, options)) {
             options = {validate: options};

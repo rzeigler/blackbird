@@ -1,8 +1,8 @@
-const mach = require("../modules");
-const app = mach.stack();
+const BB = require("../modules");
+const app = BB.stack();
 
-app.use(mach.logger);
-app.use(mach.basicAuth, function (user, pass) {
+app.use(BB.logger);
+app.use(BB.basicAuth, function (user, pass) {
   // Allow anyone to login, as long as they use the password "password".
     return pass === "password";
 });
@@ -11,4 +11,4 @@ app.run(function (conn) {
     return `Hello ${conn.remoteUser}!`;
 });
 
-mach.serve(app);
+BB.serve(app);

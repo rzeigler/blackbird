@@ -1,13 +1,13 @@
 /* jshint -W058 */
-// This example demonstrates how mach can be used to create a server
+// This example demonstrates how BB can be used to create a server
 // that streams content back to the client. The best way to see the
 // streaming data is probably using curl or netcat, e.g.
 // curl http://localhost:5000
 
 const Stream = require("bufferedstream");
-const mach = require("../modules");
+const BB = require("../modules");
 
-mach.serve(function (conn) {
+BB.serve(function (conn) {
   // Set conn.response.content to the stream you want to send.
   // In this example, the stream is an infinite stream of
   // timestamps. Typically you'd use one of node's readables

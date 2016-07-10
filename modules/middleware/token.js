@@ -1,8 +1,8 @@
 /* */
-const mach = require("../index");
+const BB = require("../index");
 const makeToken = require("../utils/makeToken");
 const {is, not, isNil} = require("ramda");
-mach.extend(
+BB.extend(
   require("../extensions/server")
 );
 
@@ -32,13 +32,13 @@ const SAFE_METHODS = {
  *     <input type="hidden" name="_token" value="{{session._token}}">
  *   </form>
  *
- * On the backend, you need to put both mach.session and mach.params in front of
- * mach.token in order for it to be able to retrieve values from the request session
+ * On the backend, you need to put both BB.session and BB.params in front of
+ * BB.token in order for it to be able to retrieve values from the request session
  * and parameters, like this:
  *
- *   app.use(mach.session);
- *   app.use(mach.params);
- *   app.use(mach.token);
+ *   app.use(BB.session);
+ *   app.use(BB.params);
+ *   app.use(BB.token);
  *   app.run(function (conn) {
  *     // The connection authenticated successfully
  *   });
@@ -71,9 +71,9 @@ function verifyToken(app, options) {
         const session = conn.session, params = conn.params;
 
         if (isNil(session)) {
-            conn.onError(new Error("No session! Use mach.session in front of mach.token"));
+            conn.onError(new Error("No session! Use BB.session in front of BB.token"));
         } else if (isNil(params)) {
-            conn.onError(new Error("No params! Use mach.params in front of mach.token"));
+            conn.onError(new Error("No params! Use BB.params in front of BB.token"));
         } else {
             let token = session[sessionKey];
 

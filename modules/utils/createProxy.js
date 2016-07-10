@@ -7,7 +7,7 @@ const R = require("ramda");
  * a different location and return the response.
  *
  * This function is part of the low-level API and can generally be
- * used more conveniently through the mach.proxy middleware.
+ * used more conveniently through the BB.proxy middleware.
  */
 function createProxy(location) {
     if (!R.is(Location, location)) {

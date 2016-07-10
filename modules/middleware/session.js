@@ -1,12 +1,12 @@
 /* */
-const mach = require("../index");
+const BB = require("../index");
 const Promise = require("../utils/Promise");
 const decodeBase64 = require("../utils/decodeBase64");
 const encodeBase64 = require("../utils/encodeBase64");
 const makeHash = require("../utils/makeHash");
 const CookieStore = require("./session/CookieStore");
 const {is} = require("ramda");
-mach.extend(
+BB.extend(
   require("../extensions/server")
 );
 
@@ -74,7 +74,7 @@ function decodeCookie(cookie, store, secret) {
  *
  * Example:
  *
- *   app.use(mach.session, {
+ *   app.use(BB.session, {
  *     secret: 'the-secret',
  *     secure: true
  *   });
@@ -105,7 +105,7 @@ function session(app, options) {
 
     if (!secret) {
         console.warn([
-            "WARNING: There was no \"secret\" option provided to mach.session! This poses",
+            "WARNING: There was no \"secret\" option provided to BB.session! This poses",
             "a security vulnerability because session data will be stored on clients without",
             "any server-side verification that it has not been tampered with. It is strongly",
             "recommended that you set a secret to prevent exploits that may be attempted using",
