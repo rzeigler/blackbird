@@ -1,10 +1,3 @@
-const Option = require("fantasy-options");
-
-const some = Option.Some;
-const none = Option.None;
-
-function guard(v) {
-    return v ? some(v) : none;
-}
-
-module.exports = {guard, some, none};
+module.exports = (function ({Some: some, None: none}) {
+    return {inhabit: (v) => v ? some(v) : none};
+}(require("fantasy-options")));

@@ -11,7 +11,7 @@ const {invoker, prop} = require("ramda"),
     match = invoker(1, "match"),
     second = prop(1),
     {Some: some, None: none} = require("fantasy-options"),
-    liftOption = (v) => v ? some(v) : none;
+    {inhabit} = require("../utilities/option");
 
 module.exports = function (BB) {
     BB.Message.PARSERS["multipart/form-data"] = function (message, maxLength) {
@@ -26,12 +26,12 @@ module.exports = function (BB) {
                 const m = some(this)
                     .map(prop("contentType"))
                     .map(match(BOUNDARY))
-                    .chain(liftOption);
+                    .chain(inhabit);
 
                 return m.map(second)
-                    .chain(liftOption)
+                    .chain(inhabit)
                     .getOrElse(m.map(prop(2))
-                                .chain(liftOption)
+                                .chain(inhabit)
                                 .getOrElse(null));
             }
         },
@@ -41,7 +41,7 @@ module.exports = function (BB) {
                 return some(this)
                     .map(prop("headers"))
                     .map(prop("Content-Disposition"))
-                    .chain(liftOption)
+                    .chain(inhabit)
                     .map(match(NAME))
                     .map(second)
                     .getOrElse(some(this)
@@ -56,9 +56,9 @@ module.exports = function (BB) {
                 return some(this)
                     .map(prop("headers"))
                     .map(prop("Content-Disposition"))
-                    .chain(liftOption)
+                    .chain(inhabit)
                     .map(match(FILENAME))
-                    .chain(liftOption)
+                    .chain(inhabit)
                     .map(second)
                     .map(quoteStripper)
                     .map(quoteNormalizer)
