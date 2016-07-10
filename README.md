@@ -14,7 +14,7 @@
 Writing a "Hello world" HTTP server in BB is simple.
 
 ```js
-let BB = require('blackbird');
+let BB = require('blackbird-server');
 
 BB.serve(function (conn) {
   return "Hello world!";
