@@ -7,11 +7,9 @@ const generateETag = require("../utils/generateETag");
 const generateIndex = require("../utils/generateIndex");
 const joinPaths = require("../utils/joinPaths");
 
-const {is, contains} = require("ramda");
+const {is, contains, converge, or} = require("ramda");
 
-mach.extend(
-  require("../extensions/server")
-);
+mach.extend(require("../extensions/server"));
 
 /**
  * A middleware for serving files efficiently from the file system according
@@ -66,8 +64,8 @@ mach.extend(
  *   mach.serve(app);
  */
 function file(app, options) {
-  // Allow mach.file(path|options)
-    if (typeof app === "string" || typeof app === "object") {
+    const objOrString = converge(or, [is(String), is(Object)]);
+    if (objOrString(app)) {
         options = app;
         app = null;
     }

@@ -11,7 +11,7 @@
  *   });
  */
 const {is, curry} = require("ramda");
-function catchError(app, conn) {
+module.exports = curry(function catchError(app, conn) {
     return conn.run(app).then(null, function (reason) {
         if (is(Error, reason)) {
             throw reason;
@@ -19,6 +19,4 @@ function catchError(app, conn) {
 
         return reason;
     });
-}
-
-module.exports = curry(catchError);
+});
