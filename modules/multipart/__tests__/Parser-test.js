@@ -1,4 +1,6 @@
-const assert = require("assert");
+/*eslint no-unused-expressions: off*/
+/*eslint max-statements: off*/
+const {expect} = require("chai");
 const parseContent = require("../parseContent");
 const Parser = require("../Parser");
 const getFixture = require("./getFixture");
@@ -8,8 +10,8 @@ describe("Parser", function () {
         const parser = new Parser("abc", function () {});
 
         it("has the correct boundary", function () {
-            assert.deepEqual(Reflect.apply(Array.prototype.slice, parser.boundary, []), [13, 10, 45, 45, 97, 98, 99]);
-            assert.deepEqual(parser.boundaryChars, {10: true, 13: true, 45: true, 97: true, 98: true, 99: true});
+            expect(Reflect.apply(Array.prototype.slice, parser.boundary, [])).to.eql([13, 10, 45, 45, 97, 98, 99]);
+            expect(parser.boundaryChars).to.eql({10: true, 13: true, 45: true, 97: true, 98: true, 99: true});
         });
     });
 
@@ -36,8 +38,8 @@ describe("Parser", function () {
         beforeEachParseFixture("content_type_no_filename");
 
         it("correctly parses the text contents", function () {
-            assert(parts.text);
-            assert.equal(parts.text.buffer, "contents");
+            expect(parts.text).to.exist;
+            expect(parts.text.buffer.toString()).to.eql("contents");
         });
     });
 
@@ -45,10 +47,10 @@ describe("Parser", function () {
         beforeEachParseFixture("webkit", "----WebKitFormBoundaryWLHCs9qmcJJoyjKR");
 
         it("correctly parses", function () {
-            assert.equal(parts._method.buffer, "put");
-            assert.equal(parts["profile[blog]"].buffer, "");
-            assert.equal(parts.media.buffer, "");
-            assert.equal(parts.commit.buffer, "Save");
+            expect(parts._method.buffer.toString()).to.equal("put");
+            expect(parts["profile[blog]"].buffer.toString()).to.equal("");
+            expect(parts.media.buffer.toString()).to.equal("");
+            expect(parts.commit.buffer.toString()).to.equal("Save");
         });
     });
 
@@ -56,23 +58,23 @@ describe("Parser", function () {
         beforeEachParseFixture("binary");
 
         it("correctly parses the text parameters", function () {
-            assert.equal(parts["submit-name"].buffer, "Larry");
+            expect(parts["submit-name"].buffer.toString()).to.equal("Larry");
         });
 
         it("correctly parses the file name", function () {
-            assert(parts.files);
-            assert.equal(parts.files.filename, "rack-logo.png");
+            expect(parts.files).to.exist;
+            expect(parts.files.filename).to.equal("rack-logo.png");
         });
 
         it("correctly parses the file content type", function () {
-            assert(parts.files);
-            assert.equal(parts.files.contentType, "image/png");
+            expect(parts.files).to.exist;
+            expect(parts.files.contentType).to.equal("image/png");
         });
 
         it("correctly parses the file's contents", function () {
-            assert(parts.files);
-            assert(parts.files.buffer);
-            assert.equal(parts.files.buffer.length, 26473);
+            expect(parts.files).to.exist;
+            expect(parts.files.buffer).to.exist;
+            expect(parts.files.buffer.length).to.equal(26473);
         });
     });
 
@@ -80,23 +82,23 @@ describe("Parser", function () {
         beforeEachParseFixture("text");
 
         it("correctly parses the text parameters", function () {
-            assert.equal(parts["submit-name"].buffer, "Larry");
-            assert.equal(parts["submit-name-with-content"].buffer, "Berry");
+            expect(parts["submit-name"].buffer.toString()).to.equal("Larry");
+            expect(parts["submit-name-with-content"].buffer.toString()).to.equal("Berry");
         });
 
         it("correctly parses the file name", function () {
-            assert(parts.files);
-            assert.equal(parts.files.filename, "file1.txt");
+            expect(parts.files).to.exist;
+            expect(parts.files.filename).to.equal("file1.txt");
         });
 
         it("correctly parses the file content type", function () {
-            assert(parts.files);
-            assert.equal(parts.files.contentType, "text/plain");
+            expect(parts.files).to.exist;
+            expect(parts.files.contentType).to.equal("text/plain");
         });
 
         it("correctly parses the file's contents", function () {
-            assert(parts.files);
-            assert.equal(parts.files.buffer, "contents");
+            expect(parts.files).to.exist;
+            expect(parts.files.buffer.toString()).to.equal("contents");
         });
     });
 
@@ -104,18 +106,18 @@ describe("Parser", function () {
         beforeEachParseFixture("text_ie");
 
         it("correctly parses and clean up the file name", function () {
-            assert(parts.files);
-            assert.equal(parts.files.filename, "file1.txt");
+            expect(parts.files).to.exist;
+            expect(parts.files.filename).to.equal("file1.txt");
         });
 
         it("correctly parses the file content type", function () {
-            assert(parts.files);
-            assert.equal(parts.files.contentType, "text/plain");
+            expect(parts.files).to.exist;
+            expect(parts.files.contentType).to.equal("text/plain");
         });
 
         it("correctly parses the file's contents", function () {
-            assert(parts.files);
-            assert.equal(parts.files.buffer, "contents");
+            expect(parts.files).to.exist;
+            expect(parts.files.buffer.toString()).to.equal("contents");
         });
     });
 
@@ -123,13 +125,13 @@ describe("Parser", function () {
         beforeEachParseFixture("mixed_files");
 
         it("correctly parses a text field", function () {
-            assert(parts.foo);
-            assert.equal(parts.foo.buffer, "bar");
+            expect(parts.foo).to.exist;
+            expect(parts.foo.buffer.toString()).to.equal("bar");
         });
 
         it("correctly parses a nested multipart message", function () {
-            assert(parts.files);
-            assert.equal(parts.files.buffer.length, 252);
+            expect(parts.files).to.exist;
+            expect(parts.files.buffer.length).to.equal(252);
         });
     });
 
@@ -137,8 +139,8 @@ describe("Parser", function () {
         beforeEachParseFixture("none");
 
         it("returns the field as an empty string", function () {
-            assert(parts.files);
-            assert.equal(parts.files.buffer, "");
+            expect(parts.files).to.exist;
+            expect(parts.files.buffer.toString()).to.equal("");
         });
     });
 
@@ -146,18 +148,18 @@ describe("Parser", function () {
         beforeEachParseFixture("filename_with_escaped_quotes");
 
         it("correctly parses the file name", function () {
-            assert(parts.files);
-            assert.equal(parts.files.filename, "escape \"quotes");
+            expect(parts.files).to.exist;
+            expect(parts.files.filename).to.equal("escape \"quotes");
         });
 
         it("correctly parses the file content type", function () {
-            assert(parts.files);
-            assert.equal(parts.files.contentType, "application/octet-stream");
+            expect(parts.files).to.exist;
+            expect(parts.files.contentType).to.equal("application/octet-stream");
         });
 
         it("correctly parses the file's contents", function () {
-            assert(parts.files);
-            assert.equal(parts.files.buffer, "contents");
+            expect(parts.files).to.exist;
+            expect(parts.files.buffer.toString()).to.equal("contents");
         });
     });
 
@@ -165,18 +167,18 @@ describe("Parser", function () {
         beforeEachParseFixture("filename_with_unescaped_quotes");
 
         it("correctly parses the file name", function () {
-            assert(parts.files);
-            assert.equal(parts.files.filename, "escape \"quotes");
+            expect(parts.files).to.exist;
+            expect(parts.files.filename).to.equal("escape \"quotes");
         });
 
         it("correctly parses the file content type", function () {
-            assert(parts.files);
-            assert.equal(parts.files.contentType, "application/octet-stream");
+            expect(parts.files).to.exist;
+            expect(parts.files.contentType).to.equal("application/octet-stream");
         });
 
         it("correctly parses the file's contents", function () {
-            assert(parts.files);
-            assert.equal(parts.files.buffer, "contents");
+            expect(parts.files).to.exist;
+            expect(parts.files.buffer.toString()).to.equal("contents");
         });
     });
 
@@ -184,18 +186,18 @@ describe("Parser", function () {
         beforeEachParseFixture("filename_with_percent_escaped_quotes");
 
         it("correctly parses the file name", function () {
-            assert(parts.files);
-            assert.equal(parts.files.filename, "escape \"quotes");
+            expect(parts.files).to.exist;
+            expect(parts.files.filename).to.equal("escape \"quotes");
         });
 
         it("correctly parses the file content type", function () {
-            assert(parts.files);
-            assert.equal(parts.files.contentType, "application/octet-stream");
+            expect(parts.files).to.exist;
+            expect(parts.files.contentType).to.equal("application/octet-stream");
         });
 
         it("correctly parses the file's contents", function () {
-            assert(parts.files);
-            assert.equal(parts.files.buffer, "contents");
+            expect(parts.files).to.exist;
+            expect(parts.files.buffer.toString()).to.equal("contents");
         });
     });
 
@@ -203,18 +205,18 @@ describe("Parser", function () {
         beforeEachParseFixture("filename_and_modification_param");
 
         it("correctly parses the file name", function () {
-            assert(parts.files);
-            assert.equal(parts.files.filename, "genome.jpeg");
+            expect(parts.files).to.exist;
+            expect(parts.files.filename).to.equal("genome.jpeg");
         });
 
         it("correctly parses the file content type", function () {
-            assert(parts.files);
-            assert.equal(parts.files.contentType, "image/jpeg");
+            expect(parts.files).to.exist;
+            expect(parts.files.contentType).to.equal("image/jpeg");
         });
 
         it("correctly parses the file's contents", function () {
-            assert(parts.files);
-            assert.equal(parts.files.buffer, "contents");
+            expect(parts.files).to.exist;
+            expect(parts.files.buffer.toString()).to.equal("contents");
         });
     });
 
@@ -222,18 +224,18 @@ describe("Parser", function () {
         beforeEachParseFixture("filename_with_unescaped_quotes_and_modification_param");
 
         it("correctly parses the file name", function () {
-            assert(parts.files);
-            assert.equal(parts.files.filename, "\"human\" genome.jpeg");
+            expect(parts.files).to.exist;
+            expect(parts.files.filename).to.equal("\"human\" genome.jpeg");
         });
 
         it("correctly parses the file content type", function () {
-            assert(parts.files);
-            assert.equal(parts.files.contentType, "image/jpeg");
+            expect(parts.files).to.exist;
+            expect(parts.files.contentType).to.equal("image/jpeg");
         });
 
         it("correctly parses the file's contents", function () {
-            assert(parts.files);
-            assert.equal(parts.files.buffer, "contents");
+            expect(parts.files).to.exist;
+            expect(parts.files.buffer.toString()).to.equal("contents");
         });
     });
 });
