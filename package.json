@@ -2,10 +2,10 @@
   "name": "blackbird-server",
   "version": "0.0.3",
   "description": "HTTP for JavaScript",
-  "main": "modules",
+  "main": "src",
   "scripts": {
     "lint": "eslint --fix .",
-    "test": "mocha 'modules/**/__tests__/*-test.js'",
+    "test": "mocha spec/**/*.spec.js",
     "coverage": "istanbul cover node_modules/mocha/bin/_mocha 'modules/**/__tests__/*-test.js'"
   },
   "dependencies": {
