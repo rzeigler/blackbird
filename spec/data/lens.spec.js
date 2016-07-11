@@ -13,10 +13,10 @@ describe("data/lens", function () {
         it("should view a None if the value is undefined", function () {
             expect(R.view(aLens, {b: true}).fold(R.identity, R.always(false))).to.equal(false);
         });
-        xit("should set a value if a some is provided", function () {
+        it("should set a value if a some is provided", function () {
             expect(R.set(aLens, new Option.Some(true), {a: false}).a).to.equal(true);
         });
-        xit("should dissociate if a none is provided", function () {
+        it("should dissociate if a none is provided", function () {
             expect(R.set(aLens, Option.None, {a: false})).to.eql({});
         });
     });
