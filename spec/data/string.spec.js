@@ -2,7 +2,7 @@ const assert = require("assert");
 const {parallel} = require("../loader");
 const string = parallel(require, __filename);
 
-describe("string", function () {
+describe("data/string", function () {
     describe("#split", function () {
         it("should split at a token", function () {
             assert.deepEqual(string.split(":", "a:b:c"), ["a", "b", "c"]);
