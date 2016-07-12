@@ -28,7 +28,7 @@ const parameterGeneralizationOf = R.curry((outerParams, innerParams) => {
     const oKeys = R.keys(outerParams);
     const iKeys = R.keys(innerParams);
     // Disjoint key sets
-    if (R.intersect(oKeys, iKeys).length < oKeys.length) {
+    if (R.intersection(oKeys, iKeys).length < oKeys.length) {
         return false;
     }
     return R.equals(outerParams, R.pick(oKeys, innerParams));
