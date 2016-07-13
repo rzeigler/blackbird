@@ -22,7 +22,7 @@ function createRequestHandler(app) {
     return function (nodeRequest, nodeResponse) {
         const conn = createConnection(nodeRequest);
 
-        Reflect.apply(conn, app, []).then(function () {
+        conn.run(app).then(function () {
             const isHead = conn.method === "HEAD";
             const isEmpty = isHead || STATUS_WITHOUT_CONTENT[conn.status] === true;
             const headers = conn.response.headers;

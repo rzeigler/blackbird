@@ -2,8 +2,8 @@
 // You'll get random "hello world"s and "internal server error"s, but
 // the server won't crash.
 
-const Promise = require("when").Promise;
-const BB = require("../modules");
+const Promise = require("bluebird");
+const BB = require("../src");
 
 BB.serve(function () {
     if (Math.random() > 0.75) {

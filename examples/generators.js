@@ -2,25 +2,17 @@
 // I've tested it with node 0.11.2 like this:
 //   node --harmony examples/generators.js
 
-const BB = require("../modules");
+const BB = require("../src");
 const app = BB.stack();
-const Q = require("q");
-
-function sleep(millis, answer) {
-    const deferredResult = Q.defer();
-    setTimeout(function () {
-        deferredResult.resolve(answer);
-    }, millis);
-    return deferredResult.promise;
-}
+const Promise = require("bluebird");
 
 app.use(BB.logger);
 
-app.run(Q.async(function* (request) {
+app.run(Promise.coroutine(function* (request) {
     const body = yield request.parseContent();
 
     console.log("Sleeping");
-    yield sleep(200);
+    yield Promise.delay(200);
 
     return JSON.stringify(body);
 }));
