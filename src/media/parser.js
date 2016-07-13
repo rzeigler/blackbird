@@ -1,17 +1,12 @@
 // A parser for media types
 const R = require("ramda");
 const P = require("parsimmon");
-const Either = require("fantasy-eithers");
 
+const {lexeme, parseWith} = require("../parser");
 const {array} = require("../data");
 const value = require("./value");
 
 const concatStrs = array.join("");
-
-// Parser
-function lexeme(p) {
-    return p.skip(P.whitespace.many());
-}
 
 // Tokens
 const text = P.string("text");
@@ -61,11 +56,6 @@ const mediaType = P.alt(mimeRec.ap(wildcard.skip(slash)).ap(wildcard).ap(paramet
                        mimeRec.ap(type.skip(slash)).ap(subtype).ap(parameters));
 
 const accept = P.sepBy1(mediaType, lexeme(comma));
-
-const parseWith = R.curry((parser, text) => {
-    const result = parser.parse(text);
-    return result.status ? new Either.Right(result.value) : new Either.Left(result);
-});
 
 const parseMediaType = parseWith(mediaType);
 const parseAccept = parseWith(accept);
