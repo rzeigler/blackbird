@@ -10,7 +10,7 @@ const mergeDuplicate = array.join(", ");
 // Expects an association list by tuples, i.e. [[k, v], ..., [k, v]]
 const canonicalize = R.compose(R.map(mergeDuplicate), R.map(R.chain(takeValue)), groupByName);
 
-const crlf = P.string("\r\n");
+const crlf = P.regex(/\r?\n/);
 const colon = P.string(":").skip(P.string(" ").many());
 const name = P.regex(/[a-zA-Z\-]+/);
 const value = P.regex(/[^\r\n]+/);
