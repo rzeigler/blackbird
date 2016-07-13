@@ -5,7 +5,7 @@
 // curl http://localhost:5000
 
 const Stream = require("bufferedstream");
-const BB = require("../modules");
+const BB = require("../src");
 
 BB.serve(function (conn) {
   // Set conn.response.content to the stream you want to send.

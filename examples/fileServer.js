@@ -1,4 +1,4 @@
-const BB = require("../modules");
+const BB = require("../src");
 const app = BB.stack();
 
 app.use(BB.gzip);
