@@ -4,11 +4,11 @@ const {array} = require("../data");
 const {parseWith} = require("../parser");
 
 const groupByName = R.groupBy(R.head);
-const headerValue = R.map(R.prop(1));
+const takeValue = R.drop(1);
 const mergeDuplicate = array.join(", ");
 
 // Expects an association list by tuples, i.e. [[k, v], ..., [k, v]]
-const canonicalize = R.compose(R.map(mergeDuplicate), R.map(R.chain(headerValue)), groupByName);
+const canonicalize = R.compose(R.map(mergeDuplicate), R.map(R.chain(takeValue)), groupByName);
 
 const crlf = P.string("\r\n");
 const colon = P.string(":").skip(P.string(" ").many());
