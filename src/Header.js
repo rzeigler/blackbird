@@ -1,7 +1,6 @@
 const normalizeHeaderName = require("./utils/normalizeHeaderName");
 
 module.exports = class Header {
-
     constructor(name, value) {
         this.name = name;
         this.value = value;
@@ -18,5 +17,4 @@ module.exports = class Header {
     toString() {
         return `${this.name}: ${this.value}`;
     }
-
 };
