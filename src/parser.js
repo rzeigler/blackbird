@@ -3,7 +3,7 @@ const P = require("parsimmon");
 const Either = require("fantasy-eithers");
 // A set of general combinators for working with parsimmons parsers
 function lexeme(p) {
-    return p.skip(P.whitespace.many());
+    return p.skip(P.optWhitespace);
 }
 
 const parseWith = R.curry((parser, text) => {
