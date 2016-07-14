@@ -4,3 +4,4 @@
 dist
 examples
 **/tests
+.editorconfig
