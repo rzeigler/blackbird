@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint --fix .",
     "test": "mocha spec/**/*.spec.js",
-    "coverage": "istanbul cover node_modules/mocha/bin/_mocha 'modules/**/__tests__/*-test.js'"
+    "coverage": "istanbul cover node_modules/mocha/bin/_mocha 'spec/**/*.spec.js'"
   },
   "dependencies": {
     "bluebird": "^3.4.1",

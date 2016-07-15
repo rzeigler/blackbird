@@ -64,8 +64,7 @@ BB.extend(require("../extensions/server"));
  *   BB.serve(app);
  */
 function file(app, options) {
-    const objOrString = converge(or, [is(String), is(Object)]);
-    if (objOrString(app)) {
+    if (!is(Function, app)) {
         options = app;
         app = null;
     }
