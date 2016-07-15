@@ -72,17 +72,17 @@ describe("simple server", function () {
             const app = BB.stack();
 
             app.use(BB.logger);
-            app.use(BB.file, `${__dirname}/..`);
-            app.map("/ex", function (app) {
-                app.use(BB.file, __dirname);
-            });
+            // app.use(BB.file, `${__dirname}/..`);
+            // app.map("/ex", function (app) {
+            //     app.use(BB.file, __dirname);
+            // });
 
             app.get("/", function () {
                 return "Hello world!";
             });
 
             app.get("/motd", function () {
-                return "Do not go where the path may lead, go instead where there is no path and leave a trail.";
+                return "Be at peace.";
             });
 
             server = BB.serve(app, {port});
@@ -91,8 +91,67 @@ describe("simple server", function () {
             server.close();
         });
 
-        it("should return files from this directory", function () {
-            return request(`${host}/ex/examples.js`);
+        it("should return expected data at the root", function () {
+            return request(`${host}/`)
+                .then((text) => expect(text).to.equal("Hello world!"));
+        });
+
+        it("should return expected data at /motd", function () {
+            return request(`${host}/motd`)
+                .then((text) => expect(text).to.equal("Be at peace."));
+        });
+    });
+    describe("url matching", function () {
+        let server = null;
+        beforeEach(function () {
+            const app = BB.stack();
+
+            app.use(BB.logger);
+
+            app.get("/", function () {
+                return "/";
+            });
+
+            app.get("/b", function () {
+                return "/b";
+            });
+
+            app.get("/c/:id", function (conn) {
+                return JSON.stringify({
+                    method: conn.method,
+                    location: conn.location,
+                    headers: conn.request.headers,
+                    params: conn.params
+                }, null, 2);
+            });
+
+            server = BB.serve(app, {port});
+        });
+
+        afterEach(function () {
+            server.close();
+        });
+
+        it("should send expected content from the root", function () {
+            return request(`${host}/`)
+                .then((text) => expect(text).to.equal("/"));
+        });
+        it("should send expected content from /b", function () {
+            return request(`${host}/b`)
+                .then((text) => expect(text).to.equal("/b"));
+        });
+        it("should send expected content from /c/1", function () {
+            return request(`${host}/c/1`)
+                .then(JSON.parse)
+                .then((response) => expect(response).to.deep.equal({
+                    method: "GET",
+                    location: `http://localhost:${port}/c/1`,
+                    headers: {
+                        Connection: "close",
+                        Host: `localhost:${port}`
+                    },
+                    params: {id: "1"}
+                }));
         });
     });
 });
