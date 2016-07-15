@@ -1,5 +1,4 @@
-[![build status](https://img.shields.io/travis/theqabalist/blackbird.svg?style=flat-square)](https://travis-ci.org/theqabalist/blackbird)
-[![npm package](https://img.shields.io/npm/v/BB.svg?style=flat-square)](https://www.npmjs.org/package/BB)
+Master Branch: [![CircleCI](https://circleci.com/gh/theqabalist/blackbird.svg?style=svg&circle-token=d32d4715e49ec8dcda656acfe86280b446a57af3)](https://circleci.com/gh/theqabalist/blackbird)
 
 [Blackbird](https://github.com/theqabalist/blackbird) is an HTTP server that runs on Node (ES6+). It has the following goals:
 
