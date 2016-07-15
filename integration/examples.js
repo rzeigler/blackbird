@@ -1,5 +1,6 @@
 const BB = require("../src");
 const R = require("ramda");
+const path = require("path");
 const {expect} = require("chai");
 const request = require("request-promise");
 const base64 = require("base-64");
@@ -71,11 +72,14 @@ describe("simple server", function () {
         beforeEach(function () {
             const app = BB.stack();
 
-            app.use(BB.logger);
-            // app.use(BB.file, `${__dirname}/..`);
+            const filePath = path.join(process.cwd(), "integration");
+
+            app.use(BB.file, {root: filePath});
             // app.map("/ex", function (app) {
-            //     app.use(BB.file, __dirname);
+            //     app.use(BB.file, {root: filePath});
             // });
+            app.use(BB.logger);
+
 
             app.get("/", function () {
                 return "Hello world!";
@@ -99,6 +103,14 @@ describe("simple server", function () {
         it("should return expected data at /motd", function () {
             return request(`${host}/motd`)
                 .then((text) => expect(text).to.equal("Be at peace."));
+        });
+
+        it("should send files successfully", function () {
+            return request(`${host}/${path.basename(__filename)}`);
+        });
+
+        xit("should send files from a mount successfully", function () {
+            return request(`${host}/ex/${path.basename(__filename)}`);
         });
     });
     describe("url matching", function () {
