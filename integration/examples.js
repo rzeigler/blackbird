@@ -66,4 +66,33 @@ describe("simple server", function () {
                 .catch((e) => expect(e.statusCode).to.equal(401));
         });
     });
+    describe("routing", function () {
+        let server = null;
+        beforeEach(function () {
+            const app = BB.stack();
+
+            app.use(BB.logger);
+            app.use(BB.file, `${__dirname}/..`);
+            app.map("/ex", function (app) {
+                app.use(BB.file, __dirname);
+            });
+
+            app.get("/", function () {
+                return "Hello world!";
+            });
+
+            app.get("/motd", function () {
+                return "Do not go where the path may lead, go instead where there is no path and leave a trail.";
+            });
+
+            server = BB.serve(app, {port});
+        });
+        afterEach(function () {
+            server.close();
+        });
+
+        it("should return files from this directory", function () {
+            return request(`${host}/ex/examples.js`);
+        });
+    });
 });
