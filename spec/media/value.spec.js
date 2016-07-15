@@ -42,18 +42,20 @@ describe("media/value", function () {
             }));
         });
         it("property - wildcard cannot be a generalization of anything", function () {
-            jsverify.assert(jsverify.forall(jsverify.string, jsverify.string, function (t, st) {
-                return !value.generalizationOf(value(t, st, {}), value("*", "*", {}));
+            jsverify.assert(jsverify.forall(jsverify.nestring, jsverify.nestring, function (t, st) {
+                return t === "*" && st === "*" ||
+                    !value.generalizationOf(value(t, st, {}), value("*", "*", {}));
             }));
         });
         it("property - generalization of subtype wildcard to related media types", function () {
-            jsverify.assert(jsverify.forall(jsverify.string, function (st) {
+            jsverify.assert(jsverify.forall(jsverify.nestring, function (st) {
                 return value.generalizationOf(value("application", "*", {}), value("application", st, {}));
             }));
         });
         it("property - subtype wildcard cannot be a generalization of related", function () {
             jsverify.assert(jsverify.forall(jsverify.string, function (st) {
-                return !value.generalizationOf(value("application", st, {}), value("application", "*", {}));
+                return st === "*" ||
+                    !value.generalizationOf(value("application", st, {}), value("application", "*", {}));
             }));
         });
         it("property - generalization of increasing parameter specifialization", function () {
