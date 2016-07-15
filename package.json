@@ -4,8 +4,9 @@
   "description": "HTTP for JavaScript",
   "main": "src",
   "scripts": {
-    "lint": "eslint --fix .",
+    "lint": "eslint .",
     "test": "mocha spec/**/*.spec.js",
+    "integration": "mocha integration/**/*.spec.js",
     "coverage": "istanbul cover node_modules/mocha/bin/_mocha 'spec/**/*.spec.js'"
   },
   "dependencies": {
