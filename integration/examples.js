@@ -5,6 +5,7 @@ const {expect} = require("chai");
 const request = require("request-promise");
 const base64 = require("base-64");
 
+/* eslint no-process-env: 0 */
 const port = parseInt(process.env.PORT || "8888", 10);
 const host = `http://localhost:${port}`;
 
