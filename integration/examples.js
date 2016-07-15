@@ -62,7 +62,7 @@ describe("simple server", function () {
 
         it("should response with unauthorized to an incorrect password", function () {
             return request({uri: host, headers: {Authorization: basicAuthHeader("ryan", "wrong password")}})
-                .then(R.always(new Error("Failed to receive 401")))
+                .then(R.always(Promise.reject(new Error("Failed to receive 401"))))
                 .catch((e) => expect(e.statusCode).to.equal(401));
         });
     });
