@@ -127,7 +127,7 @@ module.exports = {
         "no-mixed-requires": "off",
         "no-new-require": "error",
         "no-path-concat": "error",
-        "no-process-env": "error",
+        "no-process-env": "warn",
         "no-process-exit": "off",
         "no-restricted-modules": "off",
         "no-sync": "warn",

@@ -32,7 +32,8 @@
     "istanbul": "^0.4.4",
     "jsverify": "^0.7.1",
     "mocha": "^2.0.1",
-    "np": "^2.6.0"
+    "np": "^2.6.0",
+    "request-promise": "^3.0.0"
   },
   "repository": {
     "type": "git",
