@@ -9,6 +9,12 @@ describe("headers/parser", function () {
                 .to.eql({a: "1, 3", b: "2"});
         });
     });
+    describe("#canonicalizeHeaderNames", function () {
+        it("should lowercase all header names", function () {
+            expect(parser.canonicalizeHeaderNames({A: 1, B: 2}))
+                .to.eql({a: 1, b: 2});
+        });
+    });
     describe("#headers", function () {
         const string = "Content-Type: text/plain\r\nX-Magic: 5\r\nContent-Disposition: attachment\r\n" +
             "X-Magic: 6\r\n\r\n";
@@ -17,9 +23,9 @@ describe("headers/parser", function () {
                 .to.eql({
                     status: true,
                     value: {
-                        "Content-Type": "text/plain",
-                        "X-Magic": "5, 6",
-                        "Content-Disposition": "attachment"
+                        "content-type": "text/plain",
+                        "x-magic": "5, 6",
+                        "content-disposition": "attachment"
                     }
                 });
         });

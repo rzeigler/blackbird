@@ -1,21 +1,26 @@
-const assert = require("assert");
+const {expect} = require("chai");
 const {parallel} = require("../loader");
 const string = parallel(require, __filename);
 
 describe("data/string", function () {
     describe("#split", function () {
         it("should split at a token", function () {
-            assert.deepEqual(string.split(":", "a:b:c"), ["a", "b", "c"]);
+            expect(string.split(":", "a:b:c")).to.eql(["a", "b", "c"]);
         });
     });
     describe("#trim", function () {
         it("should trim", function () {
-            assert.equal(string.trim("   a "), "a");
+            expect(string.trim("   a ")).to.equal("a");
         });
     });
     describe("#length", function () {
         it("should get length", function () {
-            assert.equal(string.length("abc"), 3);
+            expect(string.length("abc")).to.equal(3);
+        });
+    });
+    describe("#toLowerCase", function () {
+        it("should lowercase a string", function () {
+            expect(string.toLowerCase("ABC")).to.equal("abc");
         });
     });
 });

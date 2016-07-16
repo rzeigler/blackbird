@@ -4,6 +4,7 @@ module.exports = (function ({invoker, prop}) {
         trim: invoker(0, "trim"),
         length: prop("length"),
         replace: invoker(2, "replace"),
-        match: invoker(1, "match")
+        match: invoker(1, "match"),
+        toLowerCase: invoker(0, "toLowerCase")
     };
 }(require("ramda")));
