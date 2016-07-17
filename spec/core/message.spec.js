@@ -20,6 +20,20 @@ describe("core/message", function () {
             expect(inflated.body).to.eql(Buffer.from("abcdefg"));
         });
     });
+    describe("#isStringMap", function () {
+        it("should return true for empty objects", function () {
+            expect(message.isStringMap({})).to.equal(true);
+        });
+        it("should return true for object with string properties", function () {
+            expect(message.isStringMap({a: "a", b: "b"})).to.equal(true);
+        });
+        it("should return false for non-'objects'", function () {
+            expect(message.isStringMap("b")).to.equal(false);
+        });
+        it("should return false for objects with non-string properties", function () {
+            expect(message.isStringMap({a: "a", b: 8})).to.equal(false);
+        });
+    });
     describe("#isConformingResponse", function () {
         it("should return true for a valid response with headers", function () {
             expect(message.isConformingResponse({
@@ -31,6 +45,13 @@ describe("core/message", function () {
         it("should return true for a valid response without headers", function () {
             expect(message.isConformingResponse({
                 statusCode: 200,
+                body: Buffer.from("Hello, World!")
+            })).to.equal(true);
+        });
+        it("should return true for a valid response with empty headers", function () {
+            expect(message.isConformingResponse({
+                statusCode: 200,
+                headers: {},
                 body: Buffer.from("Hello, World!")
             })).to.equal(true);
         });
