@@ -3,6 +3,11 @@ const {parallel} = require("../loader");
 const string = parallel(require, __filename);
 
 describe("data/string", function () {
+    describe("#indexOf", function () {
+        it("should return the index of a substring", function () {
+            expect(string.indexOf("b", "abc")).to.equal("abc".indexOf("b"));
+        });
+    });
     describe("#split", function () {
         it("should split at a token", function () {
             expect(string.split(":", "a:b:c")).to.eql(["a", "b", "c"]);
