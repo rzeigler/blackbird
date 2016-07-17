@@ -44,7 +44,7 @@ const statusCodeView = R.view(statusCodeLens);
 const headersView = R.view(headersLens);
 const bodyView = R.view(bodyLens);
 
-const isStringMap = R.compose(R.all(R.is(String)), R.values);
+const isStringMap = R.allPass([R.is(Object), R.compose(R.all(R.is(String)), R.values)]);
 const statusCodeIsNumber = R.compose(R.is(Number), statusCodeView);
 const headersIsStringMap = R.compose(isStringMap, headersView);
 const headersIsUndefined = R.compose(R.isNil, headersView);
@@ -74,6 +74,7 @@ module.exports = {
     bufferFromUtf8,
     inflateStringBody,
     inflateBufferBody,
+    isStringMap,
     isConformingResponse,
     coerceResponse,
     malformedResponse,
