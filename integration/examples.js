@@ -15,7 +15,7 @@ describe("simple server", function () {
         beforeEach(function () {
             server = BB.serve(function () {
                 return "Hello, World!";
-            }, {port});
+            }, {port, quiet: true});
         });
 
         afterEach(function () {
@@ -42,7 +42,7 @@ describe("simple server", function () {
                 return `Hello ${conn.remoteUser}!`;
             });
 
-            server = BB.serve(app, {port});
+            server = BB.serve(app, {port, quiet: true});
         });
 
         afterEach(function () {
@@ -90,7 +90,7 @@ describe("simple server", function () {
                 return "Be at peace.";
             });
 
-            server = BB.serve(app, {port});
+            server = BB.serve(app, {port, quiet: true});
         });
         afterEach(function () {
             server.close();
@@ -138,7 +138,7 @@ describe("simple server", function () {
                 }, null, 2);
             });
 
-            server = BB.serve(app, {port});
+            server = BB.serve(app, {port, quiet: true});
         });
 
         afterEach(function () {
