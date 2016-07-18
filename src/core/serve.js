@@ -1,7 +1,7 @@
 const http = require("http");
 const https = require("https");
 const R = require("ramda");
-const {either} = require("../data");
+const Promise = require("bluebird");
 const message = require("./message");
 
 const send = R.curry((res, response) => {
@@ -16,12 +16,8 @@ const send = R.curry((res, response) => {
     return result;
 });
 
-// Stupid es6 promise implementation requires a this for statics...
-const resolveP = Promise.resolve.bind(Promise);
-const rejectP = Promise.reject.bind(Promise);
-
 const requestHandler = R.curry((app, req, res) => {
-    R.tryCatch(R.compose(resolveP, app), rejectP)(message.context(req))
+    R.tryCatch(R.compose(Promise.resolve, app), Promise.reject)(message.context(req))
         .catch(message.coerceError) // Generate 500s beyond coerceResponse
         .then(message.coerceResponse)
         .then(message.conditionResponse)
