@@ -42,6 +42,13 @@ describe("core/message", function () {
                 body: Buffer.from("Hello, World!")
             })).to.equal(true);
         });
+        it("should return true for a valid response without a body", function () {
+            expect(message.isConformingResponse({
+                statusCode: 200,
+                headers: {},
+                body: null
+            })).to.equal(true);
+        });
         it("should return true for a valid response without headers", function () {
             expect(message.isConformingResponse({
                 statusCode: 200,
@@ -74,10 +81,6 @@ describe("core/message", function () {
         });
         it("should return false for a response with a body that is not buffer", function () {
             expect(message.isConformingResponse({statusCode: 200, body: "rekt!"}))
-                .to.equal(false);
-        });
-        it("should return false for a response without a body", function () {
-            expect(message.isConformingResponse({statusCode: 200}))
                 .to.equal(false);
         });
         it("should return false for a response with a random statusCode", function () {
@@ -114,6 +117,13 @@ describe("core/message", function () {
         it("should produce a 500 on non-conforming response", function () {
             expect(message.coerceResponse({}))
                 .to.eql(message.malformedResponse);
+        });
+    });
+    describe("#conditionResponse", function () {
+        it("should attach content-length when there is a body", function () {
+            const body = message.bufferFromUtf8("Hello, World");
+            expect(message.conditionResponse(message.response(200, {}, body)).headers["content-length"])
+                .to.equal(Buffer.byteLength(body).toString());
         });
     });
 });
