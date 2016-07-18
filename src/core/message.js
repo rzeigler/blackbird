@@ -48,13 +48,14 @@ const isStringMap = R.allPass([R.is(Object), R.compose(R.all(R.is(String)), R.va
 const statusCodeIsNumber = R.compose(R.is(Number), statusCodeView);
 const headersIsStringMap = R.compose(isStringMap, headersView);
 const headersIsUndefined = R.compose(R.isNil, headersView);
+const bodyIsUndefined = R.compose(R.isNil, bodyView);
 const bodyIsBuffer = R.compose(R.is(Buffer), bodyView);
 
 const isConformingResponse = R.allPass([
     R.complement(R.isNil),
     statusCodeIsNumber,
     R.anyPass([headersIsUndefined, headersIsStringMap]),
-    bodyIsBuffer
+    R.anyPass([bodyIsUndefined, bodyIsBuffer])
 ]);
 
 const malformedResponse = {
@@ -70,6 +71,26 @@ const coerceResponse = R.cond([
     [R.T, R.always(malformedResponse)]
 ]);
 
+const attachContentLength = (response) =>
+    R.over(headersLens, R.assoc("content-length", Buffer.byteLength(bodyView(response)).toString()))(response);
+
+const conditionContentLength = R.cond([
+    [R.complement(bodyIsUndefined), attachContentLength],
+    [R.T, R.identity]
+]);
+
+/**
+ * Ensure that if the body exists then content-length is also set
+ */
+const conditionResponse = conditionContentLength;
+
+const contentType = (str) => ({"content-type": str});
+
+/**
+ * Canonical responses contain a Buffer as the body field
+ */
+const response = R.curry((statusCode, headers, body) => ({statusCode, headers, body}));
+
 module.exports = {
     bufferFromUtf8,
     inflateStringBody,
@@ -78,5 +99,15 @@ module.exports = {
     isConformingResponse,
     coerceResponse,
     malformedResponse,
-    context
+    conditionResponse,
+    conditionContentLength,
+    context,
+    response,
+    contentType,
+    statusCodeLens,
+    statusCodeView,
+    headersLens,
+    headersView,
+    bodyLens,
+    bodyView
 };
