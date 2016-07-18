@@ -16,13 +16,13 @@ const send = R.curry((res, response) => {
     return result;
 });
 
+// Stupid es6 promise implementation requires a this for statics...
+const resolveP = Promise.resolve.bind(Promise);
+const rejectP = Promise.reject.bind(Promise);
+
 const requestHandler = R.curry((app, req, res) => {
-    // Doesn't seem to work, wierdness is going on
-    // R.tryCatch(app, Promise.reject)(message.context(req))
-    either.attempt(app, message.context(req))
-        // Stupid es6 promise implementation requires bind for statics...
-        .fold(Promise.reject.bind(Promise), Promise.resolve.bind(Promise))
-        .catch(R.identity) // Generate 500s beyond coerceResponse
+    R.tryCatch(R.compose(resolveP, app), rejectP)(message.context(req))
+        .catch(message.coerceError) // Generate 500s beyond coerceResponse
         .then(message.coerceResponse)
         .then(message.conditionResponse)
         .then(send(res))

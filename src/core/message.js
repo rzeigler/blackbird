@@ -64,6 +64,16 @@ const malformedResponse = {
     body: bufferFromUtf8("App produced a malformed response object")
 };
 
+const coerceError = R.cond([
+    [isConformingResponse, R.identity],
+    [R.is(Error), (e) => ({
+        statusCode: 500,
+        headers: {"content-type": "text/plain; charset=utf-8"},
+        body: bufferFromUtf8(e.toString())
+    })],
+    [R.T, R.always(malformedResponse)]
+]);
+
 const coerceResponse = R.cond([
     [R.is(Buffer), inflateBufferBody],
     [R.is(String), inflateStringBody],
@@ -97,6 +107,7 @@ module.exports = {
     inflateBufferBody,
     isStringMap,
     isConformingResponse,
+    coerceError,
     coerceResponse,
     malformedResponse,
     conditionResponse,
