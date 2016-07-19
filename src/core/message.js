@@ -1,26 +1,27 @@
 const R = require("ramda");
 
+function ContentStore(request) {
+    const consumed = false;
 
-function Context(request, store) {
-    let bodyConsumed = false;
-    this.socket = request.socket;
-    this.httpVersion = request.httpVersion;
-    this.method = request.method;
-    this.url = request.url;
-    this.headers = request.headers;
-    this.store = store || {};
-
-    this.isBodyConsumed = () => bodyConsumed;
-    this.consumeBody = (cont) => {
-        if (bodyConsumed) {
-            throw new Error("Body has already been consumed");
+    this.consumeContent = function (f) {
+        if (consumed) {
+            throw new Error("ContentStore has already been consumed");
         }
-        bodyConsumed = true;
-        cont(request);
+        return f(request);
     };
 }
 
-const context = R.construct(Context);
+const context = R.curry((store, request) => ({
+    socket: request.socket,
+    httpVersion: request.httpVersion,
+    method: request.method,
+    url: request.url,
+    headers: request.headers,
+    content: new ContentStore(request),
+    store
+}));
+
+const consumeContextBody = R.curry((f, context) => context.content.consumeContent(f));
 
 const statusCodeLens = R.lensProp("statusCode");
 const headersLens = R.lensProp("headers");
@@ -98,7 +99,9 @@ module.exports = {
     conditionResponse,
     conditionContentLength,
     context,
+    consumeContextBody,
     response,
+    responseFromError,
     contentType,
     statusCodeLens,
     statusCodeView,
