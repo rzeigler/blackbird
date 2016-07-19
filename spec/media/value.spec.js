@@ -43,7 +43,7 @@ describe("media/value", function () {
         });
         it("property - wildcard cannot be a generalization of anything", function () {
             jsverify.assert(jsverify.forall(jsverify.nestring, jsverify.nestring, function (t, st) {
-                return t === "*" && st === "*" ||
+                return t === "*" || st === "*" ||
                     !value.generalizationOf(value(t, st, {}), value("*", "*", {}));
             }));
         });

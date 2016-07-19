@@ -18,12 +18,14 @@ const send = R.curry((timeout, res, response) => {
 });
 
 const handleSendFailure = R.curry((req, _) => {
-    console.error(`Sending failed for ${req.socket.address()}`);
+    console.error(`failed to write response to ${req.socket.address()}`);
 });
+
+const defaultContext = message.context({});
 
 const requestHandler = R.curry((opts, app, req, res) => {
     req.setTimeout(opts.requestTimeout);
-    R.tryCatch(R.compose(Promise.resolve, app), Promise.reject)(message.context(req))
+    R.tryCatch(R.compose(Promise.resolve, app), Promise.reject)(defaultContext(req))
         .then(message.inflateResponse)
         .catch(message.responseFromError)
         .then(message.conditionResponse)
