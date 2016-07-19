@@ -4,7 +4,8 @@ const R = require("ramda");
 const Promise = require("bluebird");
 const message = require("./message");
 
-const send = R.curry((res, response) => {
+const send = R.curry((timeout, res, response) => {
+    res.setTimeout(timeout);
     const body = message.bodyView(response);
     const result = new Promise((resolve, reject) => {
         res.on("close", reject);
@@ -20,14 +21,13 @@ const handleSendFailure = R.curry((req, _) => {
     console.error(`Sending failed for ${req.socket.address()}`);
 });
 
-const requestHandler = R.curry((app, req, res) => {
-    req.setTimeout(2000);
-    res.setTimeout(2000);
+const requestHandler = R.curry((opts, app, req, res) => {
+    req.setTimeout(opts.requestTimeout);
     R.tryCatch(R.compose(Promise.resolve, app), Promise.reject)(message.context(req))
         .then(message.inflateResponse)
         .catch(message.responseFromError)
         .then(message.conditionResponse)
-        .then(send(res))
+        .then(send(opts.responseTimeout, res))
         .catch(handleSendFailure);
 });
 
@@ -41,7 +41,12 @@ const serve = R.curry((options, app) => {
     const nodeServer = options.key && options.cert ?
         https.createServer({key: options.key, cert: options.cert}) :
         http.createServer();
-    nodeServer.on("request", requestHandler(app));
+
+    nodeServer.on("request", requestHandler({
+        requestTimeout: opts.requestTimeout || 2000,
+        responseTimeout: opts.responseTimeout || 2000
+    }, app));
+
     if (opts.path) {
         nodeServer.listen(opts.path);
     } else {
