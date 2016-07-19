@@ -88,9 +88,9 @@ describe("core/message", function () {
                 .to.equal(false);
         });
     });
-    describe("#coerceResponse", function () {
+    describe("#inflateResponse", function () {
         it("should inflate buffers", function () {
-            expect(message.coerceResponse(Buffer.from("boo!")))
+            expect(message.inflateResponse(Buffer.from("boo!")))
                 .to.eql({
                     statusCode: 200,
                     headers: {"content-type": "application/octet-stream"},
@@ -98,7 +98,7 @@ describe("core/message", function () {
                 });
         });
         it("should inflate strings", function () {
-            expect(message.coerceResponse("boo!"))
+            expect(message.inflateResponse("boo!"))
                 .to.eql({
                     statusCode: 200,
                     headers: {"content-type": "text/plain; charset=utf-8"},
@@ -111,12 +111,8 @@ describe("core/message", function () {
                 headers: {"content-type": "application/octet-stream"},
                 body: Buffer.from("boo!")
             };
-            expect(message.coerceResponse(payload))
+            expect(message.inflateResponse(payload))
                 .to.eql(payload);
-        });
-        it("should produce a 500 on non-conforming response", function () {
-            expect(message.coerceResponse({}))
-                .to.eql(message.malformedResponse);
         });
     });
     describe("#conditionResponse", function () {
