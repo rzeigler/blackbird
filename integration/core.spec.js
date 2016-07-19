@@ -29,7 +29,7 @@ describe("core/serve", function () {
         let server = null;
         beforeEach(function () {
             server = serve.serve(port, function () {
-                return Promise.resolve("Hello, World!").delay(500);
+                return Promise.resolve("Hello, World!").delay(100);
             });
         });
 

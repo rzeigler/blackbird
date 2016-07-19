@@ -16,27 +16,37 @@ const send = R.curry((res, response) => {
     return result;
 });
 
+const handleSendFailure = R.curry((req, _) => {
+    console.error(`Sending failed for ${req.socket.address()}`);
+});
+
 const requestHandler = R.curry((app, req, res) => {
+    req.setTimeout(2000);
+    res.setTimeout(2000);
     R.tryCatch(R.compose(Promise.resolve, app), Promise.reject)(message.context(req))
-        .catch(message.coerceError) // Generate 500s beyond coerceResponse
-        .then(message.coerceResponse)
+        .then(message.inflateResponse)
+        .catch(message.responseFromError)
         .then(message.conditionResponse)
         .then(send(res))
-        .catch(() => console.error("Socket closed unexpectedly"));
+        .catch(handleSendFailure);
 });
 
 const serve = R.curry((options, app) => {
-    if (typeof options === "number") {
-        options = {port: options};
-    } else if (typeof options === "string") {
-        options = {socket: options};
-    }
+    const opts = R.cond([
+        [R.is(Number), R.objOf("port")],
+        [R.is(String), R.objOf("path")],
+        [R.T, R.identity]
+    ])(options);
 
     const nodeServer = options.key && options.cert ?
         https.createServer({key: options.key, cert: options.cert}) :
         http.createServer();
     nodeServer.on("request", requestHandler(app));
-    nodeServer.listen(options.port);
+    if (opts.path) {
+        nodeServer.listen(opts.path);
+    } else {
+        nodeServer.listen(opts.port, opts.hostname);
+    }
     return nodeServer;
 });
 
