@@ -30,7 +30,7 @@ const requestHandler = R.curry((opts, app, req, res) => {
         .catch(message.responseFromError)
         .then(message.conditionResponse)
         .then(send(opts.responseTimeout, res))
-        .catch(handleSendFailure);
+        .catch(handleSendFailure(req));
 });
 
 const serve = R.curry((options, app) => {
