@@ -1,5 +1,8 @@
 const R = require("ramda");
 
+/**
+ * State and atom store for data event emitters. Prevents multiple attempts to consume the body
+ */
 function ContentStore(request) {
     const consumed = false;
 
@@ -11,6 +14,9 @@ function ContentStore(request) {
     };
 }
 
+/**
+ * Value constructor for context objects
+ */
 const context = R.curry((store, request) => ({
     socket: request.socket,
     httpVersion: request.httpVersion,
@@ -21,6 +27,9 @@ const context = R.curry((store, request) => ({
     store
 }));
 
+/**
+ * Run a continuation for consuming the body on the body
+ */
 const consumeContextBody = R.curry((f, context) => context.content.consumeContent(f));
 
 const statusCodeLens = R.lensProp("statusCode");
@@ -52,6 +61,9 @@ const headersIsUndefined = R.compose(R.isNil, headersView);
 const bodyIsUndefined = R.compose(R.isNil, bodyView);
 const bodyIsBuffer = R.compose(R.is(Buffer), bodyView);
 
+/**
+ * Determine if an object meets the criteria for a response
+ */
 const isConformingResponse = R.allPass([
     R.complement(R.isNil),
     statusCodeIsNumber,
@@ -59,6 +71,9 @@ const isConformingResponse = R.allPass([
     R.anyPass([bodyIsUndefined, bodyIsBuffer])
 ]);
 
+/**
+ * Coerce certain obvious types to responses
+ */
 const inflateResponse = R.cond([
     [R.is(Buffer), inflateBufferBody],
     [R.is(String), inflateStringBody],
@@ -78,12 +93,20 @@ const conditionContentLength = R.cond([
  */
 const conditionResponse = conditionContentLength;
 
+/**
+ * Construct a content-type header block
+ */
 const contentType = (str) => ({"content-type": str});
+
 /**
  * Canonical responses contain a Buffer as the body field
  */
 const response = R.curry((statusCode, headers, body) => ({statusCode, headers, body}));
 
+/**
+ * Construct a response from an error. If the error is a conforming response, this is R.identity. Otherwise, a 500
+ * error with a body of the error.toString() is produced
+ */
 const responseFromError = R.cond([
     [isConformingResponse, R.identity],
     [R.T, R.compose(response(500, {}), Buffer.from, (e) => e.toString())]
