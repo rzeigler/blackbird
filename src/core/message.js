@@ -3,34 +3,31 @@ const R = require("ramda");
 /**
  * State and atom store for data event emitters. Prevents multiple attempts to consume the body
  */
-function ContentStore(request) {
-    const consumed = false;
+function Content(request) {
+    let consumed = false;
 
     this.consumeContent = function (f) {
         if (consumed) {
-            throw new Error("ContentStore has already been consumed");
+            throw new Error("Content has already been consumed");
         }
+        consumed = true;
         return f(request);
     };
 }
 
 /**
- * Value constructor for context objects
+ * Value constructor for context objects. Construct a context object with the listed fields from the request and
+ * containing a Content object built from the request in the content field
  */
-const context = R.curry((store, request) => ({
-    socket: request.socket,
-    httpVersion: request.httpVersion,
-    method: request.method,
-    url: request.url,
-    headers: request.headers,
-    content: new ContentStore(request),
-    store
-}));
+const context = R.converge(R.merge, [
+    R.pick(["socket", "httpVersion", "method", "url", "headers"]),
+    R.compose(R.objOf("content"), R.construct(Content))
+]);
 
 /**
  * Run a continuation for consuming the body on the body
  */
-const consumeContextBody = R.curry((f, context) => context.content.consumeContent(f));
+const consumeContextContent = R.curry((f, context) => context.content.consumeContent(f));
 
 const statusCodeLens = R.lensProp("statusCode");
 const headersLens = R.lensProp("headers");
@@ -96,7 +93,7 @@ const conditionResponse = conditionContentLength;
 /**
  * Construct a content-type header block
  */
-const contentType = (str) => ({"content-type": str});
+const contentType = R.objOf("content-type");
 
 /**
  * Canonical responses contain a Buffer as the body field
@@ -122,7 +119,7 @@ module.exports = {
     conditionResponse,
     conditionContentLength,
     context,
-    consumeContextBody,
+    consumeContextContent,
     response,
     responseFromError,
     contentType,

@@ -3,7 +3,7 @@ const jsverify = require("jsverify");
 const request = require("request-promise");
 const serve = require("../src/core/serve");
 const message = require("../src/core/message");
-const buffer = require("../src/core/buffer");
+const body = require("../src/core/body");
 const Promise = require("bluebird");
 const R = require("ramda");
 
@@ -16,7 +16,7 @@ describe("core/serve", function () {
         let server = null;
         beforeEach(function () {
             server = serve.serve(port, function () {
-                return "Hello, World!";
+                return message.inflateResponse("Hello, World!");
             });
         });
 
@@ -33,7 +33,7 @@ describe("core/serve", function () {
         let server = null;
         beforeEach(function () {
             server = serve.serve(port, function () {
-                return Promise.resolve("Hello, World!").delay(100);
+                return Promise.resolve(message.inflateResponse("Hello, World!")).delay(100);
             });
         });
 
@@ -46,11 +46,34 @@ describe("core/serve", function () {
                 .then((text) => expect(text).to.equal("Hello, World!"));
         });
     });
+    describe("failing server", function () {
+        let server = null;
+        beforeEach(function () {
+            server = serve.serve(port, function () {
+                return Promise.reject(new TypeError("Explode!"));
+            });
+        });
+
+        afterEach(function () {
+            server.close();
+        });
+
+        it("should response with 500s", function () {
+            return request(host)
+                .then(() => expect(true).to.equal(false))
+                .catch((e) => {
+                    expect(e.statusCode).to.equal(500);
+                    expect(e.error).to.equal("TypeError: Explode!");
+                });
+        });
+    });
+
     describe("echo server", function () {
         let server = null;
         beforeEach(function () {
             server = serve.serve(port, function (context) {
-                return message.consumeContextBody(buffer.bufferEmitter, context);
+                return message.consumeContextContent(body.buffer, context)
+                    .then(message.inflateResponse);
             });
         });
 

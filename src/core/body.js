@@ -1,7 +1,7 @@
 const R = require("ramda");
 const Promise = require("bluebird");
 
-const bufferEmitter = R.curry((emitter) =>
+const buffer = R.curry((emitter) =>
     new Promise((resolve, reject) => {
         let length = 0;
         const buffers = [];
@@ -17,4 +17,4 @@ const bufferEmitter = R.curry((emitter) =>
         emitter.on("error", reject);
     }));
 
-module.exports = {bufferEmitter};
+module.exports = {buffer};

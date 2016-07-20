@@ -2,33 +2,36 @@ const http = require("http");
 const https = require("https");
 const R = require("ramda");
 const Promise = require("bluebird");
-const message = require("./message");
+const msg = require("./message");
 
 const send = R.curry((timeout, res, response) => {
     res.setTimeout(timeout);
-    const body = message.bodyView(response);
-    const result = new Promise((resolve, reject) => {
+    const body = msg.bodyView(response);
+    return new Promise((resolve, reject) => {
         res.on("close", reject);
         res.on("end", resolve);
+        try {
+            res.writeHead(msg.statusCodeView(response), msg.headersView(response));
+            res.write(body);
+            res.end();
+        } catch (e) { // This is usually the result of an invalid response
+            res.writeHead(500, {});
+            res.end();
+            reject(e);
+        }
     });
-    res.writeHead(message.statusCodeView(response), message.headersView(response));
-    res.write(body);
-    res.end();
-    return result;
 });
 
-const handleSendFailure = R.curry((req, _) => {
-    console.error(`failed to write response to ${req.socket.address()}`);
+const handleSendFailure = R.curry((req, e) => {
+    console.error(`failed to write response to ${req.socket.address()}: ${e}`);
 });
 
-const defaultContext = message.context({});
 
 const requestHandler = R.curry((opts, app, req, res) => {
     req.setTimeout(opts.requestTimeout);
-    R.tryCatch(R.compose(Promise.resolve, app), Promise.reject)(defaultContext(req))
-        .then(message.inflateResponse)
-        .catch(message.responseFromError)
-        .then(message.conditionResponse)
+    R.tryCatch(R.compose(Promise.resolve, app), Promise.reject)(msg.context(req))
+        .catch(msg.responseFromError)
+        .then(msg.conditionResponse)
         .then(send(opts.responseTimeout, res))
         .catch(handleSendFailure(req));
 });
@@ -44,9 +47,10 @@ const serve = R.curry((options, app) => {
         https.createServer({key: options.key, cert: options.cert}) :
         http.createServer();
 
+    // Consider these defaults?
     nodeServer.on("request", requestHandler({
-        requestTimeout: opts.requestTimeout || 2000,
-        responseTimeout: opts.responseTimeout || 2000
+        requestTimeout: opts.requestTimeout || 30000,
+        responseTimeout: opts.responseTimeout || 30000
     }, app));
 
     if (opts.path) {
