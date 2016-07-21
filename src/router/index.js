@@ -16,7 +16,7 @@ const router = R.curry((index, paths, context) => {
             }
             // Attach unmatched parts to the context for passing along
             const assocRemaining = R.assoc("unconsumedPathSplit", r.remaining);
-            const conditionContext = R.compose(msg.overContextParams(R.merge(r.params), assocRemaining));
+            const conditionContext = R.compose(msg.overContextParams(R.merge(r.params)), assocRemaining);
             return path.app(conditionContext);
         },
         None: () => router(index + 1, paths, context)
