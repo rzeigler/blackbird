@@ -1,7 +1,7 @@
 const R = require("ramda");
 const daggy = require("daggy");
 const Option = require("fantasy-options");
-const {option, number, string} = require("../data");
+const {option, number} = require("../data");
 
 const emptySome = new Option.Some({});
 const none = Option.None;
@@ -25,7 +25,7 @@ const nat = regex(number.parseInt10, /^[0-9]+$/);
 
 const natHex = regex(number.parseInt16, /^[0-9A-Fa-f]+$/);
 
-const Result = daggy.tagged("params", "remaining");
+const result = daggy.tagged("params", "remaining");
 
 const match = R.curry((elems, parts) => {
     if (elems.length > parts.length) {
@@ -35,10 +35,14 @@ const match = R.curry((elems, parts) => {
     // Composite everything into parameters
     const merged = R.map(R.reduce(R.merge, {}), results);
     // return the remaining
-    return R.map((ps) => new Result(ps, R.drop(elems.length, parts)), merged);
+    return R.map((ps) => result(ps, R.drop(elems.length, parts)), merged);
 });
 
-const Path = daggy.tagged("elems", "isMount", "app");
+const path = (elems, app, isMount) => ({
+    elems,
+    app,
+    isMount: isMount || false
+});
 
 module.exports = {
     lit,
@@ -47,6 +51,6 @@ module.exports = {
     nat,
     natHex,
     match,
-    Result,
-    Path
+    result,
+    path
 };

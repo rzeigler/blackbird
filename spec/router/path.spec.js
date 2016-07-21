@@ -4,7 +4,7 @@ const {expect} = require("chai");
 const {parallel} = require("../loader");
 const Option = require("fantasy-options");
 const path = parallel(require, __filename);
-const {lit, any, nat, match, Result} = path;
+const {lit, any, nat, match, result} = path;
 
 describe("router", () => {
     describe("path", () => {
@@ -32,11 +32,11 @@ describe("router", () => {
             const elems = [lit("a"), any("b"), lit("c"), nat("d")];
             it("should return a Some on matching", () => {
                 const p = ["a", "qrs", "c", "10"];
-                expect(match(elems, p)).to.eql(new Option.Some(new Result({b: "qrs", d: 10}, [])));
+                expect(match(elems, p)).to.eql(new Option.Some(result({b: "qrs", d: 10}, [])));
             });
             it("should return a Some on matching with remainder", () => {
                 const p = ["a", "qrs", "c", "10", "b", "d"];
-                expect(match(elems, p)).to.eql(new Option.Some(new Result({b: "qrs", d: 10}, ["b", "d"])));
+                expect(match(elems, p)).to.eql(new Option.Some(result({b: "qrs", d: 10}, ["b", "d"])));
             });
             it("should return a None on too short", () => {
                 const p = ["a", "qrs", "c"];
