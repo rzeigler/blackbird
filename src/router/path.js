@@ -1,7 +1,7 @@
 const R = require("ramda");
 const daggy = require("daggy");
 const Option = require("fantasy-options");
-const {option, number} = require("../data");
+const {option, number, string} = require("../data");
 
 const emptySome = new Option.Some({});
 const none = Option.None;
@@ -38,6 +38,10 @@ const match = R.curry((elems, parts) => {
     return R.map((ps) => new Result(ps, R.drop(elems.length, parts)), merged);
 });
 
+const isEmptyString = R.compose(R.equals(0), string.length);
+
+const split = R.compose(R.filter(R.complement(isEmptyString)), string.split("/"));
+
 const Path = daggy.taggedSum({
     Route: ["elems", "app"],
     Mount: ["elems", "app"]
@@ -50,6 +54,7 @@ module.exports = {
     nat,
     natHex,
     match,
+    split,
     Result,
     Path
 };

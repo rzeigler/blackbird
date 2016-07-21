@@ -3,7 +3,8 @@ const R = require("ramda");
 const {expect} = require("chai");
 const {parallel} = require("../loader");
 const Option = require("fantasy-options");
-const {lit, any, nat, match, Result} = parallel(require, __filename);
+const path = parallel(require, __filename);
+const {lit, any, nat, match, Result} = path;
 
 describe("router", () => {
     describe("path", () => {
@@ -44,6 +45,11 @@ describe("router", () => {
             it("should return a None on failling", () => {
                 const p = ["a", "qrs", "c", "q"];
                 expect(match(elems, p)).to.eql(Option.None);
+            });
+        });
+        describe("split", () => {
+            it("should split on /", () => {
+                expect(path.split("//a/b/c//d/")).to.eql(["a", "b", "c", "d"]);
             });
         });
     });
