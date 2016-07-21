@@ -38,14 +38,7 @@ const match = R.curry((elems, parts) => {
     return R.map((ps) => new Result(ps, R.drop(elems.length, parts)), merged);
 });
 
-const isEmptyString = R.compose(R.equals(0), string.length);
-
-const split = R.compose(R.filter(R.complement(isEmptyString)), string.split("/"));
-
-const Path = daggy.taggedSum({
-    Route: ["elems", "app"],
-    Mount: ["elems", "app"]
-});
+const Path = daggy.tagged("elems", "isMount", "app");
 
 module.exports = {
     lit,
@@ -54,7 +47,6 @@ module.exports = {
     nat,
     natHex,
     match,
-    split,
     Result,
     Path
 };

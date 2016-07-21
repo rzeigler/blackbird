@@ -47,10 +47,5 @@ describe("router", () => {
                 expect(match(elems, p)).to.eql(Option.None);
             });
         });
-        describe("split", () => {
-            it("should split on /", () => {
-                expect(path.split("//a/b/c//d/")).to.eql(["a", "b", "c", "d"]);
-            });
-        });
     });
 });
