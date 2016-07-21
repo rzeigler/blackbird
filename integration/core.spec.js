@@ -82,7 +82,7 @@ describe("core/serve", function () {
         });
 
         it("should echo", function () {
-            return jsverify.check(jsverify.forall(jsverify.string, function (b) {
+            return jsverify.assert(jsverify.forall(jsverify.string, function (b) {
                 return request({uri: host, body: b, json: false, method: "POST"})
                     .then(R.equals(b));
             }));

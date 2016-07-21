@@ -4,5 +4,6 @@ module.exports = {
     option: require("./option"),
     either: require("./either"),
     lens: require("./lens"),
-    enumerable: require("./enumerable")
+    enumerable: require("./enumerable"),
+    number: require("./number")
 };
