@@ -5,6 +5,7 @@ const {message: msg} = require("../core");
 const p = require("./path");
 
 const notFound = msg.response(404, {}, "");
+const methodNotAllowed = msg.response(405, {}, "");
 
 const router = R.curry((index, paths, context) => {
     if (index >= R.length(paths)) {
@@ -26,18 +27,24 @@ const router = R.curry((index, paths, context) => {
     });
 });
 
-const isMethod = (method) => R.compose(R.equals(method), R.head);
+const isSpecForMethod = (method) => R.compose(R.equals(method), R.head);
+const snd = R.nth(1);
 
+// Also works on response headers
+const overHeaders = R.over(msg.headersLens);
+
+// Accepts, allowCredentials, allowOrigin, allowHeaders, exposeHeaders in the request
 const dispatcher = R.curry((cors, specs, context) => {
     const method = R.toLower(context.method);
-    return option.inhabit(R.find(isMethod(method), specs))
-        .map(R.nth(1))
-        .map((app) => Promise.resolve(app(context)))
-        // Needs cors handling if method is option and no spec found
-        .getOrElse(Promise.reject(notFound));
+    const runApp = (app) => Promise.resolve(app(context));
+    const runMissed = () => Promise.reject(methodNotAllowed);
+
+    return R.map(snd, option.inhabit(R.find(isSpecForMethod(method), specs)))
+        .fold(runApp, runMissed);
 });
 
-module.exports = R.merge({
+module.exports = {
     router: router(0),
-    dispatcher: dispatcher()
-}, require("./path"));
+    dispatcher: dispatcher(null),
+    path: require("./path")
+};
