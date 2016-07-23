@@ -2,18 +2,18 @@ const Promise = require("bluebird");
 const R = require("ramda");
 const {expect} = require("chai");
 const {lib} = require("../loader");
-const {router, dispatcher, path: {lit, any, path, nat}} = lib(require, "router");
+const {router, dispatcher, path: {lit, any, nat, Path}} = lib(require, "router");
 const {message: {urlStruct, response}} = lib(require, "core");
 
 describe("router", () => {
     describe("router", () => {
         const app = router([
-            path([lit("a"), nat("id")], R.prop("params")),
-            path([lit("a"), lit("b"), any("other")], R.prop("params")),
-            path([lit("a"), lit("b"), lit("c"), any("id")],
+            Path.Route([lit("a"), nat("id")], R.prop("params")),
+            Path.Route([lit("a"), lit("b"), any("other")], R.prop("params")),
+            Path.Tree([lit("a"), lit("b"), lit("c"), any("id")],
                     router([
-                        path([lit("d"), any("q")], R.identity)
-                    ]), true)
+                        Path.Route([lit("d"), any("q")], R.identity)
+                    ]))
         ]);
         it("should invoke the correct function for a path match", () =>
             // urlStruct contains the necessary pieces of context for the router to function
