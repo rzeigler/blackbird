@@ -25,7 +25,10 @@ const nat = regex(number.parseInt10, /^[0-9]+$/);
 
 const natHex = regex(number.parseInt16, /^[0-9A-Fa-f]+$/);
 
-const result = daggy.tagged("params", "remaining");
+const Result = daggy.tagged("params", "remaining");
+
+const paramsLens = R.lensProp("params");
+const remainingLens = R.lensProp("remaining");
 
 const match = R.curry((elems, parts) => {
     if (elems.length > parts.length) {
@@ -35,14 +38,27 @@ const match = R.curry((elems, parts) => {
     // Composite everything into parameters
     const merged = R.map(R.reduce(R.merge, {}), results);
     // return the remaining
-    return R.map((ps) => result(ps, R.drop(elems.length, parts)), merged);
+    return R.map((ps) => Result(ps, R.drop(elems.length, parts)), merged);
 });
 
-const path = (elems, app, isMount) => ({
-    elems,
-    app,
-    isMount: isMount || false
+const Path = daggy.taggedSum({
+    Route: ["elems", "app"],
+    Tree: ["elems", "app"]
 });
+
+Path.prototype.isRoute = function () {
+    return this.cata({
+        Route: R.always(true),
+        Tree: R.always(false)
+    });
+};
+
+Path.prototype.isTree = function () {
+    return this.cata({
+        Route: R.always(false),
+        Tree: R.always(true)
+    });
+};
 
 module.exports = {
     lit,
@@ -51,6 +67,8 @@ module.exports = {
     nat,
     natHex,
     match,
-    result,
-    path
+    paramsLens,
+    remainingLens,
+    Result,
+    Path
 };

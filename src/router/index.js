@@ -15,10 +15,9 @@ const router = R.curry((index, paths, context) => {
     const result = p.match(path.elems, context.remainingPathSplit || context.pathSplit);
     return result.cata({
         Some: (r) => {
-            if (R.length(r.remaining) > 0 && !path.isMount) {
+            if (R.length(r.remaining) > 0 && path.isRoute()) {
                 return router(index + 1, paths, context);
             }
-            // Attach unmatched parts to the context for passing along
             const assocRemaining = R.assoc("remainingPathSplit", r.remaining);
             const conditionContext = R.compose(msg.overContextParams(R.merge(r.params)), assocRemaining);
             return Promise.resolve(path.app(conditionContext(context)));
