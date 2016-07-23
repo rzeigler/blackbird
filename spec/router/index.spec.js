@@ -2,7 +2,7 @@ const Promise = require("bluebird");
 const R = require("ramda");
 const {expect} = require("chai");
 const {lib} = require("../loader");
-const {router, dispatcher, path: {lit, any, nat, Path}} = lib(require, "router");
+const {router, corsDispatcher, path: {lit, any, nat, Path}} = lib(require, "router");
 const {message: {urlStruct, response}} = lib(require, "core");
 
 describe("router", () => {
@@ -37,17 +37,32 @@ describe("router", () => {
         );
     });
     describe("dispatcher", () => {
-        const app = dispatcher([
-            ["get", R.compose(R.toLower, R.prop("method"))],
-            ["post", R.compose(R.toLower, R.prop("method"))],
-            ["delete", R.compose(R.toLower, R.prop("method"))]
+        const app = corsDispatcher({
+            allowOrigin: "http://localhost:2000",
+            allowHeaders: ["foo"],
+            exposeHeaders: ["bar", "baz"]
+        }, [["get", R.always(response(200, {}, "get"))],
+            ["post", R.always(response(200, {}, "post"))],
+            ["delete", R.always(response(200, {}, "delete"))]
         ]);
         it("should dispatch to the correct handler", () =>
             app({method: "POST"})
-                .then((v) => expect(v).to.equal("post")));
+                .then((v) => expect(v.body).to.eql("post")));
         it("should return 404 when there are no matches found", () =>
             app({method: "PATCH"})
                 .then(() => expect(true).to.equal(false))
                 .catch((v) => expect(v).to.eql(response(405, {}, ""))));
+        it("should condition the response correctly", () =>
+            app({method: "GET"})
+                .then((v) => expect(v).to.eql(response(200, {"Access-Control-Expose-Headers": "bar, baz"}, "get"))));
+        it("should dispatch to the generated cors app", () =>
+            app({method: "OPTIONS"})
+                .then((v) => expect(v).to.eql(response(200, {
+                    "Access-Control-Allow-Credentials": "false",
+                    "Access-Control-Allow-Origin": "http://localhost:2000",
+                    "Access-Control-Allow-Headers": "foo",
+                    "Access-Control-Allow-Methods": "get, post, delete",
+                    "Access-Control-Expose-Headers": "bar, baz"
+                }, null))));
     });
 });
