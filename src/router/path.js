@@ -1,7 +1,7 @@
 const R = require("ramda");
 const daggy = require("daggy");
 const Option = require("fantasy-options");
-const {option, number} = require("../data");
+const {option, number, string} = require("../data");
 
 const emptySome = new Option.Some({});
 const none = Option.None;
@@ -29,6 +29,21 @@ const Result = daggy.tagged("params", "remaining");
 
 const paramsLens = R.lensProp("params");
 const remainingLens = R.lensProp("remaining");
+
+// Maybe handle regexs?
+const expressPathCombinator = R.cond([
+    // [R.compose(R.equals(":"), R.head), (str) => any(R.tail(str))],
+    [R.compose(R.equals(":"), R.head), R.compose(any, R.tail)],
+    [R.T, lit]
+]);
+
+// Parse an express string. First split elements, then filter empty, then map to combinators with expressPathComb
+const parseExpressString = R.compose(R.map(expressPathCombinator), R.filter(R.identity), string.split("/"));
+
+const express = R.chain(R.cond([
+    [R.is(String), parseExpressString],
+    [R.T, R.of] // Of because using chain
+]));
 
 const match = R.curry((elems, parts) => {
     if (elems.length > parts.length) {
@@ -67,6 +82,9 @@ module.exports = {
     nat,
     natHex,
     match,
+    expressPathCombinator,
+    parseExpressString,
+    express,
     paramsLens,
     remainingLens,
     Result,
