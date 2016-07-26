@@ -31,17 +31,17 @@ const paramsLens = R.lensProp("params");
 const remainingLens = R.lensProp("remaining");
 
 // Maybe handle regexs?
-const expressPathCombinator = R.cond([
+const makeShorthandPathCombinator = R.cond([
     // [R.compose(R.equals(":"), R.head), (str) => any(R.tail(str))],
     [R.compose(R.equals(":"), R.head), R.compose(any, R.tail)],
     [R.T, lit]
 ]);
 
-// Parse an express string. First split elements, then filter empty, then map to combinators with expressPathComb
-const parseExpressString = R.compose(R.map(expressPathCombinator), R.filter(R.identity), string.split("/"));
+// Parse an express style string. First split elements, then filter empty, then map to combinators with expressPathComb
+const parseShorthandString = R.compose(R.map(makeShorthandPathCombinator), R.filter(R.identity), string.split("/"));
 
-const express = R.chain(R.cond([
-    [R.is(String), parseExpressString],
+const shorthand = R.chain(R.cond([
+    [R.is(String), parseShorthandString],
     [R.T, R.of] // Of because using chain
 ]));
 
@@ -82,9 +82,9 @@ module.exports = {
     nat,
     natHex,
     match,
-    expressPathCombinator,
-    parseExpressString,
-    express,
+    makeShorthandPathCombinator,
+    parseShorthandString,
+    shorthand,
     paramsLens,
     remainingLens,
     Result,

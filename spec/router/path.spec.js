@@ -5,7 +5,7 @@ const {parallel, lib} = require("../loader");
 const Option = require("fantasy-options");
 const path = parallel(require, __filename);
 const {string} = lib(require, "data");
-const {lit, any, nat, match, express, parseExpressString, expressPathCombinator, Result} = path;
+const {lit, any, nat, match, shorthand, parseShorthandString, makeShorthandPathCombinator, Result} = path;
 
 describe("router", () => {
     describe("path", () => {
@@ -30,28 +30,28 @@ describe("router", () => {
             });
         });
 
-        describe("expressPathCombinator", () => {
+        describe("makeShorthandPathCombinator", () => {
             it("should convert literals", () => {
-                const r = expressPathCombinator("a");
+                const r = makeShorthandPathCombinator("a");
                 expect(r.type).to.equal("lit");
             });
             it("should convert anys", () => {
-                const r = expressPathCombinator(":foo");
+                const r = makeShorthandPathCombinator(":foo");
                 expect (r.type).to.equal("any");
             });
         });
 
-        describe("parseExpressString", () => {
-            it("should parse an express string", () => {
-                const r = parseExpressString("/a/:foo/d");
+        describe("parseShorthandString", () => {
+            it("should parse an shorthand string", () => {
+                const r = parseShorthandString("/a/:foo/d");
                 expect(r.length).to.equal(3);
                 expect(r[0].type).to.equal("lit");
                 expect(r[1].type).to.equal("any");
             });
         });
 
-        describe("express", () => {
-            const elems = express(["/a/b/c/:foo/d"]);
+        describe("shorthand", () => {
+            const elems = shorthand(["/a/b/c/:foo/d"]);
             it("should return a some on matching", () => {
                 expect(match(elems, ["a", "b", "c", "bar", "d"])).to.eql(Option.Some(Result({foo: "bar"}, [])));
             });
@@ -59,7 +59,7 @@ describe("router", () => {
                 expect(match(elems, ["a", "b", "d", "bar", "d"])).to.eql(Option.None);
             });
             it("should be mixable with full combinators", () => {
-                const elems = express(["/a/b/c/:foo/", nat("d")]);
+                const elems = shorthand(["/a/b/c/:foo/", nat("d")]);
                 expect(match(elems, string.split("/", "a/b/c/bar/10")))
                     .to.eql(Option.Some(Result({foo: "bar", d: 10}, [])));
             });
