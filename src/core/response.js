@@ -1,55 +1,4 @@
 const R = require("ramda");
-const {string} = require("../data");
-const {parse: urlParse} = require("url");
-
-/**
- * State and atom store for data event emitters. Prevents multiple attempts to consume the body
- */
-function Content(request) {
-    let consumed = false;
-
-    this.consumeContent = function (f) {
-        if (consumed) {
-            throw new Error("Content has already been consumed");
-        }
-        consumed = true;
-        return f(request);
-    };
-}
-
-const isEmptyString = R.compose(R.equals(0), string.length);
-
-const split = R.compose(R.filter(R.complement(isEmptyString)), string.split("/"));
-
-const urlStruct = (url) => {
-    const {query, pathname} = urlParse(url, true);
-    return {
-        query,
-        path: pathname,
-        pathSplit: split(pathname)
-    };
-};
-
-/**
- * Value constructor for context objects. Construct a context object with the listed fields from the request and
- * containing a Content object built from the request in the content field
- */
-const context = (request) => R.mergeAll([
-    R.pick(["socket", "httpVersion", "method", "headers"], request),
-    R.compose(R.objOf("content"), R.construct(Content))(request),
-    R.compose(urlStruct, R.prop("url"))(request)
-]);
-
-const overContextParams = R.over(R.lensProp("params"));
-
-/**
- * Run a continuation for consuming the body on the body
- */
-const consumeContextContent = R.curry((f, context) => context.content.consumeContent(f));
-
-const statusCodeLens = R.lensProp("statusCode");
-const headersLens = R.lensProp("headers");
-const bodyLens = R.lensProp("body");
 
 const inflateBufferBody = (buffer) => ({
     statusCode: 200,
@@ -64,6 +13,10 @@ const inflateStringBody = (string) => ({
     headers: {"content-type": "text/plain; charset=utf-8"},
     body: bufferFromUtf8(string)
 });
+
+const statusCodeLens = R.lensProp("statusCode");
+const headersLens = R.lensProp("headers");
+const bodyLens = R.lensProp("body");
 
 const statusCodeView = R.view(statusCodeLens);
 const headersView = R.view(headersLens);
@@ -136,10 +89,7 @@ module.exports = {
     inflateResponse,
     conditionResponse,
     conditionContentLength,
-    urlStruct,
     context,
-    overContextParams,
-    consumeContextContent,
     response,
     responseFromError,
     contentType,

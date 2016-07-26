@@ -2,16 +2,17 @@ const http = require("http");
 const https = require("https");
 const R = require("ramda");
 const Promise = require("bluebird");
-const msg = require("./message");
+const ctx = require("./context");
+const rsp = require("./response");
 
 const send = R.curry((timeout, res, response) => {
     res.setTimeout(timeout);
-    const body = msg.bodyView(response);
+    const body = rsp.bodyView(response);
     return new Promise((resolve, reject) => {
         res.on("close", reject);
         res.on("end", resolve);
         try {
-            res.writeHead(msg.statusCodeView(response), msg.headersView(response));
+            res.writeHead(rsp.statusCodeView(response), rsp.headersView(response));
             res.write(body);
             res.end();
         } catch (e) { // This is usually the result of an invalid response
@@ -29,9 +30,9 @@ const handleSendFailure = R.curry((req, e) => {
 
 const requestHandler = R.curry((opts, app, req, res) => {
     req.setTimeout(opts.requestTimeout);
-    R.tryCatch(R.compose(Promise.resolve, app), Promise.reject)(msg.context(req))
-        .catch(msg.responseFromError)
-        .then(msg.conditionResponse)
+    R.tryCatch(R.compose(Promise.resolve, app), Promise.reject)(ctx.context(req))
+        .catch(rsp.responseFromError)
+        .then(rsp.conditionResponse)
         .then(send(opts.responseTimeout, res))
         .catch(handleSendFailure(req));
 });

@@ -1,6 +1,7 @@
 module.exports = {
     body: require("./body"),
     env: require("./env"),
-    message: require("./message"),
-    serve: require("./serve")
+    serve: require("./serve"),
+    context: require("./context"),
+    response: require("./response")
 };
