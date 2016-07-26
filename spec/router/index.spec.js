@@ -3,7 +3,7 @@ const R = require("ramda");
 const {expect} = require("chai");
 const {lib} = require("../loader");
 const {router, corsDispatcher, path: {lit, any, nat, Path}} = lib(require, "router");
-const {message: {urlStruct, response}} = lib(require, "core");
+const {response: {response}, context: {urlStruct}} = lib(require, "core");
 
 describe("router", () => {
     describe("router", () => {

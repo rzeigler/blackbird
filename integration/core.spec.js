@@ -1,9 +1,7 @@
 const {expect} = require("chai");
 const jsverify = require("jsverify");
 const request = require("request-promise");
-const serve = require("../src/core/serve");
-const message = require("../src/core/message");
-const body = require("../src/core/body");
+const {serve, context, response, body} = require("../src/core");
 const Promise = require("bluebird");
 const R = require("ramda");
 
@@ -16,7 +14,7 @@ describe("core/serve", function () {
         let server = null;
         beforeEach(function () {
             server = serve.serve(port, function () {
-                return message.inflateResponse("Hello, World!");
+                return response.inflateResponse("Hello, World!");
             });
         });
 
@@ -33,7 +31,7 @@ describe("core/serve", function () {
         let server = null;
         beforeEach(function () {
             server = serve.serve(port, function () {
-                return Promise.resolve(message.inflateResponse("Hello, World!")).delay(100);
+                return Promise.resolve(response.inflateResponse("Hello, World!")).delay(100);
             });
         });
 
@@ -71,9 +69,9 @@ describe("core/serve", function () {
     describe("echo server", function () {
         let server = null;
         beforeEach(function () {
-            server = serve.serve(port, function (context) {
-                return message.consumeContextContent(body.buffer, context)
-                    .then(message.inflateResponse);
+            server = serve.serve(port, function (ctx) {
+                return context.consumeContextContent(body.buffer, ctx)
+                    .then(response.inflateResponse);
             });
         });
 

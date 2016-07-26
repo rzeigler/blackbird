@@ -1,11 +1,11 @@
 const R = require("ramda");
 const Promise = require("bluebird");
 const {option, array} = require("../data");
-const {message: msg} = require("../core");
+const {response: rsp, context: ctx} = require("../core");
 const p = require("./path");
 
-const notFound = msg.response(404, {}, "");
-const methodNotAllowed = msg.response(405, {}, "");
+const notFound = rsp.response(404, {}, "");
+const methodNotAllowed = rsp.response(405, {}, "");
 
 const router = R.curry((index, paths, context) => {
     if (index >= R.length(paths)) {
@@ -19,7 +19,7 @@ const router = R.curry((index, paths, context) => {
                 return router(index + 1, paths, context);
             }
             const assocRemaining = R.assoc("remainingPathSplit", r.remaining);
-            const conditionContext = R.compose(msg.overContextParams(R.merge(r.params)), assocRemaining);
+            const conditionContext = R.compose(ctx.overContextParams(R.merge(r.params)), assocRemaining);
             return Promise.resolve(path.app(conditionContext(context)));
         },
         None: () => router(index + 1, paths, context)
@@ -31,7 +31,7 @@ const isSpecForMethod = (method) => R.compose(R.equals(method), R.head);
 const snd = R.nth(1);
 
 // Also works on response headers
-const overHeaders = R.over(msg.headersLens);
+const overHeaders = R.over(rsp.headersLens);
 
 const coerceCorsHeaderList = R.cond([
     [R.is(Array), array.join(", ")],
@@ -40,7 +40,7 @@ const coerceCorsHeaderList = R.cond([
 
 const corsHandler = ({allowCredentials, allowOrigin, allowHeaders}, allowMethods) => [
     "options",
-    R.always(Promise.resolve(msg.response(200, {
+    R.always(Promise.resolve(rsp.response(200, {
         "Access-Control-Allow-Origin": allowOrigin || "*",
         "Access-Control-Allow-Credentials": Boolean(allowCredentials).toString(),
         "Access-Control-Allow-Headers": coerceCorsHeaderList(allowHeaders || []),
