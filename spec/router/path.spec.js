@@ -51,7 +51,7 @@ describe("router", () => {
         });
 
         describe("shorthand", () => {
-            const elems = shorthand(["/a/b/c/:foo/d"]);
+            const elems = shorthand("/a/b/c/:foo/d");
             it("should return a some on matching", () => {
                 expect(match(elems, ["a", "b", "c", "bar", "d"])).to.eql(Option.Some(Result({foo: "bar"}, [])));
             });

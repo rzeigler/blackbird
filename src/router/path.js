@@ -40,10 +40,13 @@ const makeShorthandPathCombinator = R.cond([
 // Parse an express style string. First split elements, then filter empty, then map to combinators with expressPathComb
 const parseShorthandString = R.compose(R.map(makeShorthandPathCombinator), R.filter(R.identity), string.split("/"));
 
-const shorthand = R.chain(R.cond([
-    [R.is(String), parseShorthandString],
-    [R.T, R.of] // Of because using chain
-]));
+const shorthand = R.cond([
+    [R.is(String), parseShorthandString], // If string, parse it
+    [R.T, R.chain(R.cond([ // Otherwise, for each element either parse a string or return a combinator as is.
+        [R.is(String), parseShorthandString],
+        [R.T, R.of] // Of because using chain
+    ]))]
+]);
 
 const match = R.curry((elems, parts) => {
     if (elems.length > parts.length) {
