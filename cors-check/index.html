@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <script src="./fetch.js"></script>
+  </head>
+  <body>
+    <script>
+      var log = function (t) {
+        document.write("rcv: <br />");
+        document.write(t);
+      }
+      var error = function (t) {
+        document.write("err: <br />");
+        document.write(t);
+      }
+
+      fetch("http://localhost:5000/a/a")
+        .then(function (t) {return t.text()})
+        .then(log)
+        .catch(error);
+    </script>
+  </body>
+</html>

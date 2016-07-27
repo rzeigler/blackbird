@@ -54,7 +54,12 @@ describe("router", () => {
                 .catch((v) => expect(v).to.eql(response(405, {}, ""))));
         it("should condition the response correctly", () =>
             app({method: "GET"})
-                .then((v) => expect(v).to.eql(response(200, {"Access-Control-Expose-Headers": "bar, baz"}, "get"))));
+                .then((v) => expect(v).to.eql(response(200, {
+                    "Access-Control-Expose-Headers": "bar, baz",
+                    "Access-Control-Allow-Credentials": "false",
+                    "Access-Control-Allow-Headers": "foo",
+                    "Access-Control-Allow-Origin": "http://localhost:2000"
+                }, "get"))));
         it("should dispatch to the generated cors app", () =>
             app({method: "OPTIONS"})
                 .then((v) => expect(v).to.eql(response(200, {
