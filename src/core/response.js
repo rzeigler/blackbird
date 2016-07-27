@@ -28,6 +28,7 @@ const headersIsStringMap = R.compose(isStringMap, headersView);
 const headersIsUndefined = R.compose(R.isNil, headersView);
 const bodyIsUndefined = R.compose(R.isNil, bodyView);
 const bodyIsBuffer = R.compose(R.is(Buffer), bodyView);
+const bodyIsString = R.compose(R.is(String), bodyView);
 
 /**
  * Determine if an object meets the criteria for a response
@@ -36,7 +37,7 @@ const isConformingResponse = R.allPass([
     R.complement(R.isNil),
     statusCodeIsNumber,
     R.anyPass([headersIsUndefined, headersIsStringMap]),
-    R.anyPass([bodyIsUndefined, bodyIsBuffer])
+    R.anyPass([bodyIsUndefined, bodyIsBuffer, bodyIsString])
 ]);
 
 /**
@@ -56,10 +57,15 @@ const conditionContentLength = R.cond([
     [R.T, R.identity]
 ]);
 
+const conditionBody = R.cond([
+    [bodyIsString, R.over(bodyLens, bufferFromUtf8)],
+    [R.T, R.identity]
+]);
+
 /**
  * Ensure that if the body exists then content-length is also set
  */
-const conditionResponse = conditionContentLength;
+const conditionResponse = R.compose(conditionContentLength, conditionBody);
 
 /**
  * Construct a content-type header block
