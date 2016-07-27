@@ -38,19 +38,23 @@ const coerceCorsHeaderList = R.cond([
     [R.T, R.identity]
 ]);
 
-const corsHandler = ({allowCredentials, allowOrigin, allowHeaders}, allowMethods) => [
+const corsHeaders = ({allowCredentials, allowOrigin, allowHeaders, exposeHeaders}) => ({
+    "Access-Control-Allow-Origin": allowOrigin || "*",
+    "Access-Control-Allow-Credentials": Boolean(allowCredentials).toString(),
+    "Access-Control-Allow-Headers": coerceCorsHeaderList(allowHeaders || []),
+    "Access-Control-Expose-Headers": coerceCorsHeaderList(exposeHeaders || [])
+});
+
+const corsHandler = (cors, allowMethods) => [
     "options",
-    R.always(Promise.resolve(rsp.response(200, {
-        "Access-Control-Allow-Origin": allowOrigin || "*",
-        "Access-Control-Allow-Credentials": Boolean(allowCredentials).toString(),
-        "Access-Control-Allow-Headers": coerceCorsHeaderList(allowHeaders || []),
-        "Access-Control-Allow-Methods": coerceCorsHeaderList(allowMethods)
-    }, null)))
+    R.always(Promise.resolve(rsp.response(200,
+            R.merge(corsHeaders(cors), {"Access-Control-Allow-Methods": coerceCorsHeaderList(allowMethods)}),
+            null)))
 ];
 
 // Attach Access-Control-Expose-Headers
-const corsConditionResponse = R.curry(({exposeHeaders}, response) =>
-    overHeaders(R.merge({"Access-Control-Expose-Headers": coerceCorsHeaderList(exposeHeaders || [])}), response));
+const corsConditionResponse = R.curry((cors, response) =>
+    overHeaders(R.merge(corsHeaders(cors)), response));
 
 //
 // Accepts, allowCredentials, allowOrigin, allowHeaders, exposeHeaders in the request

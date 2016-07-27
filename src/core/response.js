@@ -58,7 +58,9 @@ const conditionContentLength = R.cond([
 ]);
 
 const conditionBody = R.cond([
-    [bodyIsString, R.over(bodyLens, bufferFromUtf8)],
+    [bodyIsString, R.compose(
+        R.over(headersLens, R.assoc("content-type", "text/plain")),
+        R.over(bodyLens, bufferFromUtf8))],
     [R.T, R.identity]
 ]);
 
@@ -95,7 +97,6 @@ module.exports = {
     inflateResponse,
     conditionResponse,
     conditionContentLength,
-    context,
     response,
     responseFromError,
     contentType,
