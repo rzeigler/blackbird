@@ -54,12 +54,14 @@ const serve = R.curry((options, app) => {
         responseTimeout: opts.responseTimeout || 30000
     }, app));
 
-    if (opts.path) {
-        nodeServer.listen(opts.path);
-    } else {
-        nodeServer.listen(opts.port, opts.hostname);
-    }
-    return nodeServer;
+    return new Promise((resolve) => {
+        nodeServer.once("listening", () => resolve(nodeServer));
+        if (opts.path) {
+            nodeServer.listen(opts.path);
+        } else {
+            nodeServer.listen(opts.port, opts.hostname);
+        }
+    });
 });
 
 module.exports = {serve};

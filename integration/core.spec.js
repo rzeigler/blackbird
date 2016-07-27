@@ -12,11 +12,12 @@ const host = `http://localhost:${port}`;
 describe("core/serve", function () {
     describe("simplest possible", function () {
         let server = null;
-        beforeEach(function () {
-            server = serve.serve(port, function () {
-                return response.inflateResponse("Hello, World!");
-            });
-        });
+        beforeEach(() =>
+            serve.serve(port, () => response.response(200, {}, "Hello, World!"))
+            .then((srv) => {
+                server = srv;
+            })
+        );
 
         afterEach(function () {
             server.close();
@@ -29,11 +30,12 @@ describe("core/serve", function () {
     });
     describe("simplest possible promised", function () {
         let server = null;
-        beforeEach(function () {
-            server = serve.serve(port, function () {
-                return Promise.resolve(response.inflateResponse("Hello, World!")).delay(100);
-            });
-        });
+        beforeEach(() =>
+            serve.serve(port, () => Promise.resolve(response.inflateResponse("Hello, World!")).delay(100))
+            .then((srv) => {
+                server = srv;
+            })
+        );
 
         afterEach(function () {
             server.close();
@@ -46,11 +48,14 @@ describe("core/serve", function () {
     });
     describe("failing server", function () {
         let server = null;
-        beforeEach(function () {
-            server = serve.serve(port, function () {
+        beforeEach(() =>
+            serve.serve(port, function () {
                 return Promise.reject(new TypeError("Explode!"));
-            });
-        });
+            })
+            .then((srv) => {
+                server = srv;
+            })
+        );
 
         afterEach(function () {
             server.close();
@@ -68,12 +73,12 @@ describe("core/serve", function () {
 
     describe("echo server", function () {
         let server = null;
-        beforeEach(function () {
-            server = serve.serve(port, function (ctx) {
-                return context.consumeContextContent(body.buffer, ctx)
-                    .then(response.inflateResponse);
-            });
-        });
+        beforeEach(() => serve.serve(port, (ctx) => context.consumeContextContent(body.buffer, ctx)
+                    .then(response.inflateResponse))
+                .then((srv) => {
+                    server = srv;
+                })
+        );
 
         afterEach(function () {
             server.close();
