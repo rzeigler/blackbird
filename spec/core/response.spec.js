@@ -71,8 +71,8 @@ describe("core", () => {
                     headers: "a"
                 })).to.equal(false);
             });
-            it("should return false for a response with a body that is not buffer", function () {
-                expect(response.isConformingResponse({statusCode: 200, body: "rekt!"}))
+            it("should return false for a response with a body that is not buffer or a string", function () {
+                expect(response.isConformingResponse({statusCode: 200, body: {v: "rekt!"}}))
                     .to.equal(false);
             });
             it("should return false for a response with a random statusCode", function () {
