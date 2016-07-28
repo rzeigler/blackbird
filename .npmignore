@@ -1,0 +1,6 @@
+.jshintignore
+.jshintrc
+.travis.yml
+dist
+examples
+**/tests
