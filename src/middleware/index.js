@@ -23,7 +23,7 @@ const error = R.curry((handler, app) =>
     (context) => Promise.resolve(app(context)).catch(handler));
 
 const after = R.curry((handler, app) =>
-    (context) => Promise.resolve(app(context)).then(handler).catch(handler));
+    (context) => Promise.resolve(app(context)).then(handler, handler));
 
 module.exports = {
     applyStack,
