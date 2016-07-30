@@ -13,22 +13,21 @@ const applyStack = R.curry((stack, app) => R.reduceRight((app, middle) => middle
  * post, error, and after are processors of responses, i.e. Response -> Promise Response. If you need more power
  * implement the middleware contract directly.
  */
-const pre = R.curry((handler, app) =>
-    (context) => Promise.resolve(handler(context)).then(app));
+const pre = R.curry((handler, app, context) => Promise.resolve(handler(context)).then(app));
 
-const post = R.curry((handler, app) =>
-    (context) => Promise.resolve(app(context)).then(handler));
+const post = R.curry((handler, app, context) => Promise.resolve(app(context)).then(handler));
 
-const error = R.curry((handler, app) =>
-    (context) => Promise.resolve(app(context)).catch(handler));
+const error = R.curry((handler, app, context) => Promise.resolve(app(context)).catch(handler));
 
-const after = R.curry((handler, app) =>
-    (context) => Promise.resolve(app(context)).then(handler, handler));
+const after = R.curry((handler, app, context) => Promise.resolve(app(context)).then(handler, handler));
+
+const around = R.curry((handler, app, context) => handler(app, context));
 
 module.exports = {
     applyStack,
     pre,
     post,
     error,
-    after
+    after,
+    around
 };
