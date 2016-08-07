@@ -38,36 +38,38 @@ describe("router", () => {
     });
     describe("dispatcher", () => {
         const app = corsDispatcher({
-            allowOrigin: "http://localhost:2000",
-            allowHeaders: ["foo"],
-            exposeHeaders: ["bar", "baz"]
-        }, [["get", R.always(response(200, {}, "get"))],
-            ["post", R.always(response(200, {}, "post"))],
-            ["delete", R.always(response(200, {}, "delete"))]
-        ]);
+            get: R.always(response(200, {}, "get")),
+            post: R.always(response(200, {}, "post")),
+            delete: R.always(response(200, {}, "delete"))
+        });
         it("should dispatch to the correct handler", () =>
-            app({method: "POST"})
-                .then((v) => expect(v.body).to.eql("post")));
+            app({method: "POST", headers: {origin: "http://localhost"}})
+                .then((v) => expect(v.body).to.equal("post")));
         it("should return 404 when there are no matches found", () =>
             app({method: "PATCH"})
                 .then(() => expect(true).to.equal(false))
                 .catch((v) => expect(v).to.eql(response(405, {}, ""))));
         it("should condition the response correctly", () =>
-            app({method: "GET"})
+            app({method: "GET", headers: {origin: "http://localhost"}})
                 .then((v) => expect(v).to.eql(response(200, {
-                    "Access-Control-Expose-Headers": "bar, baz",
-                    "Access-Control-Allow-Credentials": "false",
-                    "Access-Control-Allow-Headers": "foo",
-                    "Access-Control-Allow-Origin": "http://localhost:2000"
+                    "Access-Control-Expose-Headers": "",
+                    "Access-Control-Allow-Credentials": "true",
+                    "Access-Control-Allow-Headers": "",
+                    "Access-Control-Allow-Methods": "get",
+                    "Access-Control-Allow-Origin": "http://localhost"
                 }, "get"))));
         it("should dispatch to the generated cors app", () =>
-            app({method: "OPTIONS"})
-                .then((v) => expect(v).to.eql(response(200, {
-                    "Access-Control-Allow-Credentials": "false",
-                    "Access-Control-Allow-Origin": "http://localhost:2000",
-                    "Access-Control-Allow-Headers": "foo",
-                    "Access-Control-Allow-Methods": "get, post, delete",
-                    "Access-Control-Expose-Headers": "bar, baz"
-                }, null))));
+            app({
+                method: "OPTIONS",
+                headers: {
+                    origin: "http://localhost",
+                    "access-control-request-headers": "baz, bar"
+                }
+            }).then((v) => expect(v).to.eql(response(200, {
+                "Access-Control-Allow-Origin": "http://localhost",
+                "Access-Control-Allow-Credentials": "true",
+                "Access-Control-Allow-Headers": "baz, bar",
+                "Access-Control-Allow-Methods": "get, post, delete"
+            }, null))));
     });
 });
