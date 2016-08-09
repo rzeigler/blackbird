@@ -13,7 +13,7 @@ describe("core/serve", function () {
     describe("simplest possible", function () {
         let server = null;
         beforeEach(() =>
-            serve.serve(port, () => response.response(200, {}, "Hello, World!"))
+            serve(port, () => response.response(200, {}, "Hello, World!"))
             .then((srv) => {
                 server = srv;
             })
@@ -31,7 +31,7 @@ describe("core/serve", function () {
     describe("simplest possible promised", function () {
         let server = null;
         beforeEach(() =>
-            serve.serve(port, () => Promise.resolve(response.inflateResponse("Hello, World!")).delay(100))
+            serve(port, () => Promise.resolve(response.inflateResponse("Hello, World!")).delay(100))
             .then((srv) => {
                 server = srv;
             })
@@ -49,7 +49,7 @@ describe("core/serve", function () {
     describe("failing server", function () {
         let server = null;
         beforeEach(() =>
-            serve.serve(port, function () {
+            serve(port, function () {
                 return Promise.reject(new TypeError("Explode!"));
             })
             .then((srv) => {
@@ -73,7 +73,7 @@ describe("core/serve", function () {
 
     describe("echo server", function () {
         let server = null;
-        beforeEach(() => serve.serve(port, (ctx) => context.consumeContextContent(body.buffer, ctx)
+        beforeEach(() => serve(port, (ctx) => context.consumeContextContent(body.buffer, ctx)
                     .then(response.inflateResponse))
                 .then((srv) => {
                     server = srv;

@@ -25,7 +25,7 @@ const nat = regex(number.parseInt10, /^[0-9]+$/);
 
 const natHex = regex(number.parseInt16, /^[0-9A-Fa-f]+$/);
 
-const Result = daggy.tagged("params", "remaining");
+const result = daggy.tagged("params", "remaining");
 
 const paramsLens = R.lensProp("params");
 const remainingLens = R.lensProp("remaining");
@@ -56,7 +56,7 @@ const match = R.curry((elems, parts) => {
     // Composite everything into parameters
     const merged = R.map(R.reduce(R.merge, {}), results);
     // return the remaining
-    return R.map((ps) => Result(ps, R.drop(elems.length, parts)), merged);
+    return R.map((ps) => result(ps, R.drop(elems.length, parts)), merged);
 });
 
 const Path = daggy.taggedSum({
@@ -90,6 +90,6 @@ module.exports = {
     shorthand,
     paramsLens,
     remainingLens,
-    Result,
+    result,
     Path
 };

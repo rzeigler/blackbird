@@ -1,11 +1,18 @@
 const R = require("ramda");
 const Promise = require("bluebird");
 const {option, array} = require("../data");
-const {response, context} = require("../core");
+const {
+    response: {
+        response,
+        headersLens,
+        headersView
+    },
+    context
+} = require("../core");
 const p = require("./path");
 
-const notFound = response.response(404, {}, "");
-const methodNotAllowed = response.response(405, {}, "");
+const notFound = response(404, {}, "");
+const methodNotAllowed = response(405, {}, "");
 
 const router = R.curry((index, paths, ctx) => {
     if (index >= R.length(paths)) {
@@ -26,18 +33,8 @@ const router = R.curry((index, paths, ctx) => {
     });
 });
 
-// The method in a spec from dispatcher is the first element of the array
-
 // Also works on response headers
-const overHeaders = R.over(response.headersLens);
-
-//
-// const corsHeaders = ({allowCredentials, allowOrigin, allowHeaders, exposeHeaders}) => ({
-//     "Access-Control-Allow-Origin": allowOrigin || "*",
-//     "Access-Control-Allow-Credentials": Boolean(allowCredentials).toString(),
-//     "Access-Control-Allow-Headers": coerceCorsHeaderList(allowHeaders || []),
-//     "Access-Control-Expose-Headers": coerceCorsHeaderList(exposeHeaders || [])
-// });
+const overHeaders = R.over(headersLens);
 
 const joinHeaders = array.join(", ");
 const originView = R.view(R.compose(context.headersLens, R.lensProp("origin")));
@@ -52,21 +49,16 @@ const corsHeaders = R.curry((allowMethods, ctx) => ({
 }));
 
 const corsHandler = R.curry((allowMethods, ctx) =>
-    Promise.resolve(response.response(200, corsHeaders(allowMethods, ctx), null)));
+    Promise.resolve(response(200, corsHeaders(allowMethods, ctx), null)));
 
 const conditionCorsResponse = R.curry((ctx, rsp) =>
     overHeaders(R.merge(
-        R.merge({"Access-Control-Expose-Headers": joinHeaders(R.keys(response.headersView(rsp)))},
+        R.merge({"Access-Control-Expose-Headers": joinHeaders(R.keys(headersView(rsp)))},
                 corsHeaders([R.toLower(ctx.method)], ctx))
     ), rsp));
 
-// Attach Access-Control-Expose-Headers
-// const corsConditionResponse = R.curry((cors, response) =>
-//     overHeaders(R.merge(corsHeaders(cors)), response));
-
-//
 // Accepts, allowCredentials, allowOrigin, allowHeaders, exposeHeaders in the request
-// specs should be a list of the form [[verb, app], ..., [verb, app]]
+// specs should be a list of the form {verb: app}
 const dispatcher = R.curry((cors, apps, ctx) => {
     const method = R.toLower(ctx.method);
     const allowMethods = R.keys(apps);

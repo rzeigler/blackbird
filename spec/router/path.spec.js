@@ -5,7 +5,7 @@ const {parallel, lib} = require("../loader");
 const Option = require("fantasy-options");
 const path = parallel(require, __filename);
 const {string} = lib(require, "data");
-const {lit, any, nat, match, shorthand, parseShorthandString, makeShorthandPathCombinator, Result} = path;
+const {lit, any, nat, match, shorthand, parseShorthandString, makeShorthandPathCombinator, result} = path;
 
 describe("router", () => {
     describe("path", () => {
@@ -53,7 +53,7 @@ describe("router", () => {
         describe("shorthand", () => {
             const elems = shorthand("/a/b/c/:foo/d");
             it("should return a some on matching", () => {
-                expect(match(elems, ["a", "b", "c", "bar", "d"])).to.eql(Option.Some(Result({foo: "bar"}, [])));
+                expect(match(elems, ["a", "b", "c", "bar", "d"])).to.eql(Option.Some(result({foo: "bar"}, [])));
             });
             it("should reeturn a none on miss", () => {
                 expect(match(elems, ["a", "b", "d", "bar", "d"])).to.eql(Option.None);
@@ -61,18 +61,18 @@ describe("router", () => {
             it("should be mixable with full combinators", () => {
                 const elems = shorthand(["/a/b/c/:foo/", nat("d")]);
                 expect(match(elems, string.split("/", "a/b/c/bar/10")))
-                    .to.eql(Option.Some(Result({foo: "bar", d: 10}, [])));
+                    .to.eql(Option.Some(result({foo: "bar", d: 10}, [])));
             });
         });
         describe("match", () => {
             const elems = [lit("a"), any("b"), lit("c"), nat("d")];
             it("should return a Some on matching", () => {
                 const p = ["a", "qrs", "c", "10"];
-                expect(match(elems, p)).to.eql(Option.Some(Result({b: "qrs", d: 10}, [])));
+                expect(match(elems, p)).to.eql(Option.Some(result({b: "qrs", d: 10}, [])));
             });
             it("should return a Some on matching with remainder", () => {
                 const p = ["a", "qrs", "c", "10", "b", "d"];
-                expect(match(elems, p)).to.eql(Option.Some(Result({b: "qrs", d: 10}, ["b", "d"])));
+                expect(match(elems, p)).to.eql(Option.Some(result({b: "qrs", d: 10}, ["b", "d"])));
             });
             it("should return a None on too short", () => {
                 const p = ["a", "qrs", "c"];

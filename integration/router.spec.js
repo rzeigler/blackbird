@@ -1,6 +1,6 @@
 const {expect} = require("chai");
 const request = require("request-promise");
-const {serve: {serve}, response} = require("../src/core");
+const {serve, response} = require("../src/core");
 const {router, dispatcher, path: {shorthand, Path}} = require("../src/router");
 const Promise = require("bluebird");
 const R = require("ramda");
