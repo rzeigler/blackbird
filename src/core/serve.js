@@ -2,22 +2,28 @@ const http = require("http");
 const https = require("https");
 const R = require("ramda");
 const Promise = require("bluebird");
-const ctx = require("./context");
-const rsp = require("./response");
+const {context} = require("./context");
+const {
+    statusCodeView,
+    headersView,
+    bodyView,
+    responseFromError,
+    conditionResponse
+} = require("./response");
 
-const send = R.curry((timeout, res, response) => {
-    res.setTimeout(timeout);
-    const body = rsp.bodyView(response);
+const send = R.curry((timeout, srvRes, appRes) => {
+    srvRes.setTimeout(timeout);
+    const body = bodyView(appRes);
     return new Promise((resolve, reject) => {
-        res.on("close", reject);
-        res.on("end", resolve);
+        srvRes.on("close", reject);
+        srvRes.on("end", resolve);
         try {
-            res.writeHead(rsp.statusCodeView(response), rsp.headersView(response));
-            res.write(body);
-            res.end();
-        } catch (e) { // This is usually the result of an invalid response
-            res.writeHead(500, {});
-            res.end();
+            srvRes.writeHead(statusCodeView(appRes), headersView(appRes));
+            srvRes.write(body);
+            srvRes.end();
+        } catch (e) { // This is usually the result of an invalid appRes
+            srvRes.writeHead(500, {});
+            srvRes.end();
             reject(e);
         }
     });
@@ -30,9 +36,9 @@ const handleSendFailure = R.curry((req, e) => {
 
 const requestHandler = R.curry((opts, app, req, res) => {
     req.setTimeout(opts.requestTimeout);
-    R.tryCatch(R.compose(Promise.resolve, app), Promise.reject)(ctx.context(req))
-        .catch(rsp.responseFromError)
-        .then(rsp.conditionResponse)
+    R.tryCatch(R.compose(Promise.resolve, app), Promise.reject)(context(req))
+        .catch(responseFromError)
+        .then(conditionResponse)
         .then(send(opts.responseTimeout, res))
         .catch(handleSendFailure(req));
 });
