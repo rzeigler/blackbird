@@ -14,7 +14,7 @@ describe("middleware", () => {
                 return false;
             };
             const auth = basicAuth("testing", verify);
-            const app = () => Promise.resolve("Hello, World");
+            const app = (ctx) => Promise.resolve(ctx.auth);
             const decorated = auth(app);
             it("should reject when missing credentials", () =>
                 decorated({headers: {}})
@@ -31,7 +31,7 @@ describe("middleware", () => {
             const right = "ryan:pass";
             it("should accept when credentials are correct", () =>
                 decorated({headers: {authorization: `Basic ${encode(right)}`}})
-                    .then((rsp) => expect(rsp).to.eql("Hello, World"))
+                    .then((rsp) => expect(rsp).to.eql(true))
             );
         });
     });
