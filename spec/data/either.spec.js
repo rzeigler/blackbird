@@ -1,6 +1,7 @@
 const R = require("ramda");
 const {expect} = require("chai");
 const Either = require("fantasy-eithers");
+const Option = require("fantasy-options");
 const {parallel} = require("../loader");
 const either = parallel(require, __filename);
 
@@ -33,6 +34,14 @@ describe("data/either", function () {
         });
         it("should do nothing on rights", function () {
             expect(either.leftMap(R.add(1), either.right(1))).to.eql(either.right(1));
+        });
+    });
+    describe("#toOption", () => {
+        it("should convert lefts to None", () => {
+            expect(either.toOption(Either.Left(1))).to.eql(Option.None);
+        });
+        it("should conver rights to Some", () => {
+            expect(either.toOption(Either.Right(1))).to.eql(Option.Some(1));
         });
     });
 });
