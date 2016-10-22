@@ -1,11 +1,21 @@
 const R = require("ramda");
 const Promise = require("bluebird");
-const daggy = require("daggy");
+
 const {Left, Right} = require("fantasy-eithers");
 const Either = require("fantasy-eithers");
 const {context, body, response} = require("../core");
 const {array} = require("../data");
 const media = require("../media");
+const {
+    responderDecoder,
+    responderDecoderMedia,
+    responderEncoder,
+    responderEncoderMedia,
+    responderHandler,
+    decoder,
+    hasNoDecoder,
+    hasNoEncoder
+} = require("./types");
 const {
     malformedRequest,
     malformedContentTypeHeader,
@@ -16,33 +26,9 @@ const {
 
 const prio = "q";
 
-// Core types
-// The decoder function receives the media parameters as well as the raw content and should return an Option T
-const Decoder = daggy.tagged("media", "decoder");
-const decoder = R.constructN(2, Decoder);
-
-// The encoder function receives the media parameters as well as the object and should return a buffer
-const Encoder = daggy.tagged("media", "encoder");
-const encoder = R.constructN(2, Encoder);
-
-const Responder = daggy.tagged("decoder", "encoder", "handler");
-
-const responder = R.constructN(3, Responder);
-const outputResponder = responder(null);
-
-const responderDecoder = R.prop("decoder");
-const decoderMedia = R.prop("media");
-const responderDecoderMedia = R.compose(decoderMedia, responderDecoder);
-const responderEncoder = R.prop("encoder");
-const encoderMedia = decoderMedia;
-const responderEncoderMedia = R.compose(encoderMedia, responderEncoder);
-const responderHandler = R.prop("handler");
-
 // Implementation
 const contentTypeLens = R.compose(context.headersLens, R.lensProp("content-type"));
 const acceptLens = R.compose(context.headersLens, R.lensProp("accept"));
-
-const propIsNil = R.propSatisfies(R.isNil);
 
 const parseAccept = (accept) => {
     if (!accept) {
@@ -62,14 +48,14 @@ const parseContentType = (contentType) => {
 };
 
 const filterDecodingResponders = R.curry((contentTypeMedia, responders) => {
-    const filter = contentTypeMedia === null ? propIsNil("decoder") :
+    const filter = contentTypeMedia === null ? hasNoDecoder :
         (responder) => responderDecoder(responder) &&
                         media.generalizationOf(responderDecoderMedia(responder), contentTypeMedia);
     const useable = R.filter(filter, responders);
     if (useable.length > 0) {
         return Right(useable);
     }
-    const noInput = R.filter(propIsNil("decoder"), responders);
+    const noInput = R.filter(hasNoDecoder, responders);
     if (noInput.length > 0) {
         return Right(noInput);
     }
@@ -95,26 +81,33 @@ const isSuitableMediaEncoderPair = ([mediaType, responder]) =>
     !responderEncoder(responder) || media.generalizationOf(responderEncoderMedia(responder), omitPrio(mediaType));
 
 
+// [Media] -> [Media]
+const ensureMediaPrios = R.map(ensurePrio);
+// [Media] -> Either e [Media] fails if any priorities are not numbers
+const parseMediaPrios = R.traverse(Either.of, parsePrio);
+
+const pairHasEncoder = R.compose(responderEncoder, R.last);
+
 const selectEncodingResponder = R.curry((acceptMedias, responders) => {
     // If no accept was sent, check if we have any responders that send no data
     if (!acceptMedias) {
-        const empty = R.filter(propIsNil("encoder"), responders);
+        const empty = R.filter(hasNoEncoder, responders);
         if (empty.length > 0) {
-            return Right(empty[0]);
+            return Right([null, empty[0]]);
         }
         // If no responders send no data, fall back to assuming */*
-        return Right(responders[0]);
+        return Right([media.wildcardMedia, responders[0]]);
     }
-    return R.sequence(Either.of, R.map(R.compose(parsePrio, ensurePrio)(acceptMedias)))
+    return parseMediaPrios(ensureMediaPrios(acceptMedias))
         .map(R.sortBy(R.view(qParamLens)))
         .chain((normalized) => {
             const joined = R.filter(isSuitableMediaEncoderPair, array.cartesian(normalized, responders));
-            const [hasEncoder, noEncoder] = R.partition(R.compose(Boolean, responderEncoder, R.tail), joined);
+            const [hasEncoder, noEncoder] = R.partition(pairHasEncoder, joined);
             if (hasEncoder.length > 0) {
-                return R.tail(hasEncoder);
+                return Right(R.last(hasEncoder));
             }
             if (noEncoder.length > 0) {
-                return R.tail(noEncoder);
+                return Right([null, R.last(R.last(noEncoder))]);
             }
             return Left(notAcceptable);
         });
@@ -166,18 +159,15 @@ const negotiator = R.curry((responders, ctx) =>
         .fold(Promise.reject, Promise.resolve)
 );
 
-module.exports = {
+module.exports = R.merge({
     negotiator,
-    decoder,
-    encoder,
-    responder,
-    outputResponder,
     parsePrio,
     ensurePrio,
     omitPrio,
     parseAccept,
     parseContentType,
+    parseMediaPrios,
     filterDecodingResponders,
     selectEncodingResponder,
     isSuitableMediaEncoderPair
-};
+}, require("./types"));

@@ -3,14 +3,16 @@ const {expect} = require("chai");
 const {parallel, lib} = require("../loader");
 const {Right, Left} = require("fantasy-eithers");
 const {
-    responder,
-    decoder,
-    encoder,
     parsePrio,
+    parseMediaPrios,
     ensurePrio,
     omitPrio,
     filterDecodingResponders,
-    isSuitableMediaEncoderPair
+    isSuitableMediaEncoderPair,
+    selectEncodingResponder,
+    encoder,
+    decoder,
+    responder
 } = parallel(require, __filename);
 const {media} = lib(require, "./media");
 
@@ -45,7 +47,7 @@ describe("negotiator", () => {
     });
     describe("filterDecodingResponders", () => {
         const responders = [
-            responder(null, R.identity, encoder(media("text", "html", {}))),
+            responder(null, encoder(media("text", "html", {}), null), R.identity),
             responder(
                 decoder(media("text", "plain", {}), R.identity),
                 encoder(media("text", "html", {}), R.identity),
@@ -86,7 +88,40 @@ describe("negotiator", () => {
                 .to.equal(false);
         });
     });
+    describe("parseMediaPrios", () => {
+        it("should succeed on correct priorities", () => {
+            expect(parseMediaPrios([media("text", "html", {q: "0.5"})]))
+                .to.eql(Right([media("text", "html", {q: 0.5})]));
+        });
+        it("should fail on invalid priorities", () => {
+            expect(parseMediaPrios([media("text", "html", {q: "a"})]))
+                .to.be.an.instanceof(Left);
+        });
+    });
     describe("selectEncodingResponder", () => {
-
+        const html = media("text", "html", {});
+        const xml = media("text", "xml", {});
+        const tex = media("text", "tex", {});
+        const plain = media("text", "plain", {});
+        const xmlResponder = responder(decoder(xml, null), encoder(xml, null), R.identity);
+        const plainResponder = responder(decoder(plain, null), encoder(plain, null), R.identity);
+        const noContentResponder = responder(decoder(plain, null), null, R.identity);
+        const acceptMedias = [
+            html,
+            xml,
+            tex
+        ];
+        it("should select a responder from a list", () => {
+            expect(selectEncodingResponder(acceptMedias, [xmlResponder, plainResponder]))
+                .to.eql(Right([media("text", "xml", {q: 1}), xmlResponder]));
+        });
+        it("should fail when no responder is available", () => {
+            expect(selectEncodingResponder(acceptMedias, [plainResponder]))
+                .to.be.instanceof(Left);
+        });
+        it("should succeed with a no-content responder in the case of no matching media types", () => {
+            expect(selectEncodingResponder(acceptMedias, [noContentResponder, plainResponder]))
+                .to.eql(Right([null, noContentResponder]));
+        });
     });
 });
