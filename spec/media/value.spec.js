@@ -66,4 +66,20 @@ describe("media/value", function () {
             }));
         });
     });
+    describe("#paramsString", () => {
+        it("should encode parameter strings", () => {
+            expect(value.paramsString({q: "1", c: "other"}))
+                .to.equal("q=1; c=other");
+        });
+    });
+    describe("#toString", () => {
+        it("should encode a simple media type", () => {
+            expect(value.toString(value("application", "json", {})))
+                .to.equal("application/json");
+        });
+        it("should include paramters of a media type", () => {
+            expect(value.toString(value("application", "json", {charset: "utf8", extra: "more"})))
+                .to.equal("application/json; charset=utf8; extra=more");
+        });
+    });
 });

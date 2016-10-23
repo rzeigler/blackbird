@@ -142,9 +142,13 @@ const runResponder = R.curry((ctMedia, ctx, [renderMedia, responder]) => {
             if (!enc) {
                 return response.response(204, R.view(response.headersLens, res), "");
             }
-            return R.over(response.bodyLens,
-                          (body) => enc.encoder(enc.encoder(R.view(media.parametersLens, renderMedia), body)),
-                          res);
+            return enc.encoder(R.view(media.parametersLens, renderMedia), res.body)
+                .bimap(Promise.reject, ([ct, buf]) =>
+                    Promise.resolve(
+                        response.response(
+                            R.view(response.statusCodeLens, res)),
+                            R.merge({"Content-Type": media.toString(ct)}, R.view(response.headersLens, res)),
+                            buf));
         });
 });
 
@@ -169,5 +173,6 @@ module.exports = R.merge({
     parseMediaPrios,
     filterDecodingResponders,
     selectEncodingResponder,
-    isSuitableMediaEncoderPair
+    isSuitableMediaEncoderPair,
+    codecs: require("./codecs")
 }, require("./types"));

@@ -42,6 +42,17 @@ const generalizationOf = R.curry((outerMedia, innerMedia) =>
     equivalent(outerMedia, innerMedia)
 );
 
+const paramsString = R.compose(R.join("; "), R.map(R.join("=")), R.toPairs);
+
+const toString = (media) => {
+    const base = `${media.type}/${media.subtype}`;
+    const params = paramsString(media.parameters);
+    if (params) {
+        return `${base}; ${params}`;
+    }
+    return base;
+};
+
 module.exports = Object.assign(media, {
     wildcard,
     unparameterized,
@@ -53,5 +64,7 @@ module.exports = Object.assign(media, {
     parameterLens,
     equivalent,
     parameterGeneralizationOf,
-    generalizationOf
+    generalizationOf,
+    paramsString,
+    toString
 });
