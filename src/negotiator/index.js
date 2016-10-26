@@ -6,14 +6,18 @@ const Either = require("fantasy-eithers");
 const {context, body, response} = require("../core");
 const {array} = require("../data");
 const media = require("../media");
+const {attemptMediaConstraint, Some} = require("./constraint");
+
 const {
-    responderDecoder,
-    responderDecoderMedia,
-    responderEncoder,
-    responderEncoderMedia,
-    responderHandler,
+    handlerLens,
+    encoderConstraintLens,
+    encoderHandlerLens,
+    decoderConstraintLens,
+    decoderHandlerLens,
     decoder,
+    hasDecoder,
     hasNoDecoder,
+    hasEncoder,
     hasNoEncoder
 } = require("./types");
 const {
@@ -49,8 +53,10 @@ const parseContentType = (contentType) => {
 
 const filterDecodingResponders = R.curry((contentTypeMedia, responders) => {
     const filter = contentTypeMedia === null ? hasNoDecoder :
-        (responder) => responderDecoder(responder) &&
-                        media.generalizationOf(responderDecoderMedia(responder), contentTypeMedia);
+        (responder) => hasDecoder(responder) &&
+                        attemptMediaConstraint(R.view(decoderConstraintLens, responder), contentTypeMedia)
+                            // Some is on the left...
+                            .fold(R.T, R.F);
     const useable = R.filter(filter, responders);
     if (useable.length > 0) {
         return Right(useable);
@@ -77,78 +83,92 @@ const parsePrio = (media) => {
 
 const omitPrio = R.over(media.parametersLens, R.omit([prio]));
 
-const isSuitableMediaEncoderPair = ([mediaType, responder]) =>
-    !responderEncoder(responder) || media.generalizationOf(responderEncoderMedia(responder), omitPrio(mediaType));
-
-
 // [Media] -> [Media]
 const ensureMediaPrios = R.map(ensurePrio);
 // [Media] -> Either e [Media] fails if any priorities are not numbers
 const parseMediaPrios = R.traverse(Either.of, parsePrio);
 
-const pairHasEncoder = R.compose(responderEncoder, R.last);
+const mediaTypeResponderStruct = ([type, responder]) => ({type, responder});
+const mediaTypeResonderStructWithConstrainedType = ({type, responder}) => R.merge({type, responder}, {
+    // If we have no encoder, then just send back a Some to indicate success using the accept type
+    type: hasNoEncoder(responder) ?
+        // This some doesn't matter if there is no encoder...
+        Some(type) : attemptMediaConstraint(R.view(encoderConstraintLens, responder), type)
+});
 
+const isSome = (option) => option.fold(R.T, R.F);
+
+const cartesianStructMediaTypeLens = R.lensProp("type");
+
+const cartesianStructMediaTypeIsSome = R.compose(isSome, R.view(cartesianStructMediaTypeLens));
+
+const extractCartesianStructConstraint = R.over(cartesianStructMediaTypeLens, (o) => o.getOrElse(null));
+
+const cartesianStructHasEncoder = R.compose(hasEncoder, R.prop("responder"));
+
+// Given a set of acceptable media types, return an Either e s where is is a structure
+// containing the chosen media type, the result of applying the responders encode constraint to the media if there
+// is an encoder, and the responder
 const selectEncodingResponder = R.curry((acceptMedias, responders) => {
     // If no accept was sent, check if we have any responders that send no data
     if (!acceptMedias) {
         const empty = R.filter(hasNoEncoder, responders);
         if (empty.length > 0) {
-            return Right([null, empty[0]]);
+            return Right({
+                type: null,
+                empty: [0]
+            });
         }
-        // If no responders send no data, fall back to assuming */*
-        return Right([media.wildcardMedia, responders[0]]);
+        // If nothing sends back no data, assume */* as the Accept header
+        acceptMedias = [media.wildcardMedia];
     }
     return parseMediaPrios(ensureMediaPrios(acceptMedias))
         .map(R.sortBy(R.view(qParamLens)))
+        .map(R.map(omitPrio)) // Remove priorities now that we are sorted
         .chain((normalized) => {
-            const joined = R.filter(isSuitableMediaEncoderPair, array.cartesian(normalized, responders));
-            const [hasEncoder, noEncoder] = R.partition(pairHasEncoder, joined);
-            if (hasEncoder.length > 0) {
-                return Right(R.last(hasEncoder));
+            const constrained = R.map(R.compose(mediaTypeResonderStructWithConstrainedType, mediaTypeResponderStruct),
+                                        array.cartesian(normalized, responders));
+            const joined = R.filter(cartesianStructMediaTypeIsSome, constrained);
+            // All joined.constraints are somes at this point so we can extract
+            const remapped = R.map(extractCartesianStructConstraint, joined);
+            const [withEncoder, withoutEncoder] = R.partition(cartesianStructHasEncoder, remapped);
+            if (withEncoder.length > 0) {
+                return Right(R.last(withEncoder));
             }
-            if (noEncoder.length > 0) {
-                return Right([null, R.last(R.last(noEncoder))]);
+            if (withoutEncoder.length > 0) {
+                return Right(R.last(withoutEncoder));
             }
             return Left(notAcceptable);
         });
 });
 
-const runResponder = R.curry((ctMedia, ctx, [renderMedia, responder]) => {
-    const dec = responderDecoder(responder);
-    const enc = responderEncoder(responder);
-    const handle = responderHandler(responder);
-    // Assume selected responder won't have an encoder if it makes it through the selection process
-    const bodyAdd = decoder ?
+const runResponder = R.curry((contentTypeMedia, ctx, {type: acceptMedia, responder}) => {
+    const handle = R.view(handlerLens, responder);
+    const bodyAdd = hasNoDecoder(responder) ?
+        Promise.resolve({}) :
         context.consumeContent(body.buffer, ctx)
-            // Run the decoder against the body. Decoders have the form buffer -> Either String a
-            .then((buf) => dec.decoder(R.view(media.parametersLens, ctMedia), buf)
-                // If an error occured, build a malformed request response
-                // otherwise, create an update structure of {"body": a} to apply to the context
-                .bimap(malformedRequest, R.objOf("body"))
-                // Back to promises
-                .fold(Promise.reject, Promise.resolve)) :
-        // If no responder decoder, don't send a body update
-        Promise.resolve({});
-    // Attach body to the context
-    return bodyAdd.then(R.merge(ctx))
-        // Run the handler
+            .then((buf) => {
+                const decode = R.view(decoderHandlerLens, responder);
+                return decode(R.view(media.parametersLens, contentTypeMedia), buf)
+                    .bimap(malformedRequest, R.objOf("body"))
+                    .fold(Promise.reject, Promise.resolve);
+            });
+    return bodyAdd.then(R.merge(ctx)) // Add the body in
         .then(handle)
         .then((res) => {
-            // Nothing came back. Hmmm...
             if (!response.isConformingResponse(res)) {
                 return response.response(500, {}, "Handler did not produce a valid response");
             }
-            // We have no encoder, so send 204 regardless
-            if (!enc) {
+            // We have no encoder or no body, so 204 no matter what
+            if (hasNoEncoder(responder) || !res.body) {
                 return response.response(204, R.view(response.headersLens, res), "");
             }
-            return enc.encoder(R.view(media.parametersLens, renderMedia), res.body)
-                .bimap(Promise.reject, ([ct, buf]) =>
-                    Promise.resolve(
-                        response.response(
-                            R.view(response.statusCodeLens, res)),
-                            R.merge({"Content-Type": media.toString(ct)}, R.view(response.headersLens, res)),
-                            buf));
+            const enc = R.view(encoderHandlerLens, responder);
+            // We have an encoder, so run it on the responses body
+            const encode = R.over(response.bodyLens, enc(R.view(media.parametersLens, acceptMedia)));
+            const setContentType = R.over(response.headersLens, R.merge({"Content-Type": media.toString(acceptMedia)}));
+            const processResponse = R.compose(encode, setContentType);
+            return processResponse(res);
         });
 });
 
@@ -173,6 +193,5 @@ module.exports = R.merge({
     parseMediaPrios,
     filterDecodingResponders,
     selectEncodingResponder,
-    isSuitableMediaEncoderPair,
     codecs: require("./codecs")
 }, require("./types"));

@@ -14,11 +14,25 @@ const {
     decoder,
     responder
 } = parallel(require, __filename);
+const {
+    defineParamConstraint,
+    defineMediaConstraint,
+    stringCoercion,
+    isMember,
+    Some
+} = lib(require, "./negotiator/constraint");
 const {media} = lib(require, "./media");
 
 // const {response: {response, statusCodes}} = lib(require, "./core");
 
 describe("negotiator", () => {
+    const htmlConstraint = defineMediaConstraint("text", "html", [
+        defineParamConstraint("charset", stringCoercion, isMember(["utf8", "ascii"]), Some("utf8"))
+    ], false);
+    const plainConstraint = defineMediaConstraint("text", "plain", [
+        defineParamConstraint("charset", stringCoercion, isMember(["utf8", "ascii"]), Some("utf8"))
+    ], true);
+
     describe("parsePrio", () => {
         it("should parse the priority of a media type", () => {
             expect(parsePrio(media("text", "html", {q: "0.8"})))
@@ -47,10 +61,10 @@ describe("negotiator", () => {
     });
     describe("filterDecodingResponders", () => {
         const responders = [
-            responder(null, encoder(media("text", "html", {}), null), R.identity),
+            responder(null, encoder(htmlConstraint, null), R.identity),
             responder(
-                decoder(media("text", "plain", {}), R.identity),
-                encoder(media("text", "html", {}), R.identity),
+                decoder(plainConstraint, R.identity),
+                encoder(htmlConstraint, R.identity),
                 null
             )
         ];
@@ -80,11 +94,11 @@ describe("negotiator", () => {
                 .to.equal(true);
         });
         it("should return true when the encoder matches", () => {
-            expect(isSuitableMediaEncoderPair([html, responder(null, encoder(html, null), null)]))
+            expect(isSuitableMediaEncoderPair([html, responder(null, encoder(htmlConstraint, null), null)]))
                 .to.equal(true);
         });
         it("should return false when the encoder does not match", () => {
-            expect(isSuitableMediaEncoderPair([xml, responder(null, encoder(html, null), null)]))
+            expect(isSuitableMediaEncoderPair([xml, responder(null, encoder(htmlConstraint, null), null)]))
                 .to.equal(false);
         });
     });
@@ -98,14 +112,19 @@ describe("negotiator", () => {
                 .to.be.an.instanceof(Left);
         });
     });
-    describe("selectEncodingResponder", () => {
+    describe.only("selectEncodingResponder", () => {
+        // const htmlC = defineMediaConstraint("text", "html", [], false);
+        const xmlC = defineMediaConstraint("text", "xml", [], false);
+        // const texC = defineMediaConstraint("text", "tex", [], false);
+        const plainC = defineMediaConstraint("text", "plain", [], false);
+
         const html = media("text", "html", {});
         const xml = media("text", "xml", {});
         const tex = media("text", "tex", {});
-        const plain = media("text", "plain", {});
-        const xmlResponder = responder(decoder(xml, null), encoder(xml, null), R.identity);
-        const plainResponder = responder(decoder(plain, null), encoder(plain, null), R.identity);
-        const noContentResponder = responder(decoder(plain, null), null, R.identity);
+
+        const xmlResponder = responder(decoder(xmlC, null), encoder(xmlC, null), R.identity);
+        const plainResponder = responder(decoder(plainC, null), encoder(plainC, null), R.identity);
+        const noContentResponder = responder(decoder(plainC, null), null, R.identity);
         const acceptMedias = [
             html,
             xml,
@@ -113,7 +132,10 @@ describe("negotiator", () => {
         ];
         it("should select a responder from a list", () => {
             expect(selectEncodingResponder(acceptMedias, [xmlResponder, plainResponder]))
-                .to.eql(Right([media("text", "xml", {q: 1}), xmlResponder]));
+                .to.eql(Right({
+                    type: media("text", "xml", {}),
+                    responder: xmlResponder
+                }));
         });
         it("should fail when no responder is available", () => {
             expect(selectEncodingResponder(acceptMedias, [plainResponder]))
@@ -121,7 +143,10 @@ describe("negotiator", () => {
         });
         it("should succeed with a no-content responder in the case of no matching media types", () => {
             expect(selectEncodingResponder(acceptMedias, [noContentResponder, plainResponder]))
-                .to.eql(Right([null, noContentResponder]));
+                .to.eql(Right({
+                    type: media("text", "tex", {}),
+                    responder: noContentResponder
+                }));
         });
     });
 });

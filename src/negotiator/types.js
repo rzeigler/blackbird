@@ -3,11 +3,11 @@ const daggy = require("daggy");
 
 // Core types
 // The decoder function receives the media parameters as well as the raw content and should return an Option T
-const Decoder = daggy.tagged("media", "decoder");
+const Decoder = daggy.tagged("constraint", "decode");
 const decoder = R.constructN(2, Decoder);
 
 // The encoder function receives the media parameters as well as the object and should return a buffer
-const Encoder = daggy.tagged("media", "encoder");
+const Encoder = daggy.tagged("constraint", "encode");
 const encoder = R.constructN(2, Encoder);
 
 const Responder = daggy.tagged("decoder", "encoder", "handler");
@@ -22,30 +22,38 @@ const responder = R.curry((decoder, encoder, handler) => {
     return Responder(decoder, encoder, handler);
 });
 
-const responderDecoder = R.prop("decoder");
-const decoderMedia = R.prop("media");
-const responderDecoderMedia = R.compose(decoderMedia, responderDecoder);
-const responderEncoder = R.prop("encoder");
-const encoderMedia = decoderMedia;
-const responderEncoderMedia = R.compose(encoderMedia, responderEncoder);
-const responderHandler = R.prop("handler");
+const decoderLens = R.lensProp("decoder");
+const encoderLens = R.lensProp("encoder");
+const handlerLens = R.lensProp("handler");
+const constraintLens = R.lensProp("constraint");
+const encodeHandlerLens = R.lensProp("encode");
+const decodeHandlerLens = R.lensProp("decode");
+const decoderConstraintLens = R.compose(decoderLens, constraintLens);
+const encoderConstraintLens = R.compose(encoderLens, constraintLens);
+const encoderHandlerLens = R.compose(encoderLens, encodeHandlerLens);
+const decoderHandlerLens = R.compose(decoderLens, decodeHandlerLens);
 
-const propIsNil = R.propSatisfies(R.isNil);
-
-const hasNoEncoder = propIsNil("encoder");
-const hasNoDecoder = propIsNil("decoder");
+const hasNoEncoder = R.compose(R.isNil, R.view(encoderLens));
+const hasEncoder = R.compose(R.not, hasNoEncoder);
+const hasNoDecoder = R.compose(R.isNil, R.view(decoderLens));
+const hasDecoder = R.compose(R.not, hasNoDecoder);
 
 module.exports = {
     decoder,
     encoder,
     responder,
-    responderDecoder,
-    decoderMedia,
-    responderDecoderMedia,
-    responderEncoder,
-    encoderMedia,
-    responderEncoderMedia,
-    responderHandler,
+    decoderLens,
+    encoderLens,
+    handlerLens,
+    constraintLens,
+    encodeHandlerLens,
+    decodeHandlerLens,
+    decoderConstraintLens,
+    encoderConstraintLens,
+    encoderHandlerLens,
+    decoderHandlerLens,
     hasNoEncoder,
-    hasNoDecoder
+    hasEncoder,
+    hasNoDecoder,
+    hasDecoder
 };

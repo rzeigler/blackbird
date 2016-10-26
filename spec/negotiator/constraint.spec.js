@@ -1,4 +1,3 @@
-const R = require("ramda");
 const {expect} = require("chai");
 const {parallel, lib} = require("../loader");
 const {
@@ -37,7 +36,7 @@ describe("media", () => {
                 )).to.eql(None);
             });
         });
-        describe.only("attemptMediaConstraint", () => {
+        describe("attemptMediaConstraint", () => {
             const mediaConstraint = defineMediaConstraint("application", "json", [
                 defineParamConstraint("charset", stringCoercion, isMember(["utf8"]), Some("utf8"))
             ], true);
