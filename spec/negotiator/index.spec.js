@@ -8,7 +8,6 @@ const {
     ensurePrio,
     omitPrio,
     filterDecodingResponders,
-    isSuitableMediaEncoderPair,
     selectEncodingResponder,
     encoder,
     decoder,
@@ -86,22 +85,6 @@ describe("negotiator", () => {
                 .to.be.instanceof(Left);
         });
     });
-    describe("isSuitableMediaEncoderPair", () => {
-        const html = media("text", "html", {});
-        const xml = media("text", "xml", {});
-        it("should return true when the encoder is null", () => {
-            expect(isSuitableMediaEncoderPair([html, responder(null, null, null)]))
-                .to.equal(true);
-        });
-        it("should return true when the encoder matches", () => {
-            expect(isSuitableMediaEncoderPair([html, responder(null, encoder(htmlConstraint, null), null)]))
-                .to.equal(true);
-        });
-        it("should return false when the encoder does not match", () => {
-            expect(isSuitableMediaEncoderPair([xml, responder(null, encoder(htmlConstraint, null), null)]))
-                .to.equal(false);
-        });
-    });
     describe("parseMediaPrios", () => {
         it("should succeed on correct priorities", () => {
             expect(parseMediaPrios([media("text", "html", {q: "0.5"})]))
@@ -112,7 +95,7 @@ describe("negotiator", () => {
                 .to.be.an.instanceof(Left);
         });
     });
-    describe.only("selectEncodingResponder", () => {
+    describe("selectEncodingResponder", () => {
         // const htmlC = defineMediaConstraint("text", "html", [], false);
         const xmlC = defineMediaConstraint("text", "xml", [], false);
         // const texC = defineMediaConstraint("text", "tex", [], false);

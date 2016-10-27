@@ -14,7 +14,6 @@ const {
     encoderHandlerLens,
     decoderConstraintLens,
     decoderHandlerLens,
-    decoder,
     hasDecoder,
     hasNoDecoder,
     hasEncoder,
@@ -89,7 +88,7 @@ const ensureMediaPrios = R.map(ensurePrio);
 const parseMediaPrios = R.traverse(Either.of, parsePrio);
 
 const mediaTypeResponderStruct = ([type, responder]) => ({type, responder});
-const mediaTypeResonderStructWithConstrainedType = ({type, responder}) => R.merge({type, responder}, {
+const mediaTypeResponderStructWithConstrainedType = ({type, responder}) => R.merge({type, responder}, {
     // If we have no encoder, then just send back a Some to indicate success using the accept type
     type: hasNoEncoder(responder) ?
         // This some doesn't matter if there is no encoder...
@@ -126,7 +125,7 @@ const selectEncodingResponder = R.curry((acceptMedias, responders) => {
         .map(R.sortBy(R.view(qParamLens)))
         .map(R.map(omitPrio)) // Remove priorities now that we are sorted
         .chain((normalized) => {
-            const constrained = R.map(R.compose(mediaTypeResonderStructWithConstrainedType, mediaTypeResponderStruct),
+            const constrained = R.map(R.compose(mediaTypeResponderStructWithConstrainedType, mediaTypeResponderStruct),
                                         array.cartesian(normalized, responders));
             const joined = R.filter(cartesianStructMediaTypeIsSome, constrained);
             // All joined.constraints are somes at this point so we can extract
@@ -149,7 +148,10 @@ const runResponder = R.curry((contentTypeMedia, ctx, {type: acceptMedia, respond
         context.consumeContent(body.buffer, ctx)
             .then((buf) => {
                 const decode = R.view(decoderHandlerLens, responder);
-                return decode(R.view(media.parametersLens, contentTypeMedia), buf)
+                const constraint = R.view(decoderConstraintLens, responder);
+                // We have already succeeded at this if we reached this point, its just easier to rerun
+                const constrainedContentTypeMedia = attemptMediaConstraint(constraint, contentTypeMedia).getOrElse({});
+                return decode(R.view(media.parametersLens, constrainedContentTypeMedia), buf)
                     .bimap(malformedRequest, R.objOf("body"))
                     .fold(Promise.reject, Promise.resolve);
             });
@@ -160,7 +162,7 @@ const runResponder = R.curry((contentTypeMedia, ctx, {type: acceptMedia, respond
                 return response.response(500, {}, "Handler did not produce a valid response");
             }
             // We have no encoder or no body, so 204 no matter what
-            if (hasNoEncoder(responder) || !res.body) {
+            if (hasNoEncoder(responder) || !R.view(response.bodyLens, res.body)) {
                 return response.response(204, R.view(response.headersLens, res), "");
             }
             const enc = R.view(encoderHandlerLens, responder);
