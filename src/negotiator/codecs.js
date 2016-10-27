@@ -1,56 +1,56 @@
 const R = require("ramda");
-const {media} = require("../media");
-const {encoder, decoder} = require("./types");
-const {Left, Right} = require("fantasy-eithers");
-const {malformedRequest, notAcceptable} = require("./errors");
+const {
+    encoder,
+    decoder
+} = require("./types");
+const {
+    defineMediaConstraint,
+    defineParamConstraint,
+    stringCoercion,
+    isMember,
+    Some
+} = require("./constraint");
+const {
+    Left,
+    Right
+} = require("fantasy-eithers");
+const {malformedRequest} = require("./errors");
 
-const plainMedia = media("text", "plain");
-const jsonMedia = media("application", "json");
+const jsonConstraint = defineMediaConstraint("application", "json", [
+    defineParamConstraint("charset", stringCoercion, isMember(["utf8"]), Some("utf8"))
+], false);
 
-const jsonDecoderImpl = R.curry((params, buf) => {
+const decodeJson = R.curry((params, buf) => {
     try {
-        return Right(JSON.parse(buf));
+        return Right(JSON.parse(buf.toString(params.charset)));
     } catch (e) {
-        return Left(e.toString());
+        return Left(malformedRequest(e.toString()));
     }
 });
 
-const jsonEncoderImpl = R.curry((params, body) =>
-    Right([jsonMedia({charset: "utf8"}), Buffer.from(JSON.stringify(body), "utf8")]));
+const jsonDecoder = decoder(jsonConstraint, decodeJson);
 
-const jsonDecoder = decoder(jsonMedia, jsonDecoderImpl);
+const encodeJson = R.curry((params, object) => Buffer.from(JSON.stringify(object), params.charset));
 
-const jsonEncoder = encoder(jsonMedia, jsonEncoderImpl);
+const jsonEncoder = encoder(jsonConstraint, encodeJson);
 
-// Verification of structure?
-const jsonVndDecoder = (mediaType) => decoder(mediaType, jsonDecoderImpl);
+const plainTextConstraint = defineMediaConstraint("text", "plain", [
+    defineParamConstraint("charset", stringCoercion, isMember(["utf8", "ascii"]), Some("utf8"))
+], false);
 
-const jsonVndEncoder = (mediaType) => encoder(mediaType, jsonEncoderImpl);
+const decodePlainText = R.curry((params, buf) => Right(buf.toString(params.charset)));
 
-const plainTextDecoderImpl = R.curry((params, body) => {
-    const encoding = params.encoding || "utf8";
-    try {
-        return Right(body.toString(encoding));
-    } catch (e) { // toString only fails if the encoding is nonsensical
-        return Left(malformedRequest(e.message));
-    }
-});
+const plainTextDecoder = decoder(plainTextConstraint, decodePlainText);
 
-const plainTextEncoderImpl = R.curry((params, body) => {
-    const encoding = params.encoding || "utf8";
-    try {
-        return Right([plainMedia({charset: encoding}), Buffer.from(body.toString(), encoding)]);
-    } catch (e) {
-        // Could not perform that encoding successfully because of a wierd encoding selected
-        return Left(notAcceptable);
-    }
-});
+const encodePlainText = R.curry((params, text) => Buffer.from(text, params.charset));
+
+const plainTextEncoder = encoder(plainTextConstraint, encodePlainText);
 
 module.exports = {
-    jsonDecoder,
-    jsonVndDecoder,
-    jsonDecoderImpl,
+    encodeJson,
     jsonEncoder,
-    jsonEncoderImpl,
-    jsonVndEncoder
+    decodeJson,
+    jsonDecoder,
+    plainTextDecoder,
+    plainTextEncoder
 };
