@@ -46,7 +46,7 @@ const parseContentType = (contentType) => {
         // If no content type then create a filter returning true when the decoder is empty
         return Right(null);
     }
-    return media.parser.parseContentType(contentType)
+    return media.parser.parseMediaType(contentType)
         .bimap(R.always(malformedContentTypeHeader), R.identity);
 };
 
@@ -145,7 +145,7 @@ const runResponder = R.curry((contentTypeMedia, ctx, {type: acceptMedia, respond
     const handle = R.view(handlerLens, responder);
     const bodyAdd = hasNoDecoder(responder) ?
         Promise.resolve({}) :
-        context.consumeContent(body.buffer, ctx)
+        context.consumeContextContent(body.buffer, ctx)
             .then((buf) => {
                 const decode = R.view(decoderHandlerLens, responder);
                 const constraint = R.view(decoderConstraintLens, responder);
@@ -158,11 +158,11 @@ const runResponder = R.curry((contentTypeMedia, ctx, {type: acceptMedia, respond
     return bodyAdd.then(R.merge(ctx)) // Add the body in
         .then(handle)
         .then((res) => {
-            if (!response.isConformingResponse(res)) {
+            if (!R.view(response.headersLens, res) || !R.view(response.statusCodeLens)) {
                 return response.response(500, {}, "Handler did not produce a valid response");
             }
             // We have no encoder or no body, so 204 no matter what
-            if (hasNoEncoder(responder) || !R.view(response.bodyLens, res.body)) {
+            if (hasNoEncoder(responder) || !R.view(response.bodyLens, res)) {
                 return response.response(204, R.view(response.headersLens, res), "");
             }
             const enc = R.view(encoderHandlerLens, responder);
