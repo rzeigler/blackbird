@@ -69,9 +69,17 @@ const filterDecodingResponders = R.curry((contentTypeMedia, responders) => {
 
 const qParamLens = R.compose(media.parametersLens, R.lensProp(prio));
 
-const ensurePrio = R.cond([
-    [R.compose(R.has(prio), R.view(media.parametersLens)), R.identity],
+// Affix the default priority to records without it.
+// Normal records get 1, any/* gets 0.02 and */* gets 0.01
+const defaultPrio = R.cond([
+    [R.compose(R.equals(media.wildcard), R.view(media.typeLens)), R.set(qParamLens, "0.01")],
+    [R.compose(R.equals(media.wildcard), R.view(media.subtypeLens)), R.set(qParamLens, "0.02")],
     [R.T, R.set(qParamLens, "1")]
+]);
+
+const ensurePrio = R.cond([
+    [R.compose(Boolean, R.view(qParamLens)), R.identity],
+    [R.T, defaultPrio]
 ]);
 
 const parsePrio = (media) => {
@@ -188,6 +196,7 @@ const negotiator = R.curry((responders, ctx) =>
 module.exports = R.merge({
     negotiator,
     parsePrio,
+    defaultPrio,
     ensurePrio,
     omitPrio,
     parseAccept,

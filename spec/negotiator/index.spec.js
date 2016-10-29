@@ -7,6 +7,7 @@ const {
     parseMediaPrios,
     ensurePrio,
     omitPrio,
+    defaultPrio,
     filterDecodingResponders,
     selectEncodingResponder,
     encoder,
@@ -40,6 +41,20 @@ describe("negotiator", () => {
         it("should reject invalid priorities", () => {
             expect(parsePrio(media("text", "html", {q: "a"})))
                 .to.be.an.instanceof(Left);
+        });
+    });
+    describe("defaultPrio", () => {
+        it("should attach 1 to normal media types", () => {
+            expect(defaultPrio(media("text", "html", {})))
+                .to.eql(media("text", "html", {q: "1"}));
+        });
+        it("should attach 0.02 to subtype wildcards", () => {
+            expect(defaultPrio(media("text", "*", {})))
+                .to.eql(media("text", "*", {q: "0.02"}));
+        });
+        it("should attach 0.01 to full wildcards", () => {
+            expect(defaultPrio(media("*", "*", {})))
+                .to.eql(media("*", "*", {q: "0.01"}));
         });
     });
     describe("ensurePrio", () => {
