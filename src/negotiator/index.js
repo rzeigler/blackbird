@@ -123,7 +123,7 @@ const selectEncodingResponder = R.curry((acceptMedias, responders) => {
         if (empty.length > 0) {
             return Right({
                 type: null,
-                empty: [0]
+                empty: empty[0]
             });
         }
         // If nothing sends back no data, assume */* as the Accept header
