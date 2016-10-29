@@ -65,4 +65,101 @@ describe("negotiator", () => {
                 .catch((e) => expect(e.statusCode).to.equal(406))
         );
     });
+    describe("server should support wildcard matches", () => {
+        let server = null;
+        beforeEach((done) => {
+            serve(port, negotiator([
+                responder(codecs.jsonDecoder, codecs.plainTextEncoder,
+                    (ctx) => Promise.resolve(response.response(200, {}, ctx.body.message)))
+            ]))
+            .then((srv) => {
+                server = srv;
+                done();
+            })
+            .catch(done);
+        });
+
+        afterEach(function () {
+            server.close();
+        });
+
+        it("should return media types in response to wildcards", () =>
+            request({
+                resolveWithFullResponse: true,
+                uri: host,
+                body: JSON.stringify({message: "boo"}),
+                headers: {"Content-Type": "application/json", Accept: "text/*"}
+            })
+                .then((text) => {
+                    expect(text.headers["content-type"]).to.contain("text/plain");
+                    expect(text.body).to.equal("boo");
+                })
+        );
+    });
+    describe("server should not send wildcard matches for incorrect wildcards", () => {
+        let server = null;
+        beforeEach((done) => {
+            serve(port, negotiator([
+                responder(codecs.jsonDecoder, codecs.plainTextEncoder,
+                    (ctx) => Promise.resolve(response.response(200, {}, ctx.body.message)))
+            ]))
+            .then((srv) => {
+                server = srv;
+                done();
+            })
+            .catch(done);
+        });
+
+        afterEach(function () {
+            server.close();
+        });
+
+        it("should return media types in response to wildcards", () =>
+            request({
+                resolveWithFullResponse: true,
+                uri: host,
+                body: JSON.stringify({message: "boo"}),
+                headers: {"Content-Type": "application/json", Accept: "application/*"}
+            })
+                .then(() => {
+                    expect(true).to.equal(false);
+                })
+                .catch((res) => {
+                    expect(res.statusCode).to.equal(406);
+                })
+        );
+    });
+    describe("server should support priority ranking", () => {
+        let server = null;
+        beforeEach((done) => {
+            serve(port, negotiator([
+                responder(codecs.jsonDecoder, codecs.plainTextEncoder,
+                    (ctx) => Promise.resolve(response.response(200, {}, ctx.body.message))),
+                responder(codecs.jsonDecoder, codecs.jsonEncoder,
+                    (ctx) => Promise.resolve(response.response(200, {}, {message: ctx.body})))
+            ]))
+            .then((srv) => {
+                server = srv;
+                done();
+            })
+            .catch(done);
+        });
+
+        afterEach(function () {
+            server.close();
+        });
+        it("should return best ranked", () =>
+            request({
+                resolveWithFullResponse: true,
+                uri: host,
+                body: JSON.stringify({message: "boo"}),
+                headers: {"Content-Type": "application/json", Accept: "application/json; q=0.5, text/plain; q=0.8"}
+            })
+            .then((res) => {
+                expect(res.statusCode).to.equal(200);
+                expect(res.headers["content-type"]).to.equal("text/plain; charset=utf8");
+                expect(res.body).to.equal("boo");
+            })
+        );
+    });
 });
