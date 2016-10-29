@@ -49,6 +49,7 @@ const consumeContextContent = R.curry((f, context) => context.content.consumeCon
 
 const headersLens = R.lensProp("headers");
 const headersView = R.lensProp("headersView");
+const contentLens = R.lensProp("content");
 
 module.exports = {
     urlStruct,
@@ -56,5 +57,6 @@ module.exports = {
     overContextParams,
     consumeContextContent,
     headersLens,
-    headersView
+    headersView,
+    contentLens
 };
