@@ -13,4 +13,10 @@ describe("data/array", function () {
             expect(array.join(" ", [1, 2, 3])).to.equal("1 2 3");
         });
     });
+    describe("cartesian", () => {
+        it("should create the cartesian product", () => {
+            expect(array.cartesian([1, 2, 3], ["a", "b"]))
+                .to.eql([[1, "a"], [1, "b"], [2, "a"], [2, "b"], [3, "a"], [3, "b"]]);
+        });
+    });
 });

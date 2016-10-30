@@ -1,5 +1,6 @@
-const {curry, identity} = require("ramda");
+const {curry, identity, always} = require("ramda");
 const Either = require("fantasy-eithers");
+const {Some, None} = require("fantasy-options");
 
 const left = Either.Left;
 const right = Either.Right;
@@ -12,11 +13,13 @@ const attempt = curry((f, v) => {
     }
 });
 const leftMap = curry((f, e) => e.bimap(f, identity));
+const toOption = (e) => e.fold(always(None), Some);
 
 module.exports = {
     left,
     right,
     inhabitOneOf,
     attempt,
-    leftMap
+    leftMap,
+    toOption
 };

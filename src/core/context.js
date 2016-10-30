@@ -1,5 +1,5 @@
 const R = require("ramda");
-const {string} = require("../data");
+const {string, number} = require("../data");
 const {parse: urlParse} = require("url");
 
 /**
@@ -41,22 +41,34 @@ const context = (request) => R.mergeAll([
 ]);
 
 const overContextParams = R.over(R.lensProp("params"));
-
 /**
  * Run a continuation for consuming the body on the body
  */
 const consumeContextContent = R.curry((f, context) => context.content.consumeContent(f));
 
+const consumeContent = R.curry((f, content) => content.consumeContent(f));
+
 const headersLens = R.lensProp("headers");
 const headersView = R.lensProp("headersView");
 const contentLens = R.lensProp("content");
 
+const contentLengthLens = R.compose(headersLens, R.lensProp("content-length"));
+
+const hasBody = (ctx) =>
+    number.parseInt10(R.view(contentLengthLens, ctx)) > 0;
+
+const contextContentLens = R.lensProp("content");
+
 module.exports = {
     urlStruct,
     context,
+    contextContentLens,
     overContextParams,
     consumeContextContent,
+    consumeContent,
     headersLens,
     headersView,
-    contentLens
+    contentLens,
+    contentLengthLens,
+    hasBody
 };
