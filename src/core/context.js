@@ -50,6 +50,7 @@ const consumeContent = R.curry((f, content) => content.consumeContent(f));
 
 const headersLens = R.lensProp("headers");
 const headersView = R.lensProp("headersView");
+const contentLens = R.lensProp("content");
 
 const contentLengthLens = R.compose(headersLens, R.lensProp("content-length"));
 
@@ -67,6 +68,7 @@ module.exports = {
     consumeContent,
     headersLens,
     headersView,
+    contentLens,
     contentLengthLens,
     hasBody
 };

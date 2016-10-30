@@ -5,5 +5,6 @@ module.exports = {
     either: require("./either"),
     lens: require("./lens"),
     enumerable: require("./enumerable"),
-    number: require("./number")
+    number: require("./number"),
+    promise: require("./promise")
 };
