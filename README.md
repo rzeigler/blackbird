@@ -2,82 +2,52 @@ Master Branch: [![CircleCI](https://circleci.com/gh/theqabalist/blackbird.svg?st
 
 [Blackbird](https://github.com/theqabalist/blackbird) is an HTTP server that runs on Node (ES6+). It has the following goals:
 
-  * Simplicity: straightforward mapping of HTTP requests to JavaScript function calls
-  * Asynchronous: responses can be deferred using Promises/A+ promises
-  * Streaming: request and response bodies can be streamed
-  * Composability: middleware composes easily using promises
-  * Robustness: promises propagate errors up the call stack, simplifying error handling
+  * Asynchronous: Blackbird servers return Promises.
+  * Composable: Blackbird servers are just a function of specific particular type. All Blackbird decorators return and accept functions of this type making custom extensions easy.
+  * Descriptive: Components like routing and method dispatch use easy to read specifications for describing routes.
+  * Powerful: Blackbird supports type coercing route parameters, CORS, hierarchical routing and dispatch, and a content negotiation mechanism.
 
 ### Servers
 
-Writing a "Hello world" HTTP server in BB is simple.
+Writing a "Hello world" HTTP server in BB is simple. For meatier examples, refer to the integration directory which contains test for the server subsystems.
 
 ```js
-let BB = require('blackbird-server');
+const {core} = require("blackbird-server");
 
-BB.serve(function (conn) {
-  return "Hello world!";
-});
+core.serve(5000, (ctx) => Promise.resolve(core.response(200, {}, "Hello World!")));
 ```
 
-All Blackbird applications receive a single argument: a [Connection](https://github.com/theqabalist/blackbird/blob/master/modules/Connection.js) object. This object contains information about both the request and the response, as well as metadata including the `method` used in the request, the [location](https://github.com/theqabalist/blackbird/blob/master/modules/Location.js) of the request, the `status` of the response, and some helper methods.
+All Blackbird applications receive a single argument: a [Context](https://github.com/theqabalist/blackbird/blob/master/src/core/context.js) object. This object contains information about the request including the method, headers, path, and the socket. The context also contains a guarded method to read the request body. This may be called only once or it will throw. The application returns a promise describing the response to send. The body may be a String or a Buffer.
 
-Applications can send responses asynchronously using JavaScript promises. Simply return a promise from your app that resolves when the response is ready.
+### routing
 
 ```js
-let app = BB.stack();
+const {core, router: {router, path}} = require("blackbird-server");
 
-app.use(BB.logger);
-
-app.get('/users/:id', function (conn) {
-  let id = conn.params.id;
-
-  return getUser(id).then(function (user) {
-    conn.json(200, user);
-  });
-});
+core.serve(5000, router([
+    path.Route([path.lit("a"), path.nat("id")],
+      (ctx) => Promise.resolve(core.response(200, {}, `Received ${ctx.params.id}`))),
+    path.Route(path.shorthand(["/a/b/:other"]),
+      (ctx) => Promise.resolve(core.response(200, {}, `Other was ${ctx.params.other}`)))
+]));
 ```
 
-The call to `app.use` above illustrates how middleware is used to compose applications. BB ships with the following middleware:
+Blackbird subsystems produce and accept Blackbird handlers of the type Context -> Promise Response. Here, you can see this in play as the router is a factory for a blackbird server based on a ruoting definition. It accepts Blackbird handlers for each route.
 
-- [`BB.basicAuth`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/basicAuth.js): Provides authentication using [HTTP Basic auth](http://en.wikipedia.org/wiki/Basic_access_authentication)
-- [`BB.catch`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/catch.js): Error handling at any position in the stack
-- [`BB.charset`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/charset.js): Provides a default [charset](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17) in responses
-- [`BB.contentType`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/contentType.js): Provides a default [`Content-Type`](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17)
-- [`BB.favicon`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/favicon.js): Handles requests for `/favicon.ico`
-- [`BB.file`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/file.js): Efficiently serves static files
-- [`BB.gzip`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/gzip.js): [Gzip](http://en.wikipedia.org/wiki/Gzip)-encodes response content for clients that `Accept: gzip`
-- [`BB.logger`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/logger.js): Logs HTTP requests to the console
-- [`BB.mapper`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/mapper.js): Provides virtual host mapping, similar to [Apache's Virtual Hosts](http://httpd.apache.org/docs/2.2/vhosts/) or [nginx server blocks](http://nginx.org/en/docs/http/ngx_http_core_module.html#server)
-- [`BB.methodOverride`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/methodOverride.js): Overrides the HTTP method used in the request, for clients (like HTML forms) that don't support methods other than `GET` and `POST`
-- [`BB.modified`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/modified.js): HTTP caching using [`Last-Modified`](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29) and [`ETag`](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19)
-- [`BB.params`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/params.js): Multipart request parsing and handling
-- [`BB.proxy`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/proxy.js): Proxy request through to an alternate location
-- [`BB.rewrite`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/rewrite.js): Rewrites request URLs on the fly, similar to [Apache's mod_rewrite](http://httpd.apache.org/docs/current/mod/mod_rewrite.html)
-- [`BB.router`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/router.js): Request routing (ala [Sinatra](http://www.sinatrarb.com/)) based on the URL pathname
-- [`BB.session`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/session.js): HTTP sessions with pluggable storage including [memory](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/session/MemoryStore.js) (for development and testing), [cookies](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/session/CookieStore.js), and [Redis](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/session/RedisStore.js)
-- [`BB.stack`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/stack.js): Provides a `use` mechanism for composing applications fronted by middleware
-- [`BB.token`](https://github.com/theqabalist/blackbird/blob/master/modules/middleware/token.js): Cross-site request forgery protection
+Route definitions are slightly more verbose in Blackbird than in other server frameworks. The reason for this is the features provided by the route specification system. Each route is describe as an array of matchers. For instance, the first route matches paths of the form "/a/5". This may not seem impressive, except for the fact that in the handler, ctx.params.id is already a number. This mechanism can be extended to provide matchers for any desired type including short ids, or mongo object ids freeing handlers from needing to implement custom validation or coercion logic.
 
-### Proxies
+A shorthand form is provided by the shorthand function. This accepts an array of strings and path matchers. The strings should be of the form of a route definition in express. The example `shorthand(["/a/b/:other"])` expands to `[lit("a"), lit("b"), any("other")]`. You can intermix other matchers in the array to get coerced parameters.
 
-Because all BB applications share the same signature, it's easy to combine them in interesting ways. BB's HTTP proxy implementation illustrates this beautifully: a proxy is simply an application that forwards the request somewhere else.
+#### Method dispatch
+Method dispatch is handled in a similar fashion. Notice also that the method dispatcher is used in absence of the router. All of the Blackbird subsystems are useable in isolation or composable in any order. That said, generally you want to order them as router then dispatcher then content negotiator.
 
 ```js
-let proxyApp = BB.createProxy('http://twitter.com');
-
-// In a server environment we can use the BB.proxy middleware
-// to proxy all requests to the proxy's location.
-app.use(BB.proxy, proxyApp);
-
-// In a client application we can call the proxy directly to
-// send a request to the proxy's location.
-BB.post(proxyApp, {
-  params: {
-    username: 'bkeown'
-  }
-});
+core.serve(5000, dispatcher({
+    post: (ctx) => response.response(200, {}, "A POST happened")
+}));
 ```
+
+### Content Negotiation
 
 ### Installation
 
@@ -95,15 +65,8 @@ To run the tests in node:
 
     $ npm install
     $ npm test
+    $ npm run integration
 
-The Redis session store tests rely on Redis to run successfully. By default they are skipped, but if you want to run them fire up a Redis server on the default host and port and set the `$WITH_REDIS` environment variable.
-
-    $ WITH_REDIS=1 npm test
-
-To run the tests in Chrome:
-
-    $ npm install
-    $ npm run test-browser
 
 ### Influences
 
