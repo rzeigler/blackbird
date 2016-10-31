@@ -47,7 +47,29 @@ core.serve(5000, dispatcher({
 }));
 ```
 
+### Middleware
+Blackbird does include a traditional middleware solution although there are currently few provided. At the moment, is a body buffer middleware and a basic auth middleware. They are used as function decorates.
+
+```js
+const baseApp = (ctx) => Promise.resolve(response(200, {}, ctx.body));
+const app = bodyBuffer(baseApp);
+```
+
 ### Content Negotiation
+
+```js
+serve(port, negotiator([
+    responder(codecs.jsonDecoder, codecs.plainTextEncoder,
+        (ctx) => Promise.resolve(response.response(200, {}, ctx.body.message))),
+    responder(codecs.plainTextDecoder, codecs.jsonEncoder,
+        (ctx) => Promise.resolve(response.response(200, {}, {message: ctx.body})))
+]));
+```
+
+This defines a negotiator with several responders.
+Responders describe the ways in which the server will negotiate content types with a client.
+Each responder has an optional decoder, optional encoder, and a handler. When the responder handler runs, it receives the decoded input body as `ctx.body`. Its response body is the encoded with the responder encoder.
+Responders that do not decode a body (such as GETs) or those that send no content, such as 204 responders do not need the relevant side of the codec.
 
 ### Installation
 
