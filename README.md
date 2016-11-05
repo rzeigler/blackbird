@@ -17,7 +17,8 @@ const {core} = require("blackbird-server");
 core.serve(5000, (ctx) => Promise.resolve(core.response(200, {}, "Hello World!")));
 ```
 
-All Blackbird applications receive a single argument: a [Context](https://github.com/theqabalist/blackbird/blob/master/src/core/context.js) object. This object contains information about the request including the method, headers, path, and the socket. The context also contains a guarded method to read the request body. This may be called only once or it will throw. The application returns a promise describing the response to send. The body may be a String or a Buffer.
+All Blackbird applications receive a single argument: a [Context](https://github.com/theqabalist/blackbird/blob/master/src/core/context.js) object. This object contains information about the request including the method, headers, path, and the socket. The context also contains a guarded method to read the request body. This may be called only once or it will throw. The application returns a promise describing the response to send. The body may be a String or a Buffer. Blackbird accepts values in lieu of promises for all internal functions. That said,
+almost everything interesting is going to involve asynchrony.
 
 ### routing
 
@@ -32,11 +33,15 @@ core.serve(5000, router([
 ]));
 ```
 
-Blackbird subsystems produce and accept Blackbird handlers of the type Context -> Promise Response. Here, you can see this in play as the router is a factory for a blackbird server based on a ruoting definition. It accepts Blackbird handlers for each route.
+Blackbird subsystems produce and accept Blackbird handlers of the type Context -> Promise Response. Here, you can see this in play as the router is a factory for a blackbird server based on a routing definition. It accepts Blackbird handlers for each route.
 
 Route definitions are slightly more verbose in Blackbird than in other server frameworks. The reason for this is the features provided by the route specification system. Each route is describe as an array of matchers. For instance, the first route matches paths of the form "/a/5". This may not seem impressive, except for the fact that in the handler, ctx.params.id is already a number. This mechanism can be extended to provide matchers for any desired type including short ids, or mongo object ids freeing handlers from needing to implement custom validation or coercion logic.
 
-A shorthand form is provided by the shorthand function. This accepts an array of strings and path matchers. The strings should be of the form of a route definition in express. The example `shorthand(["/a/b/:other"])` expands to `[lit("a"), lit("b"), any("other")]`. You can intermix other matchers in the array to get coerced parameters.
+lit's parameter is the literal string to match. It outputs no parameter data. For most other matchers, the parameter is
+the name of the argument to output.
+
+A shorthand form is provided by the shorthand function. This accepts an array of strings and path matchers. The strings should be of the form of a route definition in express. The example `shorthand(["/a/b/:other"])` expands to `[lit("a"), lit("b"), any("other")]`. You can intermix other matchers in the array to get coerced parameters. For instance, `shorthand(["/a/b", nat("id"), "/:q"])` would expand to
+`[lit("a"), lit("b"), nat("id"), any("q")]`.
 
 #### Method dispatch
 Method dispatch is handled in a similar fashion. Notice also that the method dispatcher is used in absence of the router. All of the Blackbird subsystems are useable in isolation or composable in any order. That said, generally you want to order them as router then dispatcher then content negotiator.
