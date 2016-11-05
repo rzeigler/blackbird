@@ -91,5 +91,7 @@ module.exports = {
     paramsLens,
     remainingLens,
     result,
-    Path
+    Path,
+    Route: Path.Route,
+    Tree: Path.Tree
 };
