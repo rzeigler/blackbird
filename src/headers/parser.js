@@ -17,7 +17,7 @@ const canonicalizeHeaderNames = (headers) =>
 
 const crlf = P.regex(/\r?\n/);
 const colon = P.string(":").skip(P.string(" ").many());
-const name = P.regex(/[a-zA-Z\-]+/);
+const name = P.regex(/[a-zA-Z-]+/);
 const value = P.regex(/[^\r\n]+/);
 
 // Construct a pair of elements
