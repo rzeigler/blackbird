@@ -1,6 +1,6 @@
-Master Branch: [![CircleCI](https://circleci.com/gh/theqabalist/blackbird.svg?style=svg&circle-token=d32d4715e49ec8dcda656acfe86280b446a57af3)](https://circleci.com/gh/theqabalist/blackbird)
+Master Branch: [![CircleCI](https://circleci.com/gh/rzeigler/blackbird.svg?style=svg)](https://circleci.com/gh/rzeigler/blackbird)
 
-[Blackbird](https://github.com/theqabalist/blackbird) is an HTTP server that runs on Node (ES6+). It has the following goals:
+[Blackbird](https://github.com/rzeigler/blackbird) is an HTTP server that runs on Node (ES6+). It has the following goals:
 
   * Asynchronous: Blackbird servers return Promises.
   * Composable: Blackbird servers are just a function of specific particular type. All Blackbird decorators return and accept functions of this type making custom extensions easy.
@@ -17,7 +17,7 @@ const {core} = require("blackbird-server");
 core.serve(5000, (ctx) => Promise.resolve(core.response(200, {}, "Hello World!")));
 ```
 
-All Blackbird applications receive a single argument: a [Context](https://github.com/theqabalist/blackbird/blob/master/src/core/context.js) object. This object contains information about the request including the method, headers, path, and the socket. The context also contains a guarded method to read the request body. This may be called only once or it will throw. The application returns a promise describing the response to send. The body may be a String or a Buffer. Blackbird accepts values in lieu of promises for all internal functions. That said,
+All Blackbird applications receive a single argument: a [Context](https://github.com/rzeigler/blackbird/blob/master/src/core/context.js) object. This object contains information about the request including the method, headers, path, and the socket. The context also contains a guarded method to read the request body. This may be called only once or it will throw. The application returns a promise describing the response to send. The body may be a String or a Buffer. Blackbird accepts values in lieu of promises for all internal functions. That said,
 almost everything interesting is going to involve asynchrony.
 
 ### routing
@@ -84,7 +84,7 @@ Using [npm](https://www.npmjs.org/):
 
 ### Issues
 
-Please file issues on the [issue tracker on GitHub](https://github.com/theqabalist/blackbird/issues).
+Please file issues on the [issue tracker on GitHub](https://github.com/rzeigler/blackbird/issues).
 
 ### Tests
 
