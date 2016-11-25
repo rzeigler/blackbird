@@ -110,7 +110,7 @@ describe("core", () => {
         describe("#conditionResponse", function () {
             it("should attach content-length when there is a body", function () {
                 const body = response.bufferFromUtf8("Hello, World");
-                expect(response.conditionResponse(response.response(200, {}, body)).headers["content-length"])
+                expect(response.conditionResponse(response.makeResponse(200, {}, body)).headers["content-length"])
                     .to.equal(Buffer.byteLength(body).toString());
             });
         });

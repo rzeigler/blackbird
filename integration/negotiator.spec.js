@@ -1,7 +1,7 @@
 const Promise = require("bluebird");
 const {expect} = require("chai");
 const request = require("request-promise");
-const {serve, response} = require("../src/core");
+const {serve, makeResponse} = require("../src/core");
 const {negotiator, responder, codecs} = require("../src/negotiator");
 
 /* eslint no-process-env: 0 */
@@ -10,19 +10,20 @@ const host = `http://localhost:${port}`;
 
 describe("negotiator", () => {
     describe("simple cases", () => {
+        const handler = negotiator([
+            responder(codecs.jsonDecoder, codecs.plainTextEncoder,
+                (ctx) => Promise.resolve(makeResponse(200, {}, ctx.body.message))),
+            responder(codecs.plainTextDecoder, codecs.jsonEncoder,
+                (ctx) => Promise.resolve(makeResponse(200, {}, {message: ctx.body})))
+        ]);
         let server = null;
         beforeEach((done) => {
-            serve(port, negotiator([
-                responder(codecs.jsonDecoder, codecs.plainTextEncoder,
-                    (ctx) => Promise.resolve(response.response(200, {}, ctx.body.message))),
-                responder(codecs.plainTextDecoder, codecs.jsonEncoder,
-                    (ctx) => Promise.resolve(response.response(200, {}, {message: ctx.body})))
-            ]))
-            .then((srv) => {
-                server = srv;
-                done();
-            })
-            .catch(done);
+            serve(port, handler)
+                .then((srv) => {
+                    server = srv;
+                    done();
+                })
+                .catch(done);
         });
 
         afterEach(function () {
@@ -70,7 +71,7 @@ describe("negotiator", () => {
         beforeEach((done) => {
             serve(port, negotiator([
                 responder(codecs.jsonDecoder, codecs.plainTextEncoder,
-                    (ctx) => Promise.resolve(response.response(200, {}, ctx.body.message)))
+                    (ctx) => Promise.resolve(makeResponse(200, {}, ctx.body.message)))
             ]))
             .then((srv) => {
                 server = srv;
@@ -101,7 +102,7 @@ describe("negotiator", () => {
         beforeEach((done) => {
             serve(port, negotiator([
                 responder(codecs.jsonDecoder, codecs.plainTextEncoder,
-                    (ctx) => Promise.resolve(response.response(200, {}, ctx.body.message)))
+                    (ctx) => Promise.resolve(makeResponse(200, {}, ctx.body.message)))
             ]))
             .then((srv) => {
                 server = srv;
@@ -134,9 +135,9 @@ describe("negotiator", () => {
         beforeEach((done) => {
             serve(port, negotiator([
                 responder(codecs.jsonDecoder, codecs.plainTextEncoder,
-                    (ctx) => Promise.resolve(response.response(200, {}, ctx.body.message))),
+                    (ctx) => Promise.resolve(makeResponse(200, {}, ctx.body.message))),
                 responder(codecs.jsonDecoder, codecs.jsonEncoder,
-                    (ctx) => Promise.resolve(response.response(200, {}, {message: ctx.body})))
+                    (ctx) => Promise.resolve(makeResponse(200, {}, {message: ctx.body})))
             ]))
             .then((srv) => {
                 server = srv;

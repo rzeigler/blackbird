@@ -34,22 +34,24 @@ const urlStruct = (url) => {
  * Value constructor for context objects. Construct a context object with the listed fields from the request and
  * containing a Content object built from the request in the content field
  */
-const context = (request) => R.mergeAll([
+const makeContext = (request) => R.mergeAll([
     R.pick(["socket", "httpVersion", "method", "headers"], request),
     R.compose(R.objOf("content"), R.construct(Content))(request),
     R.compose(urlStruct, R.prop("url"))(request)
 ]);
 
-const overContextParams = R.over(R.lensProp("params"));
+const paramsLens = R.lensProp("params");
 /**
- * Run a continuation for consuming the body on the body
+ * Run a continuation for consuming the body on a context
  */
 const consumeContextContent = R.curry((f, context) => context.content.consumeContent(f));
 
+/**
+ * Run a continuation for consuming a body (content)
+ */
 const consumeContent = R.curry((f, content) => content.consumeContent(f));
 
 const headersLens = R.lensProp("headers");
-const headersView = R.lensProp("headersView");
 const contentLens = R.lensProp("content");
 
 const contentLengthLens = R.compose(headersLens, R.lensProp("content-length"));
@@ -61,13 +63,12 @@ const contextContentLens = R.lensProp("content");
 
 module.exports = {
     urlStruct,
-    context,
+    makeContext,
     contextContentLens,
-    overContextParams,
+    paramsLens,
     consumeContextContent,
     consumeContent,
     headersLens,
-    headersView,
     contentLens,
     contentLengthLens,
     hasBody

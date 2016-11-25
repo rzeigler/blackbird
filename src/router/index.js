@@ -2,17 +2,14 @@ const R = require("ramda");
 const Promise = require("bluebird");
 const {option, array} = require("../data");
 const {
-    response: {
-        response,
-        headersLens,
-        headersView
-    },
-    context
+    makeResponse,
+    headersLens,
+    paramsLens
 } = require("../core");
 const p = require("./path");
 
-const notFound = response(404, {}, "");
-const methodNotAllowed = response(405, {}, "");
+const notFound = makeResponse(404, {}, "");
+const methodNotAllowed = makeResponse(405, {}, "");
 
 const router = R.curry((index, paths, ctx) => {
     if (index >= R.length(paths)) {
@@ -26,7 +23,7 @@ const router = R.curry((index, paths, ctx) => {
                 return router(index + 1, paths, ctx);
             }
             const assocRemaining = R.assoc("remainingPathSplit", r.remaining);
-            const conditionContext = R.compose(context.overContextParams(R.merge(r.params)), assocRemaining);
+            const conditionContext = R.compose(R.over(paramsLens, R.merge(r.params)), assocRemaining);
             return Promise.resolve(path.app(conditionContext(ctx)));
         },
         None: () => router(index + 1, paths, ctx)
@@ -37,8 +34,8 @@ const router = R.curry((index, paths, ctx) => {
 const overHeaders = R.over(headersLens);
 
 const joinHeaders = array.join(", ");
-const originView = R.view(R.compose(context.headersLens, R.lensProp("origin")));
-const requestHeadersView = R.view(R.compose(context.headersLens, R.lensProp("access-control-request-headers")));
+const originView = R.view(R.compose(headersLens, R.lensProp("origin")));
+const requestHeadersView = R.view(R.compose(headersLens, R.lensProp("access-control-request-headers")));
 
 const corsHeaders = R.curry((allowMethods, ctx) => ({
     "Access-Control-Allow-Origin": originView(ctx),
@@ -49,11 +46,11 @@ const corsHeaders = R.curry((allowMethods, ctx) => ({
 }));
 
 const corsHandler = R.curry((allowMethods, ctx) =>
-    Promise.resolve(response(200, corsHeaders(allowMethods, ctx), null)));
+    Promise.resolve(makeResponse(200, corsHeaders(allowMethods, ctx), null)));
 
 const conditionCorsResponse = R.curry((ctx, rsp) =>
     overHeaders(R.merge(
-        R.merge({"Access-Control-Expose-Headers": joinHeaders(R.keys(headersView(rsp)))},
+        R.merge({"Access-Control-Expose-Headers": joinHeaders(R.keys(R.view(headersLens, rsp)))},
                 corsHeaders([R.toLower(ctx.method)], ctx))
     ), rsp));
 

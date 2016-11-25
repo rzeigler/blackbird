@@ -2,23 +2,23 @@ const http = require("http");
 const https = require("https");
 const R = require("ramda");
 const Promise = require("bluebird");
-const {context} = require("./context");
+const {makeContext} = require("./context");
 const {
-    statusCodeView,
-    headersView,
-    bodyView,
-    responseFromError,
+    statusCodeLens,
+    headersLens,
+    bodyLens,
+    makeResponseFromError,
     conditionResponse
 } = require("./response");
 
 const send = R.curry((timeout, srvRes, appRes) => {
     srvRes.setTimeout(timeout);
-    const body = bodyView(appRes);
+    const body = R.view(bodyLens, appRes);
     return new Promise((resolve, reject) => {
         srvRes.on("close", reject);
         srvRes.on("end", resolve);
         try {
-            srvRes.writeHead(statusCodeView(appRes), headersView(appRes));
+            srvRes.writeHead(R.view(statusCodeLens, appRes), R.view(headersLens, appRes));
             srvRes.write(body);
             srvRes.end();
         } catch (e) { // This is usually the result of an invalid appRes
@@ -36,8 +36,8 @@ const handleSendFailure = R.curry((req, e) => {
 
 const requestHandler = R.curry((opts, app, req, res) => {
     req.setTimeout(opts.requestTimeout);
-    R.tryCatch(R.compose(Promise.resolve, app), Promise.reject)(context(req))
-        .catch(responseFromError)
+    R.tryCatch(R.compose(Promise.resolve, app), Promise.reject)(makeContext(req))
+        .catch(makeResponseFromError)
         .then(conditionResponse)
         .then(send(opts.responseTimeout, res))
         .catch(handleSendFailure(req));

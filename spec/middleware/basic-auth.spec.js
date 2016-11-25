@@ -2,7 +2,7 @@ const {expect} = require("chai");
 const {encode} = require("base-64");
 const {parallel, lib} = require("../loader");
 const basicAuth = parallel(require, __filename);
-const {response: {response}} = lib(require, "core");
+const {makeResponse} = lib(require, "core");
 
 describe("middleware", () => {
     describe("basic-auth", () => {
@@ -19,14 +19,14 @@ describe("middleware", () => {
             it("should reject when missing credentials", () =>
                 decorated({headers: {}})
                     .then(() => expect(true).to.equal(false))
-                    .catch((rsp) => expect(rsp).to.eql(response(401, {"WWW-Authenticate": "Basic realm=testing"},
-                                                               "Unauthorized")))
+                    .catch((rsp) => expect(rsp).to.eql(makeResponse(401, {"WWW-Authenticate": "Basic realm=testing"},
+                                                                    "Unauthorized")))
             );
             const wrong = "ryan:wrong";
             it("should reject when credentials are wrong", () =>
                 decorated({headers: {authorization: `Basic ${encode(wrong)}`}})
                     .then(() => expect(true).to.equal(false))
-                    .catch((rsp) => expect(rsp).to.eql(response(403, {}, "Forbidden")))
+                    .catch((rsp) => expect(rsp).to.eql(makeResponse(403, {}, "Forbidden")))
             );
             const right = "ryan:pass";
             it("should accept when credentials are correct", () =>

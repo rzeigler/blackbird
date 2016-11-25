@@ -1,7 +1,7 @@
 const {expect} = require("chai");
 const jsverify = require("jsverify");
 const request = require("request-promise");
-const {serve, context, response, body} = require("../src/core");
+const {serve, consumeContextContent, bufferEmitter, makeResponse, inflateResponse} = require("../src/core");
 const Promise = require("bluebird");
 const R = require("ramda");
 
@@ -13,7 +13,7 @@ describe("core/serve", function () {
     describe("simplest possible", function () {
         let server = null;
         beforeEach(() =>
-            serve(port, () => response.response(200, {}, "Hello, World!"))
+            serve(port, () => makeResponse(200, {}, "Hello, World!"))
             .then((srv) => {
                 server = srv;
             })
@@ -31,7 +31,7 @@ describe("core/serve", function () {
     describe("simplest possible promised", function () {
         let server = null;
         beforeEach(() =>
-            serve(port, () => Promise.resolve(response.inflateResponse("Hello, World!")).delay(100))
+            serve(port, () => Promise.resolve(inflateResponse("Hello, World!")).delay(100))
             .then((srv) => {
                 server = srv;
             })
@@ -49,9 +49,7 @@ describe("core/serve", function () {
     describe("failing server", function () {
         let server = null;
         beforeEach(() =>
-            serve(port, function () {
-                return Promise.reject(new TypeError("Explode!"));
-            })
+            serve(port, () => Promise.reject(new TypeError("Explode!")))
             .then((srv) => {
                 server = srv;
             })
@@ -73,8 +71,8 @@ describe("core/serve", function () {
 
     describe("echo server", function () {
         let server = null;
-        beforeEach(() => serve(port, (ctx) => context.consumeContextContent(body.buffer, ctx)
-                    .then(response.inflateResponse))
+        beforeEach(() => serve(port, (ctx) => consumeContextContent(bufferEmitter, ctx)
+                    .then(inflateResponse))
                 .then((srv) => {
                     server = srv;
                 })

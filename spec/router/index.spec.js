@@ -3,7 +3,7 @@ const R = require("ramda");
 const {expect} = require("chai");
 const {lib} = require("../loader");
 const {router, corsDispatcher, path: {lit, any, nat, Path}} = lib(require, "router");
-const {response: {response}, context: {urlStruct}} = lib(require, "core");
+const {makeResponse, urlStruct} = lib(require, "core");
 
 describe("router", () => {
     describe("router", () => {
@@ -25,7 +25,7 @@ describe("router", () => {
         it("should return 404 when no matches are available", () =>
              app(urlStruct("/b/c"))
                 .then(() => expect(true).to.equal(false))
-                .catch((v) => expect(v).to.eql(response(404, {}, ""))));
+                .catch((v) => expect(v).to.eql(makeResponse(404, {}, ""))));
         it("should descend into subrouters", () =>
             app(urlStruct("/a/b/c/1/d/foo"))
                 .then((result) => expect(result.params).to.eql({id: "1", q: "foo"}))
@@ -33,14 +33,14 @@ describe("router", () => {
         it("should throw 404 when no matches are found in subrouters", () =>
             app(urlStruct("/a/b/c/1/e/foo"))
                 .then(() => expect(true).to.equal(false))
-                .catch((v) => expect(v).to.eql(response(404, {}, "")))
+                .catch((v) => expect(v).to.eql(makeResponse(404, {}, "")))
         );
     });
     describe("dispatcher", () => {
         const app = corsDispatcher({
-            get: R.always(response(200, {}, "get")),
-            post: R.always(response(200, {}, "post")),
-            delete: R.always(response(200, {}, "delete"))
+            get: R.always(makeResponse(200, {}, "get")),
+            post: R.always(makeResponse(200, {}, "post")),
+            delete: R.always(makeResponse(200, {}, "delete"))
         });
         it("should dispatch to the correct handler", () =>
             app({method: "POST", headers: {origin: "http://localhost"}})
@@ -48,10 +48,10 @@ describe("router", () => {
         it("should return 404 when there are no matches found", () =>
             app({method: "PATCH"})
                 .then(() => expect(true).to.equal(false))
-                .catch((v) => expect(v).to.eql(response(405, {}, ""))));
+                .catch((v) => expect(v).to.eql(makeResponse(405, {}, ""))));
         it("should condition the response correctly", () =>
             app({method: "GET", headers: {origin: "http://localhost"}})
-                .then((v) => expect(v).to.eql(response(200, {
+                .then((v) => expect(v).to.eql(makeResponse(200, {
                     "Access-Control-Expose-Headers": "",
                     "Access-Control-Allow-Credentials": "true",
                     "Access-Control-Allow-Headers": "",
@@ -65,7 +65,7 @@ describe("router", () => {
                     origin: "http://localhost",
                     "access-control-request-headers": "baz, bar"
                 }
-            }).then((v) => expect(v).to.eql(response(200, {
+            }).then((v) => expect(v).to.eql(makeResponse(200, {
                 "Access-Control-Allow-Origin": "http://localhost",
                 "Access-Control-Allow-Credentials": "true",
                 "Access-Control-Allow-Headers": "baz, bar",

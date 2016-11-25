@@ -18,17 +18,13 @@ const statusCodeLens = R.lensProp("statusCode");
 const headersLens = R.lensProp("headers");
 const bodyLens = R.lensProp("body");
 
-const statusCodeView = R.view(statusCodeLens);
-const headersView = R.view(headersLens);
-const bodyView = R.view(bodyLens);
-
 const isStringMap = R.allPass([R.is(Object), R.compose(R.all(R.is(String)), R.values)]);
-const statusCodeIsNumber = R.compose(R.is(Number), statusCodeView);
-const headersIsStringMap = R.compose(isStringMap, headersView);
-const headersIsUndefined = R.compose(R.isNil, headersView);
-const bodyIsUndefined = R.compose(R.isNil, bodyView);
-const bodyIsBuffer = R.compose(R.is(Buffer), bodyView);
-const bodyIsString = R.compose(R.is(String), bodyView);
+const statusCodeIsNumber = R.compose(R.is(Number), R.view(statusCodeLens));
+const headersIsStringMap = R.compose(isStringMap, R.view(headersLens));
+const headersIsUndefined = R.compose(R.isNil, R.view(headersLens));
+const bodyIsUndefined = R.compose(R.isNil, R.view(bodyLens));
+const bodyIsBuffer = R.compose(R.is(Buffer), R.view(bodyLens));
+const bodyIsString = R.compose(R.is(String), R.view(bodyLens));
 
 /**
  * Determine if an object meets the criteria for a response
@@ -41,7 +37,7 @@ const isConformingResponse = R.allPass([
 ]);
 
 /**
- * Coerce certain obvious types to responses
+ * Coerce certain obvious types to responses. This does nothing if response in as object
  */
 const inflateResponse = R.cond([
     [R.is(Buffer), inflateBufferBody],
@@ -50,7 +46,7 @@ const inflateResponse = R.cond([
 ]);
 
 const attachContentLength = (response) =>
-    R.over(headersLens, R.assoc("content-length", Buffer.byteLength(bodyView(response)).toString()))(response);
+    R.over(headersLens, R.assoc("content-length", Buffer.byteLength(R.view(bodyLens, response)).toString()))(response);
 
 const conditionContentLength = R.cond([
     [R.complement(bodyIsUndefined), attachContentLength],
@@ -77,15 +73,15 @@ const contentType = R.objOf("content-type");
 /**
  * Canonical responses contain a Buffer as the body field
  */
-const response = R.curry((statusCode, headers, body) => ({statusCode, headers, body}));
+const makeResponse = R.curry((statusCode, headers, body) => ({statusCode, headers, body}));
 
 /**
  * Construct a response from an error. If the error is a conforming response, this is R.identity. Otherwise, a 500
  * error with a body of the error.toString() is produced
  */
-const responseFromError = R.cond([
+const makeResponseFromError = R.cond([
     [isConformingResponse, R.identity],
-    [R.T, R.compose(response(500, {}), Buffer.from, (e) => e.toString())]
+    [R.T, R.compose(makeResponse(500, {}), Buffer.from, (e) => e.toString())]
 ]);
 
 
@@ -157,14 +153,11 @@ module.exports = {
     inflateResponse,
     conditionResponse,
     conditionContentLength,
-    response,
-    responseFromError,
+    makeResponse,
+    makeResponseFromError,
     contentType,
     statusCodeLens,
-    statusCodeView,
     headersLens,
-    headersView,
     bodyLens,
-    bodyView,
     statusCodes
 };
