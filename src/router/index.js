@@ -8,12 +8,12 @@ const {
 } = require("../core");
 const p = require("./path");
 
-const notFound = makeResponse(404, {}, "");
-const methodNotAllowed = makeResponse(405, {}, "");
+const notFoundResponse = makeResponse(404, {}, "");
+const methodNotAllowedResponse = makeResponse(405, {}, "");
 
 const router = R.curry((index, paths, ctx) => {
     if (index >= R.length(paths)) {
-        return Promise.reject(notFound);
+        return Promise.reject(notFoundResponse);
     }
     const path = R.nth(index, paths);
     const result = p.match(path.elems, ctx.remainingPathSplit || ctx.pathSplit);
@@ -63,7 +63,7 @@ const dispatcher = R.curry((cors, apps, ctx) => {
     // Add cors headers to expose everything if this isn't a preflight
     const runApp = (app) => Promise.resolve(app(ctx))
         .then(cors && method !== "options" ? conditionCorsResponse(ctx) : R.identity);
-    const runMissed = () => Promise.reject(methodNotAllowed);
+    const runMissed = () => Promise.reject(methodNotAllowedResponse);
     // If preflight is enabled, add post processing stage that adds cors responses
     return option.inhabit(R.prop(method, R.merge(preflightHandler, apps)))
         .fold(runApp, runMissed);
