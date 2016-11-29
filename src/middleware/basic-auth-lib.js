@@ -3,12 +3,12 @@ const Promise = require("bluebird");
 const base64 = require("base-64");
 const {Some, None} = require("fantasy-options");
 const {option, promise: {alwaysReject}} = require("../data");
-const {makeResponse, headersLens} = require("../core");
+const {makeResponse, contextHeadersLens} = require("../core");
 
 const unauthorizedResponse = (realm) => makeResponse(401, {"WWW-Authenticate": `Basic realm=${realm}`}, "Unauthorized");
 const forbiddenResponse = makeResponse(403, {}, "Forbidden");
 
-const authorizationView = R.view(R.compose(headersLens, R.lensProp("authorization")));
+const authorizationView = R.view(R.compose(contextHeadersLens, R.lensProp("authorization")));
 
 const regEx = /Basic\s+([a-zA-Z0-9+/=]+)$/;
 

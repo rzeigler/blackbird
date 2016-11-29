@@ -40,36 +40,33 @@ const makeContext = (request) => R.mergeAll([
     R.compose(urlStruct, R.prop("url"))(request)
 ]);
 
-const paramsLens = R.lensProp("params");
+const contextParamsLens = R.lensProp("params");
 /**
  * Run a continuation for consuming the body on a context
  */
-const consumeContextContent = R.curry((f, context) => context.content.consumeContent(f));
+const contextConsumeContent = R.curry((f, context) => context.content.consumeContent(f));
 
 /**
  * Run a continuation for consuming a body (content)
  */
 const consumeContent = R.curry((f, content) => content.consumeContent(f));
 
-const headersLens = R.lensProp("headers");
-const contentLens = R.lensProp("content");
+const contextHeadersLens = R.lensProp("headers");
+const contextContentLens = R.lensProp("content");
 
-const contentLengthLens = R.compose(headersLens, R.lensProp("content-length"));
+const contentLengthLens = R.compose(contextHeadersLens, R.lensProp("content-length"));
 
 const hasBody = (ctx) =>
     number.parseInt10(R.view(contentLengthLens, ctx)) > 0;
 
-const contextContentLens = R.lensProp("content");
-
 module.exports = {
     urlStruct,
     makeContext,
-    contextContentLens,
-    paramsLens,
-    consumeContextContent,
+    contextParamsLens,
+    contextConsumeContent,
     consumeContent,
-    headersLens,
-    contentLens,
+    contextHeadersLens,
+    contextContentLens,
     contentLengthLens,
     hasBody
 };

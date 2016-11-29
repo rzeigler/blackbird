@@ -1,7 +1,7 @@
 const {expect} = require("chai");
 const jsverify = require("jsverify");
 const request = require("request-promise");
-const {serve, consumeContextContent, bufferEmitter, makeResponse, inflateResponse} = require("../src/core");
+const {serve, contextConsumeContent, bufferEmitter, makeResponse, inflateResponse} = require("../src/core");
 const Promise = require("bluebird");
 const R = require("ramda");
 
@@ -71,7 +71,7 @@ describe("core/serve", function () {
 
     describe("echo server", function () {
         let server = null;
-        beforeEach(() => serve(port, (ctx) => consumeContextContent(bufferEmitter, ctx)
+        beforeEach(() => serve(port, (ctx) => contextConsumeContent(bufferEmitter, ctx)
                     .then(inflateResponse))
                 .then((srv) => {
                     server = srv;

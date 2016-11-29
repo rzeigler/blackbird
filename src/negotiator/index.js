@@ -2,11 +2,12 @@ const R = require("ramda");
 const Promise = require("bluebird");
 const {
     bufferEmitter,
-    headersLens,
-    statusCodeLens,
-    bodyLens,
+    contextHeadersLens,
+    responseHeadersLens,
+    responseStatusCodeLens,
+    responseBodyLens,
     makeResponse,
-    consumeContextContent
+    contextConsumeContent
 } = require("../core");
 const {Left, Right} = require("fantasy-eithers");
 const Either = require("fantasy-eithers");
@@ -36,8 +37,8 @@ const {
 const prio = "q";
 
 // Implementation
-const contentTypeLens = R.compose(headersLens, R.lensProp("content-type"));
-const acceptLens = R.compose(headersLens, R.lensProp("accept"));
+const contentTypeLens = R.compose(contextHeadersLens, R.lensProp("content-type"));
+const acceptLens = R.compose(contextHeadersLens, R.lensProp("accept"));
 
 const parseAccept = (accept) => {
     if (!accept) {
@@ -159,7 +160,7 @@ const runResponder = R.curry((contentTypeMedia, ctx, {type: acceptMedia, respond
     const handle = R.view(handlerLens, responder);
     const bodyAdd = hasNoDecoder(responder) ?
         Promise.resolve({}) :
-        consumeContextContent(bufferEmitter, ctx)
+        contextConsumeContent(bufferEmitter, ctx)
             .then((buf) => {
                 const decode = R.view(decoderHandlerLens, responder);
                 const constraint = R.view(decoderConstraintLens, responder);
@@ -172,17 +173,17 @@ const runResponder = R.curry((contentTypeMedia, ctx, {type: acceptMedia, respond
     return bodyAdd.then(R.merge(ctx)) // Add the body in
         .then(handle)
         .then((res) => {
-            if (!R.view(headersLens, res) || !R.view(statusCodeLens)) {
+            if (!R.view(responseHeadersLens, res) || !R.view(responseStatusCodeLens)) {
                 return makeResponse(500, {}, "Handler did not produce a valid response");
             }
             // We have no encoder or no body, so 204 no matter what
-            if (hasNoEncoder(responder) || !R.view(bodyLens, res)) {
-                return makeResponse(204, R.view(headersLens, res), "");
+            if (hasNoEncoder(responder) || !R.view(responseBodyLens, res)) {
+                return makeResponse(204, R.view(responseHeadersLens, res), "");
             }
             const enc = R.view(encoderHandlerLens, responder);
             // We have an encoder, so run it on the responses body
-            const encode = R.over(bodyLens, enc(R.view(media.parametersLens, acceptMedia)));
-            const setContentType = R.over(headersLens, R.merge({"Content-Type": media.toString(acceptMedia)}));
+            const encode = R.over(responseBodyLens, enc(R.view(media.parametersLens, acceptMedia)));
+            const setContentType = R.over(responseHeadersLens, R.merge({"Content-Type": media.toString(acceptMedia)}));
             const processResponse = R.compose(encode, setContentType);
             return processResponse(res);
         });

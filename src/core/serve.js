@@ -4,21 +4,21 @@ const R = require("ramda");
 const Promise = require("bluebird");
 const {makeContext} = require("./context");
 const {
-    statusCodeLens,
-    headersLens,
-    bodyLens,
+    responseStatusCodeLens,
+    responseHeadersLens,
+    responseBodyLens,
     makeResponseFromError,
     conditionResponse
 } = require("./response");
 
 const send = R.curry((timeout, srvRes, appRes) => {
     srvRes.setTimeout(timeout);
-    const body = R.view(bodyLens, appRes);
+    const body = R.view(responseBodyLens, appRes);
     return new Promise((resolve, reject) => {
         srvRes.on("close", reject);
         srvRes.on("end", resolve);
         try {
-            srvRes.writeHead(R.view(statusCodeLens, appRes), R.view(headersLens, appRes));
+            srvRes.writeHead(R.view(responseStatusCodeLens, appRes), R.view(responseHeadersLens, appRes));
             srvRes.write(body);
             srvRes.end();
         } catch (e) { // This is usually the result of an invalid appRes

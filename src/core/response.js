@@ -14,17 +14,17 @@ const inflateStringBody = (string) => ({
     body: bufferFromUtf8(string)
 });
 
-const statusCodeLens = R.lensProp("statusCode");
-const headersLens = R.lensProp("headers");
-const bodyLens = R.lensProp("body");
+const responseStatusCodeLens = R.lensProp("statusCode");
+const responseHeadersLens = R.lensProp("headers");
+const responseBodyLens = R.lensProp("body");
 
 const isStringMap = R.allPass([R.is(Object), R.compose(R.all(R.is(String)), R.values)]);
-const statusCodeIsNumber = R.compose(R.is(Number), R.view(statusCodeLens));
-const headersIsStringMap = R.compose(isStringMap, R.view(headersLens));
-const headersIsUndefined = R.compose(R.isNil, R.view(headersLens));
-const bodyIsUndefined = R.compose(R.isNil, R.view(bodyLens));
-const bodyIsBuffer = R.compose(R.is(Buffer), R.view(bodyLens));
-const bodyIsString = R.compose(R.is(String), R.view(bodyLens));
+const statusCodeIsNumber = R.compose(R.is(Number), R.view(responseStatusCodeLens));
+const headersIsStringMap = R.compose(isStringMap, R.view(responseHeadersLens));
+const headersIsUndefined = R.compose(R.isNil, R.view(responseHeadersLens));
+const bodyIsUndefined = R.compose(R.isNil, R.view(responseBodyLens));
+const bodyIsBuffer = R.compose(R.is(Buffer), R.view(responseBodyLens));
+const bodyIsString = R.compose(R.is(String), R.view(responseBodyLens));
 
 /**
  * Determine if an object meets the criteria for a response
@@ -46,7 +46,8 @@ const inflateResponse = R.cond([
 ]);
 
 const attachContentLength = (response) =>
-    R.over(headersLens, R.assoc("content-length", Buffer.byteLength(R.view(bodyLens, response)).toString()))(response);
+    R.over(responseHeadersLens,
+        R.assoc("content-length", Buffer.byteLength(R.view(responseBodyLens, response)).toString()))(response);
 
 const conditionContentLength = R.cond([
     [R.complement(bodyIsUndefined), attachContentLength],
@@ -55,8 +56,8 @@ const conditionContentLength = R.cond([
 
 const conditionBody = R.cond([
     [bodyIsString, R.compose(
-        R.over(headersLens, R.assoc("content-type", "text/plain")),
-        R.over(bodyLens, bufferFromUtf8))],
+        R.over(responseHeadersLens, R.assoc("content-type", "text/plain")),
+        R.over(responseBodyLens, bufferFromUtf8))],
     [R.T, R.identity]
 ]);
 
@@ -156,8 +157,8 @@ module.exports = {
     makeResponse,
     makeResponseFromError,
     contentType,
-    statusCodeLens,
-    headersLens,
-    bodyLens,
+    responseStatusCodeLens,
+    responseHeadersLens,
+    responseBodyLens,
     statusCodes
 };
