@@ -1,34 +1,14 @@
 {
   "name": "blackbird-server",
   "version": "0.1.0",
-  "description": "HTTP for JavaScript",
-  "main": "src",
+  "description": "HTTP server for javascript.",
   "scripts": {
-    "lint": "eslint .",
-    "test": "mocha spec/**/*.js",
-    "integration": "mocha integration/**/*.js",
-    "coverage": "istanbul cover node_modules/mocha/bin/_mocha 'spec/**/*.spec.js'",
-    "build": "./build.sh"
   },
   "dependencies": {
-    "bluebird": "^3.4.1",
-    "daggy": "0.0.1",
-    "base-64": "^0.1.0",
-    "describe-property": "^1.0.0",
-    "fantasy-eithers": "0.0.2",
-    "fantasy-options": "0.0.1",
-    "parsimmon": "^0.8.1",
-    "ramda": "*"
   },
-  "optionalDependencies": {
-  },
+  "optionalDependencies": {},
   "devDependencies": {
-    "chai": "^3.5.0",
-    "eslint": "^3.0.0",
-    "istanbul": "^0.4.4",
-    "jsverify": "^0.7.1",
-    "mocha": "^2.0.1",
-    "request-promise": "^3.0.0"
+    "lerna": "2.0.0-beta.38",
   },
   "repository": {
     "type": "git",
@@ -47,9 +27,6 @@
   "engines": {
     "node": "6.2.0"
   },
-  "author": "Brandon Keown",
+  "author": "Ryan Zeigler <zeiglerr@gmail.com>",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/theqabalist/blackbird/issues"
-  }
 }

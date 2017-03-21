@@ -1,0 +1,26 @@
+{
+  "name": "@blackbird/core",
+  "version": "0.1.0",
+  "description": "Core of fantasy-land HTTP server for Javascript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha specs/**/*.spec.js"
+  },
+  "keywords": [
+    "fantasy-land",
+    "server",
+    "rest"
+  ],
+  "author": "Ryan Zeigler <zeiglerr@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "akh": "^3.1.1",
+    "fluture": "^5.0.0",
+    "kefir": "^3.7.1",
+    "partial.lenses": "^9.8.0",
+    "ramda": "^0.23.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
+}
