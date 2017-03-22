@@ -7,17 +7,18 @@ const {
      ap,
      always,
      compose,
+     invoker,
+     map,
      merge,
      objOf,
-     of: ofArray,
+     of,
      pipe,
      reduce
 } = require("ramda");
 
 const {
     prop,
-    get,
-    invoker
+    get
 } = require("partial.lenses");
 
 const {stream} = require("kefir");
@@ -29,7 +30,7 @@ const reqUrlLens = prop("url");
 const reqMethodLens = prop("method");
 const reqUpgradeLens = prop("upgrade");
 
-const makeBodyStream = (req) => stream((emitter) => {
+const streamEmitter = (req) => stream((emitter) => {
     const onData = (data) => emitter.emit(data);
     const onEnd = () => emitter.end();
     const onError = (e) => emitter.error(e);
@@ -43,8 +44,8 @@ const makeBodyStream = (req) => stream((emitter) => {
     };
 });
 
-const streamFuture = (stream) => Future((reject, resolve) => {
-    const subscription = stream.observe({
+const futurizeStream = (stream) => Future((reject, resolve) => {
+    const subscription = stream.last().observe({
         value: resolve,
         error: reject
     });
@@ -53,10 +54,9 @@ const streamFuture = (stream) => Future((reject, resolve) => {
     };
 });
 
-const bufferBodyStream = pipe(
-    invoker(1, "diff", (prev, next) => Buffer.concat(prev, next)),
-    invoker(0, "last"),
-    streamFuture
+const concatBufferStream = pipe(
+    invoker(0, "bufferWhile"),
+    map(Buffer.concat)
 );
 
 const reqComponents = ap([
@@ -66,17 +66,20 @@ const reqComponents = ap([
     compose(objOf("method"), get(reqMethodLens)),
     compose(objOf("upgrade"), get(reqUpgradeLens)),
     // note: _httpMessage._hasBody is a potentially useful property of a request object if a switch is necessary
-    compose(objOf("body"), bufferBodyStream, makeBodyStream),
+    compose(objOf("body"), futurizeStream, concatBufferStream, streamEmitter),
     always(objOf("extra", {}))
 ]);
 
 const mkContext = pipe(
-     ofArray,
+     of,
      reqComponents,
      reduce(merge, {})
 );
 
 module.exports = {
-    reqComponents,
-    mkContext
+    streamEmitter,
+    concatBufferStream,
+    futurizeStream,
+    mkContext,
+    reqComponents
 };

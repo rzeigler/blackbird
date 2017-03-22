@@ -4,7 +4,7 @@
   "description": "Core of fantasy-land HTTP server for Javascript.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha specs/**/*.spec.js"
+    "test": "mocha ./**/*.spec.js"
   },
   "keywords": [
     "fantasy-land",
@@ -15,12 +15,12 @@
   "license": "MIT",
   "dependencies": {
     "akh": "^3.1.1",
+    "chai": "^3.5.0",
     "fluture": "^5.0.0",
     "kefir": "^3.7.1",
+    "mocha": "^3.2.0",
     "partial.lenses": "^9.8.0",
     "ramda": "^0.23.0"
   },
-  "devDependencies": {
-    "gulp": "^3.9.1"
-  }
+  "devDependencies": {}
 }
