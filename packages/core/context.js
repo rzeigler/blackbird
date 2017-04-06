@@ -7,6 +7,7 @@ const {
      ap,
      always,
      compose,
+     curry,
      invoker,
      map,
      merge,
@@ -18,7 +19,8 @@ const {
 
 const {
     prop,
-    get
+    get,
+    set
 } = require("partial.lenses");
 
 const {stream} = require("kefir");
@@ -70,16 +72,21 @@ const reqComponents = ap([
     always(objOf("extra", {}))
 ]);
 
-const mkContext = pipe(
+const makeContext = pipe(
      of,
      reqComponents,
      reduce(merge, {})
+);
+
+const storeExtra = curry((name, value, target) =>
+    set(compose(prop("extra"), prop(name)), value, target)
 );
 
 module.exports = {
     streamEmitter,
     concatBufferStream,
     futurizeStream,
-    mkContext,
-    reqComponents
+    makeContext,
+    reqComponents,
+    storeExtra
 };
