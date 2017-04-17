@@ -4,12 +4,15 @@ const {
     allPass,
     compose,
     converge,
+    cond,
     curry,
     identity,
     is,
+    merge,
     prop,
     or,
-    tryCatch
+    tryCatch,
+    T
 } = require("ramda");
 const {Future} = require("fluture");
 const {VError} = require("verror");
@@ -22,10 +25,16 @@ const isResponse = allPass([
     compose(isStringOrBuffer, prop("body"))
 ]);
 
+const bodyBuffer = cond([
+    [is(Buffer), identity],
+    [T, Buffer.from]
+]);
+
 const send = curry((res, data) => isResponse(data) ? Future((reject, resolve) => {
     try {
-        res.writeHead(data.statusCode, data.headers);
-        res.write(data.body);
+        const body = bodyBuffer(data.body);
+        res.writeHead(data.statusCode, merge({"Content-Length": body.length.toString()}, data.headers));
+        res.write(body);
         res.end();
         resolve("OK");
     } catch (e) {
@@ -34,8 +43,10 @@ const send = curry((res, data) => isResponse(data) ? Future((reject, resolve) =>
 }) : Future((reject) => {
     const rejection = new VError("data to not conform to response specification.\n%s", JSON.stringify(data));
     try {
-        res.writeHead(500);
-        res.write("Internal Server Error");
+        const body = Buffer.from("Internal Server Error");
+        res.writeHead(500, {"Content-Type": "text/plain", "Content-Length": body.length.toString()});
+        res.write(body);
+        res.end();
         reject(rejection);
     } catch (e) {
         reject(new VError(rejection, "Unable to write response"));
@@ -55,6 +66,7 @@ const compile = (handler) => compileE((e) => {
 }, handler);
 
 module.exports = {
+    send,
     compile,
     compileE
 };

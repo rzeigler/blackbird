@@ -65,6 +65,7 @@ const reqComponents = ap([
     compose(objOf("headers"), get(reqHeadersLens)),
     compose(objOf("httpVersion"), get(reqHttpVersionLens)),
     compose(objOf("url"), get(reqUrlLens)),
+    compose(objOf("rawUrl"), get(reqUrlLens)),
     compose(objOf("method"), get(reqMethodLens)),
     compose(objOf("upgrade"), get(reqUpgradeLens)),
     // note: _httpMessage._hasBody is a potentially useful property of a request object if a switch is necessary
