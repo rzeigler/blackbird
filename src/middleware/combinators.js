@@ -6,7 +6,7 @@ const Promise = require("bluebird");
  * We can apply a stack of middlewares i.e. [Middleware] by reducing from the right with function application using
  * the base app as the seed
  */
-const applyStack = R.curry((stack, app) => R.reduceRight((app, middle) => middle(app), app, stack));
+const applyStack = R.curry((stack, app) => R.reduce((app, middle) => middle(app), app, stack));
 
 /**
  * Lifts a function of Context -> Promise Context to a middleware function (App -> App). Pre is a processor of contexts,

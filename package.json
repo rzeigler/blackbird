@@ -44,9 +44,6 @@
     "promise",
     "promises"
   ],
-  "engines": {
-    "node": "6.2.0"
-  },
   "author": "Brandon Keown",
   "license": "MIT",
   "bugs": {
