@@ -133,6 +133,7 @@ module.exports = {
         "no-sync": "warn",
 
         //stylistic issues
+        "padding-line-between-statements": "off",
         "array-bracket-spacing": ["error", "never"],
         "block-spacing": ["error", "always"],
         "brace-style": ["error", "1tbs"],

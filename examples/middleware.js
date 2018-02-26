@@ -1,7 +1,7 @@
 const {
     core: {
         serve,
-        response: {response}
+        makeResponse
     },
     middleware: {applyStack, basicAuth, bodyBuffer}
 } = require("../src");
@@ -13,7 +13,7 @@ const verify = (username, password) => {
 };
 
 const app = (ctx) =>
-    Promise.resolve(response(200, {},
+    Promise.resolve(makeResponse(200, {},
     `Hello, ${ctx.auth}. Enjoy the content at ${ctx.path}. You sent '${ctx.body ? ctx.body.toString() : "nothing"}'`));
 const auth = basicAuth("test", verify);
 
